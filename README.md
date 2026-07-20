@@ -32,6 +32,7 @@ It doesn't just read charts. It thinks like **Stanley Druckenmiller** — the ma
 | Weekly Subscription | $0.99 | 7 days of daily briefings |
 | Monthly Subscription | $4.99 | 30 days of daily briefings |
 | Quarterly Subscription | $9.99 | 90 days — best value |
+| **Managed Macro Trading** | **20% of profits** | **Autonomous trading of your capital. Zero mgmt fee, high-water mark, $500 min. You pay nothing unless it makes you money.** |
 
 ### 🧠 The Druckenmiller Framework
 1. **Liquidity-first:** Central bank policy and global liquidity drive asset prices
@@ -49,9 +50,10 @@ It doesn't just read charts. It thinks like **Stanley Druckenmiller** — the ma
 
 ### ⚙️ Automation
 - **12h trading cron:** Portfolio review + trade execution
-- **4h news scan cron:** Market intelligence headlines
-- **30m auth monitor cron:** Token health checks
 - **Daily 6 AM briefing cron:** Auto-generates and delivers macro briefing
+- **30m auth monitor cron:** Token health checks
+- **Daily 6 AM ticker cache cron:** Market data refresh
+- **15m marketplace monitor cron:** Detects incoming managed trading clients
 
 ### 🌐 The 98-Asset Universe
 - **~65 Crypto Perps:** BTC, ETH, SOL, AVAX, BNB, LINK, DOGE, XRP, and more on Hyperliquid
