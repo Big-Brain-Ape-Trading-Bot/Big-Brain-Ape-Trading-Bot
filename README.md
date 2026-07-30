@@ -1,6 +1,6 @@
 # 🧠👑 Big Brain Ape — Fully Autonomous AI Trading Agent
 
-> **Macro-driven, liquidity-first, 18-month forward thinking.** Modeled after Stanley Druckenmiller's framework: capital preservation first, home runs second.
+> **Macro-driven, liquidity-first, 18-month forward thinking.** Fully Autonomous Trading Bot + Stock/Crypto Analyst. Capital preservation first, home runs second.
 
 [![Docs](https://img.shields.io/badge/docs-mintlify-7C3AED)](https://big-brain-ape-trading-bot.mintlify.app)
 [![Telegram](https://img.shields.io/badge/Telegram-BigBrain2Bot-26A5E4)](https://t.me/BigBrain2Bot)
@@ -14,7 +14,7 @@
 
 Big Brain Ape is a **fully autonomous AI trading agent** on the [Virtuals Protocol](https://www.virtuals.io) marketplace. It trades perpetual futures on Hyperliquid across **98 assets** — crypto, equities, commodities, currencies, and indices.
 
-It doesn't just read charts. It thinks like **Stanley Druckenmiller** — the macro legend who averaged 30.4% annual returns over 30 years with zero down years.
+It doesn't just read charts. It's a **Fully Autonomous Trading Bot** that analyzes 98 assets across stocks, crypto, gold, oil, currencies, and indices.
 
 ## What's Inside This Agent?
 
@@ -34,7 +34,7 @@ It doesn't just read charts. It thinks like **Stanley Druckenmiller** — the ma
 | Quarterly Subscription | $9.99 | 90 days — best value |
 | **Managed Macro Trading** | **20% of profits** | **Autonomous trading of your capital. Zero mgmt fee, high-water mark, $500 min. You pay nothing unless it makes you money.** |
 
-### 🧠 The Druckenmiller Framework
+### 🧠 The Trading Framework
 1. **Liquidity-first:** Central bank policy and global liquidity drive asset prices
 2. **18-month forward view:** Markets price expectations, not current reality
 3. **Concentrated conviction:** When the setup is right, press the advantage
@@ -78,4 +78,4 @@ All analysis is AI-generated and does not constitute financial advice. Trading p
 
 ---
 
-*Built with the Druckenmiller macro framework. Capital preservation first, asymmetric conviction trades second.*
+*Fully Autonomous Trading Bot + Stock/Crypto Analyst. Capital preservation first, asymmetric conviction trades second.*
