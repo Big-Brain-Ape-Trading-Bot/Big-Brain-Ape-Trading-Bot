@@ -337,30 +337,36 @@ content.innerHTML = `
 </div>
 `;
 
-// Send ticker to bot — try sendData (arrives as web_app_data message)
-// Gateway should process it as a text message
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-// sendData closes the app and sends data to the bot as a message
+// Try sendData — closes app and sends ticker to bot
+// Works from inline keyboard buttons, may not work from menu button
+if (tg) {
 tg.sendData(input);
-} else if (tg) {
-// Telegram WebApp but no user data — use sendData anyway
-tg.sendData(input);
+// Fallback: if app doesn't close in 3 seconds, show instructions
+setTimeout(function() {
+showSendDataFallback(input);
+}, 3000);
 } else {
-// Not in Telegram — show demo with note
+// Not in Telegram — show demo
 setTimeout(() => showDemoAnalysis(input), 1500);
 }
 }
 
-// Show a "type in chat" fallback for when sendData isn't available
-function showChatFallback(ticker) {
+// Fallback when sendData doesn't close the app
+function showSendDataFallback(ticker) {
 const content = document.getElementById('analysisContent');
 content.innerHTML = `
-<div class="analysis-card" style="text-align:center">
-<p style="font-size:18px;margin-bottom:12px">To get your <strong>${ticker.toUpperCase()}</strong> analysis:</p>
-<p style="color:var(--text2);font-size:14px;margin-bottom:16px">Close this app and type <strong>${ticker.toUpperCase()}</strong> in the chat with Big Brain Ape.</p>
-<p style="color:var(--text2);font-size:13px">Or tap the button below to go back.</p>
+<div class="analysis-card" style="text-align:center;padding:30px 20px">
+<div style="font-size:40px;margin-bottom:16px">📊</div>
+<p style="font-size:18px;font-weight:700;margin-bottom:12px">Get ${ticker.toUpperCase()} Analysis</p>
+<p style="color:var(--text2);font-size:14px;margin-bottom:20px">Close this app and type <strong style="color:var(--accent)">${ticker.toUpperCase()}</strong> in the chat.</p>
+<button class="search-btn" style="width:100%;padding:14px;font-size:16px" onclick="closeApp()">Close App & Go to Chat</button>
 </div>
 `;
+document.getElementById('searchBtn').disabled = false;
+document.getElementById('searchBtn').textContent = 'Analyze';
+}
+
+function closeApp() {
 if (tg) tg.close();
 }
 
