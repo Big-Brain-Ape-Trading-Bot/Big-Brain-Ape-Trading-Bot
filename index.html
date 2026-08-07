@@ -212,6 +212,33 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <li>Risk/reward calculation</li>
 </ul>
 </div>
+<div class="pricing-card" style="border-color:var(--green)">
+<div class="pricing-title">Unlimited</div>
+<div class="pricing-price">$10/mo</div>
+<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">★ Most Popular</div>
+<ul class="pricing-features">
+<li>Unlimited ticker analysis</li>
+<li>Stocks, crypto, commodities</li>
+<li>Full Druckenmiller framework</li>
+<li>Buy/Sell/Hold ratings</li>
+<li>Entry, target, stop levels</li>
+<li>Risk/reward on every trade</li>
+</ul>
+</div>
+<div class="pricing-card" style="border-color:var(--accent);background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(168,85,247,0.04))">
+<div class="pricing-title">Unlimited +</div>
+<div class="pricing-price">$20/mo</div>
+<div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:8px">★ Best Value — Everything</div>
+<ul class="pricing-features">
+<li>Everything in Unlimited</li>
+<li>Daily Macro Briefing every morning</li>
+<li>Daily News delivered to your chat</li>
+<li>Fed policy, inflation, geopolitics</li>
+<li>Oil, gold, BTC price updates</li>
+<li>Top earnings & crypto headlines</li>
+<li>Priority response time</li>
+</ul>
+</div>
 <div class="pricing-card">
 <div class="pricing-title">Daily Briefing — Weekly</div>
 <div class="pricing-price">$0.99</div>
@@ -222,10 +249,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <li>Top earnings & crypto headlines</li>
 </ul>
 </div>
-<div class="pricing-card" style="border-color:var(--accent)">
+<div class="pricing-card">
 <div class="pricing-title">Daily Briefing — Monthly</div>
 <div class="pricing-price">$4.99</div>
-<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">★ Best Value</div>
 <ul class="pricing-features">
 <li>30 days of auto-delivered briefings</li>
 <li>Everything in weekly, save 20%</li>
@@ -257,8 +283,17 @@ Then type <strong>"I paid"</strong> in the chat to activate.
 <p style="color:var(--text2);font-size:14px">All options are fast and secure</p>
 </div>
 
-<div class="analysis-card" style="text-align:center;padding:24px">
-<div style="font-size:16px;font-weight:700;margin-bottom:20px">Single Analysis — $0.25</div>
+<div class="analysis-card" style="text-align:center;padding:24px;margin-bottom:16px">
+<div style="font-size:16px;font-weight:700;margin-bottom:16px">Select Your Plan:</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+<button id="plan-single" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('single', '$0.25')">Single<br>$0.25</button>
+<button id="plan-unlimited" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('unlimited', '$10.00')">Unlimited<br>$10/mo</button>
+<button id="plan-unlimitedplus" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('unlimitedplus', '$20.00')">Unlimited +<br>$20/mo</button>
+<button id="plan-briefing" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('briefing', '$4.99')">Briefing<br>$4.99/mo</button>
+</div>
+<div style="font-size:14px;color:var(--text2);margin-bottom:20px">Selected: <strong id="selected-plan" style="color:var(--accent)">Single Analysis — $0.25</strong></div>
+
+<div style="font-size:16px;font-weight:700;margin-bottom:16px">Pay With:</div>
 <button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#0070ba" onclick="payPayPal()">💳 Credit / Debit Card</button>
 <button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#0070ba" onclick="payPayPal()">🅿️ PayPal</button>
 <button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#005FEC" onclick="payVenmo()">🟦 Venmo</button>
@@ -272,10 +307,11 @@ Then type <strong>"I paid"</strong> in the chat to activate.
 <div class="analysis-card" style="padding:16px;margin-top:16px">
 <div style="font-size:13px;color:var(--text2);line-height:1.6">
 <p style="font-weight:600;color:var(--text);margin-bottom:8px">How it works:</p>
-<p>1. Tap a payment button above</p>
-<p>2. Complete the $0.25 payment</p>
-<p>3. Type "I paid" in the chat</p>
-<p>4. Get your analysis instantly</p>
+<p>1. Select your plan above</p>
+<p>2. Tap a payment button</p>
+<p>3. Complete the payment</p>
+<p>4. Type "I paid" in the chat</p>
+<p>5. Get access instantly</p>
 </div>
 </div>
 </div>
@@ -975,24 +1011,49 @@ ${fundingRate ? `<div class="data-row"><span class="data-label">Funding Rate (Bi
 }
 
 // ── Payment Functions ──
+let selectedPlan = 'single';
+let selectedAmount = '0.25';
+const planNames = {
+'single': 'Single Analysis — $0.25',
+'unlimited': 'Unlimited — $10.00/mo',
+'unlimitedplus': 'Unlimited + — $20.00/mo',
+'briefing': 'Daily Briefing — $4.99/mo'
+};
+
+function selectPlan(plan, amount) {
+selectedPlan = plan;
+selectedAmount = amount.replace('$', '').replace('/mo', '');
+document.getElementById('selected-plan').textContent = planNames[plan];
+// Highlight selected button
+['single','unlimited','unlimitedplus','briefing'].forEach(p => {
+const btn = document.getElementById('plan-' + p);
+if (p === plan) {
+btn.style.background = 'var(--accent)';
+btn.style.borderColor = 'var(--accent)';
+} else {
+btn.style.background = 'var(--border)';
+btn.style.borderColor = 'var(--border)';
+}
+});
+}
+
 function payPayPal() {
-// PayPal.me link — opens PayPal directly, user sends $0.25
-// Replace with your PayPal.me username
-const paypalUrl = 'https://www.paypal.com/paypalme/bigbrainape/0.25';
+// PayPal.me link with selected amount
+const paypalUrl = `https://www.paypal.com/paypalme/bigbrainape/${selectedAmount}`;
 if (tg) tg.openLink(paypalUrl);
 else window.open(paypalUrl, '_blank');
 }
 
 function payVenmo() {
-// Venmo deep link — opens Venmo app if installed
-const venmoUrl = 'https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount=0.25&note=Big+Brain+Ape+Analysis';
+// Venmo deep link with selected amount
+const venmoUrl = `https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount=${selectedAmount}&note=Big+Brain+Ape+${selectedPlan}`;
 if (tg) tg.openLink(venmoUrl);
 else window.open(venmoUrl, '_blank');
 }
 
 function payCashApp() {
-// Cash App deep link — opens Cash App if installed
-const cashUrl = 'https://cash.app/$bigbrainape/0.25';
+// Cash App deep link with selected amount
+const cashUrl = `https://cash.app/$bigbrainape/${selectedAmount}`;
 if (tg) tg.openLink(cashUrl);
 else window.open(cashUrl, '_blank');
 }
