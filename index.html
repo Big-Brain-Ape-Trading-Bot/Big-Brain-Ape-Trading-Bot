@@ -251,6 +251,35 @@ Then type <strong>"I paid"</strong> in the chat to activate.
 </div>
 </div>
 
+<div id="paymentView" class="view-hidden">
+<div style="text-align:center;padding:20px 0 30px">
+<h2 style="font-size:22px;margin-bottom:8px">Choose Payment Method</h2>
+<p style="color:var(--text2);font-size:14px">All options are fast and secure</p>
+</div>
+
+<div class="analysis-card" style="text-align:center;padding:24px">
+<div style="font-size:16px;font-weight:700;margin-bottom:20px">Single Analysis — $0.25</div>
+<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#0070ba" onclick="payPayPal()">💳 Credit / Debit Card</button>
+<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#0070ba" onclick="payPayPal()">🅿️ PayPal</button>
+<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#005FEC" onclick="payVenmo()">🟦 Venmo</button>
+<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#00D632" onclick="payCashApp()">🟢 Cash App</button>
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+<div style="font-size:13px;color:var(--text2);margin-bottom:8px">Or pay with crypto:</div>
+<button class="search-btn" style="width:100%;padding:14px;font-size:16px;background:var(--accent)" onclick="payCrypto()">₿ USDC on Base</button>
+</div>
+</div>
+
+<div class="analysis-card" style="padding:16px;margin-top:16px">
+<div style="font-size:13px;color:var(--text2);line-height:1.6">
+<p style="font-weight:600;color:var(--text);margin-bottom:8px">How it works:</p>
+<p>1. Tap a payment button above</p>
+<p>2. Complete the $0.25 payment</p>
+<p>3. Type "I paid" in the chat</p>
+<p>4. Get your analysis instantly</p>
+</div>
+</div>
+</div>
+
 </div>
 
 <div class="bottom-nav">
@@ -263,8 +292,8 @@ Then type <strong>"I paid"</strong> in the chat to activate.
 <div class="nav-item" onclick="showView('trading')" id="nav-trading">
 <div class="nav-icon">📈</div><div class="nav-label">Trading</div>
 </div>
-<div class="nav-item" onclick="showView('pricing')" id="nav-pricing">
-<div class="nav-icon">💳</div><div class="nav-label">Pricing</div>
+<div class="nav-item" onclick="showView('payment')" id="nav-payment">
+<div class="nav-icon">💳</div><div class="nav-label">Pay</div>
 </div>
 </div>
 
@@ -278,14 +307,14 @@ const FMP_KEY = 'FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL';
 
 // ── View switching ──
 function showView(view) {
-['welcomeView','analysisView','briefingView','tradingView','pricingView'].forEach(v => {
+['welcomeView','analysisView','briefingView','tradingView','pricingView','paymentView'].forEach(v => {
 document.getElementById(v).classList.add('view-hidden');
 });
 document.getElementById(view + 'View').classList.remove('view-hidden');
-['nav-home','nav-briefing','nav-trading','nav-pricing'].forEach(n => {
+['nav-home','nav-briefing','nav-trading','nav-payment'].forEach(n => {
 document.getElementById(n).classList.remove('active');
 });
-const navMap = {welcome:'nav-home',analysis:'nav-home',briefing:'nav-briefing',trading:'nav-trading',pricing:'nav-pricing'};
+const navMap = {welcome:'nav-home',analysis:'nav-home',briefing:'nav-briefing',trading:'nav-trading',payment:'nav-payment',pricing:'nav-payment'};
 if (navMap[view]) document.getElementById(navMap[view]).classList.add('active');
 window.scrollTo(0, 0);
 }
@@ -943,6 +972,33 @@ ${fundingRate ? `<div class="data-row"><span class="data-label">Funding Rate (Bi
 </div>
 <p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data via FMP + CoinGecko + Binance · Druckenmiller Framework · For educational purposes, not financial advice</p>
 `;
+}
+
+// ── Payment Functions ──
+function payPayPal() {
+// PayPal.me link — opens PayPal directly, user sends $0.25
+// Replace with your PayPal.me username
+const paypalUrl = 'https://www.paypal.com/paypalme/bigbrainape/0.25';
+if (tg) tg.openLink(paypalUrl);
+else window.open(paypalUrl, '_blank');
+}
+
+function payVenmo() {
+// Venmo deep link — opens Venmo app if installed
+const venmoUrl = 'https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount=0.25&note=Big+Brain+Ape+Analysis';
+if (tg) tg.openLink(venmoUrl);
+else window.open(venmoUrl, '_blank');
+}
+
+function payCashApp() {
+// Cash App deep link — opens Cash App if installed
+const cashUrl = 'https://cash.app/$bigbrainape/0.25';
+if (tg) tg.openLink(cashUrl);
+else window.open(cashUrl, '_blank');
+}
+
+function payCrypto() {
+showView('pricing');
 }
 
 // ── Enter key + MainButton ──
