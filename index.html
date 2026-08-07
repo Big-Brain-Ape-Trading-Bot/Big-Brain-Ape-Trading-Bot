@@ -7,41 +7,31 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--green:#3fb950;--red:#f85149;--blue:#58a6ff;--gold:#d29922;--accent:#8b5cf6;--purple:#a855f7}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--green:#3fb950;--red:#f85149;--blue:#58a6ff;--gold:#d29922;--accent:#8b5cf6}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5;min-height:100vh;overflow-x:hidden}
 .header{position:sticky;top:0;background:var(--bg);z-index:100;padding:16px 16px 8px;border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .logo-icon{font-size:28px}
-.logo-text{font-size:20px;font-weight:700;letter-spacing:-0.5px}
+.logo-text{font-size:20px;font-weight:700}
 .logo-text span{color:var(--accent)}
-.search-bar{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;transition:border-color 0.2s}
+.search-bar{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px}
 .search-bar:focus-within{border-color:var(--accent)}
 .search-bar input{flex:1;background:none;border:none;color:var(--text);font-size:16px;outline:none}
 .search-bar input::placeholder{color:var(--text2)}
-.search-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s}
-.search-btn:active{opacity:0.7}
-.search-btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer}
+.btn:active{opacity:0.7}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
 .content{padding:16px;padding-bottom:100px}
 .welcome{text-align:center;padding:40px 20px}
 .welcome h2{font-size:22px;margin-bottom:8px}
 .welcome p{color:var(--text2);font-size:15px}
 .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
-.feature-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.15s,border-color 0.2s}
-.feature-card:active{transform:scale(0.97);border-color:var(--accent)}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer}
+.feature-card:active{transform:scale(0.97)}
 .feature-icon{font-size:28px;margin-bottom:8px}
-.feature-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.feature-title{font-size:13px;font-weight:600}
 .feature-desc{font-size:11px;color:var(--text2)}
-.analysis-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;animation:fadeIn 0.3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.analysis-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
-.ticker-info{display:flex;align-items:center;gap:12px}
-.ticker-symbol{font-size:24px;font-weight:800}
-.ticker-name{font-size:12px;color:var(--text2)}
-.ticker-price{text-align:right}
-.price-value{font-size:22px;font-weight:700}
-.price-change{font-size:13px;font-weight:600;margin-top:2px}
-.positive{color:var(--green)}
-.negative{color:var(--red)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
 .rating-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:700;margin-bottom:16px}
 .rating-buy{background:rgba(63,185,80,0.15);color:var(--green);border:1px solid rgba(63,185,80,0.3)}
 .rating-hold{background:rgba(210,153,34,0.15);color:var(--gold);border:1px solid rgba(210,153,34,0.3)}
@@ -51,6 +41,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .data-row:last-child{border:none}
 .data-label{color:var(--text2);font-size:14px}
 .data-value{font-size:14px;font-weight:600}
+.positive{color:var(--green)}
+.negative{color:var(--red)}
 .thesis-box{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:14px;margin-top:12px}
 .thesis-box p{font-size:14px;line-height:1.6}
 .loading{text-align:center;padding:40px}
@@ -60,43 +52,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .loading-step{font-size:12px;color:var(--text2);margin-top:8px;text-align:left;max-width:300px;margin-left:auto;margin-right:auto}
 .loading-step.done{color:var(--green)}
 .loading-step.active{color:var(--blue)}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0 16px;z-index:100}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:8px;transition:color 0.2s}
-.nav-item.active{color:var(--accent)}
-.nav-item:not(.active){color:var(--text2)}
-.nav-icon{font-size:20px}
-.nav-label{font-size:10px;font-weight:600}
-.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px}
-.pricing-title{font-size:18px;font-weight:700;margin-bottom:4px}
-.pricing-price{font-size:24px;font-weight:800;color:var(--accent);margin-bottom:8px}
-.pricing-features{list-style:none}
-.pricing-features li{font-size:14px;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:8px}
-.pricing-features li::before{content:'✓';color:var(--green);font-weight:700}
-.briefing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
-.briefing-date{font-size:12px;color:var(--text2);margin-bottom:8px}
-.briefing-section{margin-bottom:16px}
-.briefing-section h3{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--blue)}
-.briefing-section p{font-size:14px;color:var(--text);line-height:1.6}
-.trading-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
-.position-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
-.position-row:last-child{border:none}
-.position-left{display:flex;flex-direction:column}
-.position-symbol{font-size:16px;font-weight:700}
-.position-side{font-size:12px;font-weight:600}
-.position-side.long{color:var(--green)}
-.position-side.short{color:var(--red)}
-.position-right{text-align:right}
-.position-pnl{font-size:16px;font-weight:700}
-.position-size{font-size:12px;color:var(--text2)}
-.portfolio-summary{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(168,85,247,0.05));border:1px solid rgba(139,92,246,0.2);border-radius:16px;padding:20px;margin-bottom:16px}
-.portfolio-total{font-size:28px;font-weight:800;margin-bottom:4px}
-.portfolio-label{font-size:13px;color:var(--text2)}
-.portfolio-pnl{font-size:16px;font-weight:700;margin-top:8px}
-.view-hidden{display:none}
-.pay-instruction{background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.2);border-radius:10px;padding:14px;margin-top:12px;font-size:13px;color:var(--gold);line-height:1.6}
-.error-card{background:var(--card);border:1px solid rgba(248,81,73,0.3);border-radius:16px;padding:24px;text-align:center;margin-bottom:16px}
-.error-card p{color:var(--text2);font-size:14px;margin-bottom:12px}
-.error-card button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer}
 .signal-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(48,54,61,0.5)}
 .signal-row:last-child{border:none}
 .signal-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -105,980 +60,828 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .signal-dot.neutral{background:var(--gold)}
 .signal-label{flex:1;font-size:14px;color:var(--text2)}
 .signal-value{font-size:14px;font-weight:600}
-.chart-placeholder{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0;text-align:center}
-.price-range{display:flex;justify-content:space-between;align-items:end;margin:12px 0}
-.price-bar{flex:1;height:4px;background:var(--border);border-radius:2px;margin:0 8px;position:relative}
-.price-bar-fill{height:100%;border-radius:2px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0 16px;z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:8px}
+.nav-item.active{color:var(--accent)}
+.nav-item:not(.active){color:var(--text2)}
+.nav-icon{font-size:20px}
+.nav-label{font-size:10px;font-weight:600}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px}
+.pricing-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.pricing-price{font-size:24px;font-weight:800;color:var(--accent);margin-bottom:8px}
+.pricing-features{list-style:none}
+.pricing-features li{font-size:14px;color:var(--text2);padding:4px 0}
+.pricing-features li::before{content:'+ ';color:var(--green);font-weight:700}
+.pay-instruction{background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.2);border-radius:10px;padding:14px;margin-top:12px;font-size:13px;color:var(--gold);line-height:1.6}
+.error-card{background:var(--card);border:1px solid rgba(248,81,73,0.3);border-radius:16px;padding:24px;text-align:center;margin-bottom:16px}
+.error-card p{color:var(--text2);font-size:14px;margin-bottom:12px}
+.pay-btn{width:100%;padding:14px;font-size:16px;font-weight:600;border:none;border-radius:10px;color:#fff;cursor:pointer;margin-bottom:12px}
+.pay-btn:active{opacity:0.7}
+.plan-btn{padding:10px;font-size:13px;font-weight:600;border:1px solid var(--border);border-radius:10px;color:var(--text);background:var(--border);cursor:pointer}
+.plan-btn.active{background:var(--accent);border-color:var(--accent)}
+.hidden{display:none}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
-<div class="logo">
-<span class="logo-icon">🦍</span>
-<span class="logo-text">Big Brain <span>Ape</span></span>
-</div>
-<div class="search-bar">
-<input type="text" id="searchInput" placeholder="Type ticker or company name..." autocomplete="off" spellcheck="false">
-<button class="search-btn" id="searchBtn" onclick="searchTicker()">Analyze</button>
-</div>
-</div>
-
-<div class="content" id="content">
-
-<div id="welcomeView">
-<div class="welcome">
-<h2>Stock & Crypto Analysis</h2>
-<p>Your first analysis is free. Just type a ticker above.</p>
-<div class="feature-grid">
-<div class="feature-card" onclick="quickSearch('NVDA')">
-<div class="feature-icon">📊</div>
-<div class="feature-title">Stocks</div>
-<div class="feature-desc">NVDA, TSLA, AAPL</div>
-</div>
-<div class="feature-card" onclick="quickSearch('BTC')">
-<div class="feature-icon">₿</div>
-<div class="feature-title">Crypto</div>
-<div class="feature-desc">BTC, ETH, SOL</div>
-</div>
-<div class="feature-card" onclick="showView('briefing')">
-<div class="feature-icon">📰</div>
-<div class="feature-title">Daily Briefing</div>
-<div class="feature-desc">Fed, oil, gold, BTC</div>
-</div>
-<div class="feature-card" onclick="showView('pricing')">
-<div class="feature-icon">💳</div>
-<div class="feature-title">Pricing</div>
-<div class="feature-desc">From $0.25</div>
-</div>
-</div>
-</div>
+  <div class="logo">
+    <span class="logo-icon">🦍</span>
+    <span class="logo-text">Big Brain <span>Ape</span></span>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Type ticker or company name..." autocomplete="off" spellcheck="false">
+    <button class="btn" id="searchBtn" onclick="doSearch()">Analyze</button>
+  </div>
 </div>
 
-<div id="analysisView" class="view-hidden">
-<div id="analysisContent"></div>
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- WELCOME VIEW -->
+  <div id="v-home">
+    <div class="welcome">
+      <h2>Stock and Crypto Analysis</h2>
+      <p>Your first analysis is free. Type a ticker above.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card" onclick="quickSearch('NVDA')">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Stocks</div>
+        <div class="feature-desc">NVDA, TSLA, AAPL</div>
+      </div>
+      <div class="feature-card" onclick="quickSearch('BTC')">
+        <div class="feature-icon">₿</div>
+        <div class="feature-title">Crypto</div>
+        <div class="feature-desc">BTC, ETH, SOL</div>
+      </div>
+      <div class="feature-card" onclick="switchView('briefing')">
+        <div class="feature-icon">📰</div>
+        <div class="feature-title">Briefing</div>
+        <div class="feature-desc">Daily macro news</div>
+      </div>
+      <div class="feature-card" onclick="switchView('pay')">
+        <div class="feature-icon">💳</div>
+        <div class="feature-title">Pricing</div>
+        <div class="feature-desc">From $0.25</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS VIEW -->
+  <div id="v-analysis" class="hidden">
+    <div id="analysisOutput"></div>
+  </div>
+
+  <!-- BRIEFING VIEW -->
+  <div id="v-briefing" class="hidden">
+    <div class="card">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px" id="briefingDate"></div>
+      <p style="color:var(--text2)">Type "daily news" in the chat to get today's macro briefing delivered to you.</p>
+    </div>
+  </div>
+
+  <!-- TRADING VIEW -->
+  <div id="v-trading" class="hidden">
+    <div class="card" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(168,85,247,0.04));border-color:rgba(139,92,246,0.2)">
+      <div style="font-size:13px;color:var(--text2)">Total Portfolio Value</div>
+      <div style="font-size:28px;font-weight:800;margin-bottom:4px">$1,239.41</div>
+      <div style="font-size:16px;font-weight:700;color:var(--green)">+$120.55 (+10.5%)</div>
+      <div style="margin-top:12px">
+        <div class="data-row"><span class="data-label">Total Deposited</span><span class="data-value">$1,145.38</span></div>
+        <div class="data-row"><span class="data-label">Positions</span><span class="data-value">3 open</span></div>
+        <div class="data-row"><span class="data-label">Cash Available</span><span class="data-value">$104.11</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Open Positions</div>
+      <div class="data-row">
+        <span class="data-label">NVDA — LONG 3x</span>
+        <span class="data-value positive">+$72.57</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">GOLD — LONG 3x</span>
+        <span class="data-value positive">+$38.18</span>
+      </div>
+      <div class="data-row">
+        <span class="data-label">SP500 — LONG 3x</span>
+        <span class="data-value positive">+$9.80</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Strategy</div>
+      <p style="font-size:14px;color:var(--text2);line-height:1.6">Long risk assets (NVDA, GOLD, SP500) in a risk-on regime. Fed liquidity expanding, dollar weakening. Concentrated book — 3 positions. Max leverage 5x, using 3x.</p>
+    </div>
+  </div>
+
+  <!-- PRICING VIEW -->
+  <div id="v-pricing" class="hidden">
+    <div class="pricing-card">
+      <div class="pricing-title">Single Analysis</div>
+      <div class="pricing-price">$0.25</div>
+      <ul class="pricing-features">
+        <li>Full stock or crypto analysis</li>
+        <li>Technicals, fundamentals, macro</li>
+        <li>Buy/Sell/Hold rating</li>
+        <li>Entry, target, stop levels</li>
+        <li>Risk/reward calculation</li>
+      </ul>
+    </div>
+    <div class="pricing-card" style="border-color:var(--green)">
+      <div class="pricing-title">Unlimited</div>
+      <div class="pricing-price">$10/mo</div>
+      <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">Most Popular</div>
+      <ul class="pricing-features">
+        <li>Unlimited ticker analysis</li>
+        <li>Stocks, crypto, commodities</li>
+        <li>Full Druckenmiller framework</li>
+        <li>Buy/Sell/Hold ratings</li>
+        <li>Entry, target, stop levels</li>
+        <li>Risk/reward on every trade</li>
+      </ul>
+    </div>
+    <div class="pricing-card" style="border-color:var(--accent);background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(168,85,247,0.04))">
+      <div class="pricing-title">Unlimited +</div>
+      <div class="pricing-price">$20/mo</div>
+      <div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:8px">Best Value — Everything</div>
+      <ul class="pricing-features">
+        <li>Everything in Unlimited</li>
+        <li>Daily Macro Briefing every morning</li>
+        <li>Daily News delivered to your chat</li>
+        <li>Fed policy, inflation, geopolitics</li>
+        <li>Oil, gold, BTC price updates</li>
+        <li>Top earnings and crypto headlines</li>
+        <li>Priority response time</li>
+      </ul>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-title">Daily Briefing — Weekly</div>
+      <div class="pricing-price">$0.99</div>
+      <ul class="pricing-features">
+        <li>7 days of auto-delivered briefings</li>
+        <li>Fed policy, inflation, geopolitics</li>
+        <li>Oil, gold, BTC price updates</li>
+        <li>Top earnings and crypto headlines</li>
+      </ul>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-title">Daily Briefing — Monthly</div>
+      <div class="pricing-price">$4.99</div>
+      <ul class="pricing-features">
+        <li>30 days of auto-delivered briefings</li>
+        <li>Everything in weekly, save 20%</li>
+        <li>Fed policy, inflation, geopolitics</li>
+        <li>Oil, gold, BTC price updates</li>
+      </ul>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-title">Daily Briefing — Quarterly</div>
+      <div class="pricing-price">$9.99</div>
+      <ul class="pricing-features">
+        <li>90 days of auto-delivered briefings</li>
+        <li>Everything in monthly, save 33%</li>
+        <li>Fed policy, inflation, geopolitics</li>
+        <li>Oil, gold, BTC price updates</li>
+      </ul>
+    </div>
+    <div class="pay-instruction">
+      Send USDC on the Base network to:<br>
+      <code style="font-size:11px;word-break:break-all">0x37a8023762c69f7150d878733fd9f635f1070fc6</code><br><br>
+      Then type "I paid" in the chat to activate.
+    </div>
+  </div>
+
+  <!-- PAYMENT VIEW -->
+  <div id="v-pay" class="hidden">
+    <div style="text-align:center;padding:20px 0 30px">
+      <h2 style="font-size:22px;margin-bottom:8px">Choose Payment Method</h2>
+      <p style="color:var(--text2);font-size:14px">All options are fast and secure</p>
+    </div>
+    <div class="card" style="text-align:center;padding:24px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:16px">Select Your Plan:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+        <button class="plan-btn active" id="plan-single" onclick="selectPlan('single')">Single<br>$0.25</button>
+        <button class="plan-btn" id="plan-unlimited" onclick="selectPlan('unlimited')">Unlimited<br>$10/mo</button>
+        <button class="plan-btn" id="plan-unlimitedplus" onclick="selectPlan('unlimitedplus')">Unlimited +<br>$20/mo</button>
+        <button class="plan-btn" id="plan-briefing" onclick="selectPlan('briefing')">Briefing<br>$4.99/mo</button>
+      </div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:20px">Selected: <strong id="selected-plan" style="color:var(--accent)">Single Analysis — $0.25</strong></div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:16px">Pay With:</div>
+      <button class="pay-btn" style="background:#0070ba" onclick="payPayPal()">Credit / Debit Card</button>
+      <button class="pay-btn" style="background:#0070ba" onclick="payPayPal()">PayPal</button>
+      <button class="pay-btn" style="background:#005FEC" onclick="payVenmo()">Venmo</button>
+      <button class="pay-btn" style="background:#00D632" onclick="payCashApp()">Cash App</button>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Or pay with crypto:</div>
+        <button class="pay-btn" style="background:var(--accent)" onclick="switchView('pricing')">USDC on Base</button>
+      </div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">
+        <p style="font-weight:600;color:var(--text);margin-bottom:8px">How it works:</p>
+        <p>1. Select your plan above</p>
+        <p>2. Tap a payment button</p>
+        <p>3. Complete the payment</p>
+        <p>4. Type "I paid" in the chat</p>
+        <p>5. Get access instantly</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<div id="briefingView" class="view-hidden">
-<div class="briefing-card">
-<div class="briefing-date" id="briefingDate">Loading today's briefing...</div>
-<div id="briefingContent">
-<p style="color:var(--text2)">Type "daily news" in the chat to get today's macro briefing delivered to you.</p>
-</div>
-</div>
-</div>
-
-<div id="tradingView" class="view-hidden">
-<div class="portfolio-summary">
-<div class="portfolio-label">Total Portfolio Value</div>
-<div class="portfolio-total">$1,239.41</div>
-<div class="portfolio-pnl positive">+$120.55 (+10.5%)</div>
-<div style="margin-top:12px">
-<div class="data-row"><span class="data-label">Total Deposited</span><span class="data-value">$1,145.38</span></div>
-<div class="data-row"><span class="data-label">Positions</span><span class="data-value">3 open</span></div>
-<div class="data-row"><span class="data-label">Cash Available</span><span class="data-value">$104.11</span></div>
-</div>
-</div>
-<div class="trading-card">
-<div class="section-title">Open Positions</div>
-<div class="position-row">
-<div class="position-left"><span class="position-symbol">NVDA</span><span class="position-side long">LONG · 3x</span></div>
-<div class="position-right"><div class="position-pnl positive">+$72.57</div><div class="position-size">$488.72 margin</div></div>
-</div>
-<div class="position-row">
-<div class="position-left"><span class="position-symbol">GOLD</span><span class="position-side long">LONG · 3x</span></div>
-<div class="position-right"><div class="position-pnl positive">+$38.18</div><div class="position-size">$423.51 margin</div></div>
-</div>
-<div class="position-row">
-<div class="position-left"><span class="position-symbol">SP500</span><span class="position-side long">LONG · 3x</span></div>
-<div class="position-right"><div class="position-pnl positive">+$9.80</div><div class="position-size">$205.37 margin</div></div>
-</div>
-</div>
-<div class="trading-card">
-<div class="section-title">Trading Strategy</div>
-<p style="font-size:14px;color:var(--text2);line-height:1.6">Long risk assets (NVDA, GOLD, SP500) in a risk-on regime. Fed liquidity expanding, dollar weakening. Concentrated book — 3 positions only. Max leverage 5x, currently using 3x.</p>
-</div>
-</div>
-
-<div id="pricingView" class="view-hidden">
-<div class="pricing-card">
-<div class="pricing-title">Single Analysis</div>
-<div class="pricing-price">$0.25</div>
-<ul class="pricing-features">
-<li>Full stock or crypto analysis</li>
-<li>Technicals, fundamentals, macro</li>
-<li>Buy/Sell/Hold rating</li>
-<li>Entry, target, stop levels</li>
-<li>Risk/reward calculation</li>
-</ul>
-</div>
-<div class="pricing-card" style="border-color:var(--green)">
-<div class="pricing-title">Unlimited</div>
-<div class="pricing-price">$10/mo</div>
-<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">★ Most Popular</div>
-<ul class="pricing-features">
-<li>Unlimited ticker analysis</li>
-<li>Stocks, crypto, commodities</li>
-<li>Full Druckenmiller framework</li>
-<li>Buy/Sell/Hold ratings</li>
-<li>Entry, target, stop levels</li>
-<li>Risk/reward on every trade</li>
-</ul>
-</div>
-<div class="pricing-card" style="border-color:var(--accent);background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(168,85,247,0.04))">
-<div class="pricing-title">Unlimited +</div>
-<div class="pricing-price">$20/mo</div>
-<div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:8px">★ Best Value — Everything</div>
-<ul class="pricing-features">
-<li>Everything in Unlimited</li>
-<li>Daily Macro Briefing every morning</li>
-<li>Daily News delivered to your chat</li>
-<li>Fed policy, inflation, geopolitics</li>
-<li>Oil, gold, BTC price updates</li>
-<li>Top earnings & crypto headlines</li>
-<li>Priority response time</li>
-</ul>
-</div>
-<div class="pricing-card">
-<div class="pricing-title">Daily Briefing — Weekly</div>
-<div class="pricing-price">$0.99</div>
-<ul class="pricing-features">
-<li>7 days of auto-delivered briefings</li>
-<li>Fed policy, inflation, geopolitics</li>
-<li>Oil, gold, BTC price updates</li>
-<li>Top earnings & crypto headlines</li>
-</ul>
-</div>
-<div class="pricing-card">
-<div class="pricing-title">Daily Briefing — Monthly</div>
-<div class="pricing-price">$4.99</div>
-<ul class="pricing-features">
-<li>30 days of auto-delivered briefings</li>
-<li>Everything in weekly, save 20%</li>
-<li>Fed policy, inflation, geopolitics</li>
-<li>Oil, gold, BTC price updates</li>
-<li>Top earnings & crypto headlines</li>
-</ul>
-</div>
-<div class="pricing-card">
-<div class="pricing-title">Daily Briefing — Quarterly</div>
-<div class="pricing-price">$9.99</div>
-<ul class="pricing-features">
-<li>90 days of auto-delivered briefings</li>
-<li>Everything in monthly, save 33%</li>
-<li>Fed policy, inflation, geopolitics</li>
-<li>Oil, gold, BTC price updates</li>
-</ul>
-</div>
-<div class="pay-instruction">
-Send USDC on the Base network to:<br>
-<code style="font-size:11px;word-break:break-all">0x37a8023762c69f7150d878733fd9f635f1070fc6</code><br><br>
-Then type <strong>"I paid"</strong> in the chat to activate.
-</div>
-</div>
-
-<div id="paymentView" class="view-hidden">
-<div style="text-align:center;padding:20px 0 30px">
-<h2 style="font-size:22px;margin-bottom:8px">Choose Payment Method</h2>
-<p style="color:var(--text2);font-size:14px">All options are fast and secure</p>
-</div>
-
-<div class="analysis-card" style="text-align:center;padding:24px;margin-bottom:16px">
-<div style="font-size:16px;font-weight:700;margin-bottom:16px">Select Your Plan:</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
-<button id="plan-single" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('single', '$0.25')">Single<br>$0.25</button>
-<button id="plan-unlimited" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('unlimited', '$10.00')">Unlimited<br>$10/mo</button>
-<button id="plan-unlimitedplus" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('unlimitedplus', '$20.00')">Unlimited +<br>$20/mo</button>
-<button id="plan-briefing" class="search-btn" style="padding:10px;font-size:13px;background:var(--border);border:1px solid var(--border)" onclick="selectPlan('briefing', '$4.99')">Briefing<br>$4.99/mo</button>
-</div>
-<div style="font-size:14px;color:var(--text2);margin-bottom:20px">Selected: <strong id="selected-plan" style="color:var(--accent)">Single Analysis — $0.25</strong></div>
-
-<div style="font-size:16px;font-weight:700;margin-bottom:16px">Pay With:</div>
-<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#0070ba" onclick="payPayPal()">💳 Credit / Debit Card</button>
-<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#0070ba" onclick="payPayPal()">🅿️ PayPal</button>
-<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#005FEC" onclick="payVenmo()">🟦 Venmo</button>
-<button class="search-btn" style="width:100%;padding:14px;font-size:16px;margin-bottom:12px;background:#00D632" onclick="payCashApp()">🟢 Cash App</button>
-<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-<div style="font-size:13px;color:var(--text2);margin-bottom:8px">Or pay with crypto:</div>
-<button class="search-btn" style="width:100%;padding:14px;font-size:16px;background:var(--accent)" onclick="payCrypto()">₿ USDC on Base</button>
-</div>
-</div>
-
-<div class="analysis-card" style="padding:16px;margin-top:16px">
-<div style="font-size:13px;color:var(--text2);line-height:1.6">
-<p style="font-weight:600;color:var(--text);margin-bottom:8px">How it works:</p>
-<p>1. Select your plan above</p>
-<p>2. Tap a payment button</p>
-<p>3. Complete the payment</p>
-<p>4. Type "I paid" in the chat</p>
-<p>5. Get access instantly</p>
-</div>
-</div>
-</div>
-
-</div>
-
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
-<div class="nav-item active" onclick="showView('welcome')" id="nav-home">
-<div class="nav-icon">🔍</div><div class="nav-label">Analyze</div>
-</div>
-<div class="nav-item" onclick="showView('briefing')" id="nav-briefing">
-<div class="nav-icon">📰</div><div class="nav-label">Briefing</div>
-</div>
-<div class="nav-item" onclick="showView('trading')" id="nav-trading">
-<div class="nav-icon">📈</div><div class="nav-label">Trading</div>
-</div>
-<div class="nav-item" onclick="showView('payment')" id="nav-payment">
-<div class="nav-icon">💳</div><div class="nav-label">Pay</div>
-</div>
+  <div class="nav-item active" id="nav-home" onclick="switchView('home')">
+    <div class="nav-icon">🔍</div><div class="nav-label">Analyze</div>
+  </div>
+  <div class="nav-item" id="nav-briefing" onclick="switchView('briefing')">
+    <div class="nav-icon">📰</div><div class="nav-label">Briefing</div>
+  </div>
+  <div class="nav-item" id="nav-trading" onclick="switchView('trading')">
+    <div class="nav-icon">📈</div><div class="nav-label">Trading</div>
+  </div>
+  <div class="nav-item" id="nav-pay" onclick="switchView('pay')">
+    <div class="nav-icon">💳</div><div class="nav-label">Pay</div>
+  </div>
 </div>
 
 <script>
-// ── Telegram Web App init ──
-const tg = window.Telegram?.WebApp;
+// ============================================
+// BIG BRAIN APE MINI APP — CLEAN BUILD
+// ============================================
+
+// ── Telegram Init ──
+var tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
 
-// ── API Keys ──
-const FMP_KEY = 'FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL';
+// ── API Key ──
+var FMP_KEY = 'FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL';
 
-// ── View switching ──
-function showView(view) {
-['welcomeView','analysisView','briefingView','tradingView','pricingView','paymentView'].forEach(v => {
-document.getElementById(v).classList.add('view-hidden');
-});
-document.getElementById(view + 'View').classList.remove('view-hidden');
-['nav-home','nav-briefing','nav-trading','nav-payment'].forEach(n => {
-document.getElementById(n).classList.remove('active');
-});
-const navMap = {welcome:'nav-home',analysis:'nav-home',briefing:'nav-briefing',trading:'nav-trading',payment:'nav-payment',pricing:'nav-payment'};
-if (navMap[view]) document.getElementById(navMap[view]).classList.add('active');
-window.scrollTo(0, 0);
+// ── View Switching ──
+var VIEWS = ['home', 'analysis', 'briefing', 'trading', 'pricing', 'pay'];
+var NAV_MAP = {home:'nav-home', analysis:'nav-home', briefing:'nav-briefing', trading:'nav-trading', pricing:'nav-pay', pay:'nav-pay'};
+
+function switchView(view) {
+  for (var i = 0; i < VIEWS.length; i++) {
+    var el = document.getElementById('v-' + VIEWS[i]);
+    if (el) {
+      if (VIEWS[i] === view) { el.classList.remove('hidden'); }
+      else { el.classList.add('hidden'); }
+    }
+  }
+  var navIds = ['nav-home', 'nav-briefing', 'nav-trading', 'nav-pay'];
+  for (var j = 0; j < navIds.length; j++) {
+    var navEl = document.getElementById(navIds[j]);
+    if (navEl) {
+      if (navIds[j] === NAV_MAP[view]) { navEl.classList.add('active'); }
+      else { navEl.classList.remove('active'); }
+    }
+  }
+  window.scrollTo(0, 0);
 }
 
+// ── Quick Search ──
 function quickSearch(ticker) {
-document.getElementById('searchInput').value = ticker;
-searchTicker();
+  document.getElementById('searchInput').value = ticker;
+  doSearch();
 }
 
-// ── Loading steps UI ──
-function updateLoading(step, status) {
-const el = document.getElementById('loading-step-' + step);
-if (el) {
-el.classList.remove('active');
-el.classList.add(status);
-}
-}
-function setLoadingStep(step) {
-const el = document.getElementById('loading-step-' + step);
-if (el) el.classList.add('active');
-}
+// ── Ticker Resolution ──
+var CRYPTO_SYMBOLS = ['BTC','ETH','SOL','XRP','ADA','AVAX','DOT','LINK','MATIC','DOGE','SHIB','LTC','BCH','UNI','ATOM','NEAR','ARB','OP','APT','FIL','INJ','TIA','SEI','SUI','RUNE','AAVE','CRV','LDO','RNDR','FET','TAO','JUP','PYTH','PEPE','WIF','BONK','FLOKI','JTO','ETHFI','STRK','MANTA','ONDO','ENA','TRX','TON','HBAR','XLM','ALGO','VET','THETA','EOS','XMR','ZEC','DASH','NEO','ICP','KLAY','QNT','ROSE','ZIL','SC','XEC','BGB','OKB','CRO','GT','MX','FTM','KCS','HT','BTT'];
 
-// ── Ticker detection ──
-const CRYPTO_TICKERS = ['BTC','ETH','SOL','XRP','ADA','AVAX','DOT','LINK','MATIC','DOGE','SHIB','LTC','BCH','UNI','ATOM','NEAR','ARB','OP','APT','FIL','INJ','TIA','SEI','SUI','RUNE','AAVE','CRV','LDO','RNDR','FET','TAO','JUP','PYTH','STETH','WBTC','PEPE','WIF','BONK','FLOKI','JTO','ETHFI','STRK','MANTA','ONDO','ENA','USDT','USDC','DAI','TRX','TON','HBAR','XLM','ALGO','VET','THETA','EOS','XMR','ZEC','DASH','NEO','ICP','KLAY','QNT','ROSE','ZIL','SC','XEC','BGB','OKB','CRO','GT','MX','FTM','KCS','HT','BTT','SHIB'];
-const COMPANY_MAP = {
-'apple':'AAPL','microsoft':'MSFT','nvidia':'NVDA','amazon':'AMZN','google':'GOOGL','alphabet':'GOOGL',
-'tesla':'TSLA','meta':'META','facebook':'META','netflix':'NFLX','amd':'AMD','intel':'INTC',
-'palantir':'PLTR','coinbase':'COIN','robinhood':'HOOD','microstrategy':'MSTR',
-'rivian':'RIVN','alibaba':'BABA','gamestop':'GME','costco':'COST','lilly':'LLY',
-'hims':'HIMS','draftkings':'DKNG','softbank':'SFTBF','oracle':'ORCL','tsm':'TSM',
-'micron':'MU','sandisk':'SNDK','broadcom':'AVGO','qualcomm':'QCOM','cisco':'CSCO',
-'jpmorgan':'JPM','bank of america':'BAC','goldman sachs':'GS','wells fargo':'WFC',
-'exxon':'XOM','chevron':'CVX','shell':'SHEL','pfizer':'PFE','moderna':'MRNA',
-'johnson and johnson':'JNJ','walmart':'WMT','target':'TGT','home depot':'HD',
-'disney':'DIS','spotify':'SPOT','uber':'UBER','airbnb':'ABNB','salesforce':'CRM',
-'snowflake':'SNOW','mongodb':'MDB','unity':'U','shopify':'SHOP','square':'SQ',
-'paypal':'PYPL','block':'SQ','nio':'NIO','xpeng':'XPEV','byd':'BYDDY',
-'bitcoin':'BTC','ethereum':'ETH','solana':'SOL','cardano':'ADA','ripple':'XRP',
-'dogecoin':'DOGE','polygon':'MATIC','avalanche':'AVAX','polkadot':'DOT',
-'chainlink':'LINK','litecoin':'LTC','shiba inu':'SHIB','pepe':'PEPE',
-'uniswap':'UNI','aave':'AAVE','cosmos':'ATOM','near protocol':'NEAR',
-'gold':'XAU','silver':'XAG','oil':'CL','crude oil':'CL','brent':'BRENTOIL',
-'s&p 500':'SPY','sp500':'SPY','spy':'SPY','nasdaq':'QQQ','qqq':'QQQ',
-'dow jones':'DIA','dia':'DIA','russell':'IWM','iwm':'IWM',
+var COMPANY_NAMES = {
+  'apple':'AAPL','microsoft':'MSFT','nvidia':'NVDA','amazon':'AMZN','google':'GOOGL','alphabet':'GOOGL',
+  'tesla':'TSLA','meta':'META','facebook':'META','netflix':'NFLX','amd':'AMD','intel':'INTC',
+  'palantir':'PLTR','coinbase':'COIN','robinhood':'HOOD','microstrategy':'MSTR',
+  'rivian':'RIVN','alibaba':'BABA','gamestop':'GME','costco':'COST','lilly':'LLY',
+  'hims':'HIMS','draftkings':'DKNG','oracle':'ORCL','tsm':'TSM','micron':'MU','sandisk':'SNDK',
+  'broadcom':'AVGO','qualcomm':'QCOM','jpmorgan':'JPM','exxon':'XOM','chevron':'CVX',
+  'pfizer':'PFE','moderna':'MRNA','walmart':'WMT','disney':'DIS','spotify':'SPOT',
+  'uber':'UBER','airbnb':'ABNB','salesforce':'CRM','snowflake':'SNOW','shopify':'SHOP',
+  'paypal':'PYPL','block':'SQ','nio':'NIO','bitcoin':'BTC','ethereum':'ETH','solana':'SOL',
+  'cardano':'ADA','ripple':'XRP','dogecoin':'DOGE','chainlink':'LINK','litecoin':'LTC'
 };
 
 function resolveTicker(input) {
-let upper = input.toUpperCase().trim();
-let lower = input.toLowerCase().trim();
-// Direct match
-if (COMPANY_MAP[lower]) return {symbol: COMPANY_MAP[lower], type: detectType(COMPANY_MAP[lower])};
-if (COMPANY_MAP[upper]) return {symbol: COMPANY_MAP[upper], type: detectType(COMPANY_MAP[upper])};
-// Check if it's a crypto
-if (CRYPTO_TICKERS.includes(upper)) return {symbol: upper, type: 'crypto'};
-// Default: treat as stock
-return {symbol: upper, type: 'stock'};
+  var upper = input.toUpperCase().trim();
+  var lower = input.toLowerCase().trim();
+  if (COMPANY_NAMES[lower]) { return { symbol: COMPANY_NAMES[lower], isCrypto: isCryptoSymbol(COMPANY_NAMES[lower]) }; }
+  if (CRYPTO_SYMBOLS.indexOf(upper) >= 0) { return { symbol: upper, isCrypto: true }; }
+  return { symbol: upper, isCrypto: false };
 }
 
-function detectType(symbol) {
-if (CRYPTO_TICKERS.includes(symbol.toUpperCase())) return 'crypto';
-if (['XAU','XAG','CL','BRENTOIL','NG','HG','SI','GC'].includes(symbol.toUpperCase())) return 'commodity';
-return 'stock';
+function isCryptoSymbol(sym) {
+  return CRYPTO_SYMBOLS.indexOf(sym.toUpperCase()) >= 0;
 }
 
-// ── Technical Analysis Functions ──
+// ── Technical Analysis ──
 function calcSMA(data, period) {
-let result = [];
-for (let i = period - 1; i < data.length; i++) {
-let sum = 0;
-for (let j = 0; j < period; j++) sum += data[i - j];
-result.push(sum / period);
-}
-return result;
+  var result = [];
+  for (var i = period - 1; i < data.length; i++) {
+    var sum = 0;
+    for (var j = 0; j < period; j++) { sum += data[i - j]; }
+    result.push(sum / period);
+  }
+  return result;
 }
 
 function calcEMA(data, period) {
-let result = [];
-let multiplier = 2 / (period + 1);
-let ema = data[0];
-result.push(ema);
-for (let i = 1; i < data.length; i++) {
-ema = (data[i] - ema) * multiplier + ema;
-result.push(ema);
-}
-return result;
+  var result = [];
+  var mult = 2 / (period + 1);
+  var ema = data[0];
+  result.push(ema);
+  for (var i = 1; i < data.length; i++) {
+    ema = (data[i] - ema) * mult + ema;
+    result.push(ema);
+  }
+  return result;
 }
 
-function calcRSI(closes, period = 14) {
-if (closes.length < period + 1) return 50;
-let gains = [], losses = [];
-for (let i = 1; i <= period; i++) {
-let change = closes[i] - closes[i - 1];
-gains.push(change > 0 ? change : 0);
-losses.push(change < 0 ? -change : 0);
-}
-let avgGain = gains.reduce((a, b) => a + b) / period;
-let avgLoss = losses.reduce((a, b) => a + b) / period;
-for (let i = period + 1; i < closes.length; i++) {
-let change = closes[i] - closes[i - 1];
-avgGain = (avgGain * (period - 1) + (change > 0 ? change : 0)) / period;
-avgLoss = (avgLoss * (period - 1) + (change < 0 ? -change : 0)) / period;
-}
-if (avgLoss === 0) return 100;
-let rs = avgGain / avgLoss;
-return 100 - (100 / (1 + rs));
+function calcRSI(closes, period) {
+  period = period || 14;
+  if (closes.length < period + 1) { return 50; }
+  var gains = 0, losses = 0;
+  for (var i = 1; i <= period; i++) {
+    var change = closes[i] - closes[i - 1];
+    if (change > 0) { gains += change; } else { losses -= change; }
+  }
+  var avgGain = gains / period;
+  var avgLoss = losses / period;
+  for (var i = period + 1; i < closes.length; i++) {
+    var change = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + (change > 0 ? change : 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + (change < 0 ? -change : 0)) / period;
+  }
+  if (avgLoss === 0) { return 100; }
+  var rs = avgGain / avgLoss;
+  return 100 - (100 / (1 + rs));
 }
 
 function calcMACD(closes) {
-let ema12 = calcEMA(closes, 12);
-let ema26 = calcEMA(closes, 26);
-let macdLine = [];
-let startIdx = closes.length - ema12.length;
-for (let i = 0; i < ema12.length; i++) {
-macdLine.push(ema12[i] - ema26[i]);
-}
-let signalLine = calcEMA(macdLine, 9);
-let histogram = macdLine[macdLine.length - 1] - signalLine[signalLine.length - 1];
-return {
-macd: macdLine[macdLine.length - 1],
-signal: signalLine[signalLine.length - 1],
-histogram: histogram,
-bullish: histogram > 0
-};
+  var ema12 = calcEMA(closes, 12);
+  var ema26 = calcEMA(closes, 26);
+  var macdLine = [];
+  for (var i = 0; i < ema12.length; i++) {
+    macdLine.push(ema12[i] - ema26[i]);
+  }
+  var signalLine = calcEMA(macdLine, 9);
+  var hist = macdLine[macdLine.length - 1] - signalLine[signalLine.length - 1];
+  return { macd: macdLine[macdLine.length - 1], signal: signalLine[signalLine.length - 1], histogram: hist, bullish: hist > 0 };
 }
 
-function calcBollingerBands(closes, period = 20) {
-let sma = calcSMA(closes, period);
-let lastSMA = sma[sma.length - 1];
-let slice = closes.slice(-period);
-let stdDev = Math.sqrt(slice.reduce((sum, val) => sum + Math.pow(val - lastSMA, 2), 0) / period);
-return {
-upper: lastSMA + 2 * stdDev,
-middle: lastSMA,
-lower: lastSMA - 2 * stdDev,
-width: (4 * stdDev) / lastSMA * 100
-};
+function calcBollinger(closes, period) {
+  period = period || 20;
+  var sma = calcSMA(closes, period);
+  var lastSMA = sma[sma.length - 1];
+  var slice = closes.slice(-period);
+  var sumSq = 0;
+  for (var i = 0; i < slice.length; i++) { sumSq += Math.pow(slice[i] - lastSMA, 2); }
+  var std = Math.sqrt(sumSq / period);
+  return { upper: lastSMA + 2 * std, middle: lastSMA, lower: lastSMA - 2 * std };
 }
 
-function calcFibonacci(high, low) {
-let diff = high - low;
-return {
-level0: high,
-level236: high - 0.236 * diff,
-level382: high - 0.382 * diff,
-level500: high - 0.500 * diff,
-level618: high - 0.618 * diff,
-level786: high - 0.786 * diff,
-level100: low
-};
+function calcFib(high, low) {
+  var diff = high - low;
+  return {
+    '0': high,
+    '23.6': high - 0.236 * diff,
+    '38.2': high - 0.382 * diff,
+    '50': high - 0.5 * diff,
+    '61.8': high - 0.618 * diff,
+    '78.6': high - 0.786 * diff,
+    '100': low
+  };
 }
 
-function calcATR(highs, lows, closes, period = 14) {
-let trs = [];
-for (let i = 1; i < closes.length; i++) {
-let tr = Math.max(
-highs[i] - lows[i],
-Math.abs(highs[i] - closes[i - 1]),
-Math.abs(lows[i] - closes[i - 1])
-);
-trs.push(tr);
-}
-if (trs.length < period) return trs.reduce((a, b) => a + b) / trs.length;
-let sum = 0;
-for (let i = trs.length - period; i < trs.length; i++) sum += trs[i];
-return sum / period;
-}
-
-// ── Fear & Greed Index ──
+// ── Data Fetching ──
 async function getFearGreed() {
-try {
-let resp = await fetch('https://api.alternative.me/fng/?limit=1');
-let data = await resp.json();
-let fng = data.data[0];
-return { value: parseInt(fng.value), classification: fng.value_classification };
-} catch (e) {
-return { value: 50, classification: 'Neutral' };
-}
+  try {
+    var resp = await fetch('https://api.alternative.me/fng/?limit=1');
+    var data = await resp.json();
+    return { value: parseInt(data.data[0].value), label: data.data[0].value_classification };
+  } catch (e) {
+    return { value: 50, label: 'Neutral' };
+  }
 }
 
-// ── Stock Data (FMP API) ──
 async function getStockData(symbol) {
-// 1. Get historical daily candles for technicals
-let histResp = await fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?timeseries=250&apikey=${FMP_KEY}`);
-let histData = await histResp.json();
-if (!histData.historical || histData.historical.length === 0) throw new Error('No data for ' + symbol);
+  var histResp = await fetch('https://financialmodelingprep.com/api/v3/historical-price-full/' + symbol + '?timeseries=250&apikey=' + FMP_KEY);
+  var histData = await histResp.json();
+  if (!histData.historical || histData.historical.length === 0) { throw new Error('No data for ' + symbol); }
+  var candles = histData.historical.slice().reverse();
+  var closes = candles.map(function(c) { return c.close; });
+  var lastC = candles[candles.length - 1];
+  var prevC = candles[candles.length - 2].close;
 
-let candles = histData.historical.reverse(); // oldest first
-let closes = candles.map(c => c.close);
-let highs = candles.map(c => c.high);
-let lows = candles.map(c => c.low);
-let volumes = candles.map(c => c.volume);
-let lastCandle = candles[candles.length - 1];
-let prevClose = candles[candles.length - 2].close;
+  var quoteResp = await fetch('https://financialmodelingprep.com/api/v3/quote/' + symbol + '?apikey=' + FMP_KEY);
+  var quoteData = await quoteResp.json();
+  var quote = quoteData[0] || {};
 
-// 2. Get quote/profile for fundamentals
-let quoteResp = await fetch(`https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_KEY}`);
-let quoteData = await quoteResp.json();
-let quote = quoteData[0] || {};
+  var profileResp = await fetch('https://financialmodelingprep.com/api/v3/profile/' + symbol + '?apikey=' + FMP_KEY);
+  var profileData = await profileResp.json();
+  var profile = profileData[0] || {};
 
-let profileResp = await fetch(`https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${FMP_KEY}`);
-let profileData = await profileResp.json();
-let profile = profileData[0] || {};
-
-return {
-symbol: symbol,
-name: profile.companyName || quote.name || symbol,
-price: lastCandle.close,
-prevClose: prevClose,
-change: lastCandle.close - prevClose,
-changePercent: ((lastCandle.close - prevClose) / prevClose) * 100,
-high: lastCandle.high,
-low: lastCandle.low,
-volume: lastCandle.volume,
-marketCap: quote.marketCap,
-peRatio: quote.pe,
-pegRatio: quote.pegratio,
-eps: quote.eps,
-dividendYield: quote.dividendYield,
-beta: quote.beta,
-avgVolume: quote.avgVolume,
-yearHigh: quote.yearHigh,
-yearLow: quote.yearLow,
-priceRange50: quote.range50day ? null : null, // not available
-profile: profile.description ? profile.description.substring(0, 200) : '',
-sector: profile.sector || '',
-industry: profile.industry || '',
-candles: candles,
-closes: closes,
-highs: highs,
-lows: lows,
-volumes: volumes
-};
+  return {
+    symbol: symbol,
+    name: profile.companyName || quote.name || symbol,
+    price: lastC.close,
+    prevClose: prevC,
+    change: lastC.close - prevC,
+    changePct: ((lastC.close - prevC) / prevC) * 100,
+    marketCap: quote.marketCap,
+    peRatio: quote.pe,
+    eps: quote.eps,
+    beta: quote.beta,
+    yearHigh: quote.yearHigh,
+    yearLow: quote.yearLow,
+    sector: profile.sector || '',
+    closes: closes,
+    isCrypto: false
+  };
 }
 
-// ── Crypto Data (CoinGecko) ──
 async function getCryptoData(symbol) {
-// Map common symbols to CoinGecko IDs
-const coinMap = {
-'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','XRP':'ripple','ADA':'cardano',
-'AVAX':'avalanche-2','DOT':'polkadot','LINK':'chainlink','MATIC':'matic-network',
-'DOGE':'dogecoin','SHIB':'shiba-inu','LTC':'litecoin','BCH':'bitcoin-cash',
-'UNI':'uniswap','ATOM':'cosmos','NEAR':'near','ARB':'arbitrum','OP':'optimism',
-'APT':'aptos','FIL':'filecoin','INJ':'injective-protocol','TIA':'celestia',
-'SEI':'sei-network','SUI':'sui','RUNE':'thorchain','AAVE':'aave','CRV':'curve-dao-token',
-'LDO':'lido-dao','RNDR':'render-token','FET':'fetch-ai','TAO':'bittensor',
-'PEPE':'pepe','WIF':'dogwifhat','BONK':'bonk','JTO':'jito-governance-token',
-'ETHFI':'ether-fi','TRX':'tron','TON':'the-open-network','HBAR':'hedera-hashgraph',
-'XLM':'stellar','ALGO':'algorand','XMR':'monero','ZEC':'zcash',
-'ENA':'ethena','ONDO':'ondo-finance','MANTA':'manta-network','STRK':'starknet'
-};
+  var coinMap = {
+    'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','XRP':'ripple','ADA':'cardano',
+    'AVAX':'avalanche-2','DOT':'polkadot','LINK':'chainlink','MATIC':'matic-network',
+    'DOGE':'dogecoin','SHIB':'shiba-inu','LTC':'litecoin','BCH':'bitcoin-cash',
+    'UNI':'uniswap','ATOM':'cosmos','NEAR':'near','ARB':'arbitrum','OP':'optimism',
+    'APT':'aptos','FIL':'filecoin','INJ':'injective-protocol','TIA':'celestia',
+    'SEI':'sei-network','SUI':'sui','RUNE':'thorchain','AAVE':'aave','CRV':'curve-dao-token',
+    'LDO':'lido-dao','RNDR':'render-token','FET':'fetch-ai','TAO':'bittensor',
+    'PEPE':'pepe','WIF':'dogwifhat','BONK':'bonk','JTO':'jito-governance-token',
+    'ETHFI':'ether-fi','TRX':'tron','TON':'the-open-network','HBAR':'hedera-hashgraph',
+    'XLM':'stellar','ALGO':'algorand','XMR':'monero','ZEC':'zcash',
+    'ENA':'ethena','ONDO':'ondo-finance','MANTA':'manta-network','STRK':'starknet'
+  };
+  var coinId = coinMap[symbol] || symbol.toLowerCase();
+  var marketResp = await fetch('https://api.coingecko.com/api/v3/coins/' + coinId + '/market_chart?vs_currency=usd&days=250&interval=daily');
+  var marketData = await marketResp.json();
+  if (!marketData.prices || marketData.prices.length === 0) { throw new Error('No data for ' + symbol); }
+  var prices = marketData.prices.map(function(p) { return p[1]; });
 
-let coinId = coinMap[symbol.toUpperCase()] || symbol.toLowerCase();
+  var coinResp = await fetch('https://api.coingecko.com/api/v3/coins/' + coinId + '?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false');
+  var coinData = await coinResp.json();
+  var md = coinData.market_data;
 
-// Get market data
-let marketResp = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=250&interval=daily`);
-let marketData = await marketResp.json();
-
-if (!marketData.prices || marketData.prices.length === 0) throw new Error('No data for ' + symbol);
-
-let prices = marketData.prices.map(p => p[1]);
-
-// Get current coin data
-let coinResp = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false`);
-let coinData = await coinResp.json();
-let md = coinData.market_data;
-
-return {
-symbol: symbol,
-name: coinData.name || symbol,
-price: md.current_price.usd,
-prevClose: prices[prices.length - 2] || md.current_price.usd,
-change: md.price_change_24h || 0,
-changePercent: md.price_change_percentage_24h || 0,
-high: md.high_24h.usd,
-low: md.low_24h.usd,
-volume: md.total_volume.usd,
-marketCap: md.market_cap.usd,
-peRatio: null,
-eps: null,
-beta: null,
-yearHigh: md.high_24h.usd, // simplified
-yearLow: md.low_24h.usd,
-circulatingSupply: md.circulating_supply,
-totalSupply: md.total_supply,
-maxSupply: md.max_supply,
-ath: md.ath.usd,
-athChangePercent: md.ath_change_percentage.usd,
-atl: md.atl.usd,
-description: coinData.description ? coinData.description.en.substring(0, 200) : '',
-closes: prices,
-highs: marketData.prices.map(p => p[1]), // simplified - using close as high
-lows: marketData.prices.map(p => p[1]), // simplified
-volumes: marketData.total_volumes ? marketData.total_volumes.map(v => v[1]) : [],
-candles: null,
-isCrypto: true
-};
+  return {
+    symbol: symbol,
+    name: coinData.name || symbol,
+    price: md.current_price.usd,
+    prevClose: prices[prices.length - 2] || md.current_price.usd,
+    change: md.price_change_24h || 0,
+    changePct: md.price_change_percentage_24h || 0,
+    marketCap: md.market_cap.usd,
+    volume: md.total_volume.usd,
+    circulatingSupply: md.circulating_supply,
+    maxSupply: md.max_supply,
+    ath: md.ath.usd,
+    athChangePct: md.ath_change_percentage.usd,
+    closes: prices,
+    isCrypto: true
+  };
 }
 
-// ── Binance Funding Rate (for crypto) ──
 async function getFundingRate(symbol) {
-try {
-let resp = await fetch(`https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${symbol}USDT`);
-let data = await resp.json();
-let rate = parseFloat(data.lastFundingRate || 0);
-return { rate: rate, annualized: rate * 3 * 365 * 100, markPrice: parseFloat(data.markPrice) };
-} catch (e) {
-return null;
-}
-}
-
-// ── Druckenmiller Framework Analysis ──
-function analyzeWithDruck(data, fearGreed, fundingRate) {
-let signals = [];
-let bullishCount = 0;
-let bearishCount = 0;
-let price = data.price;
-let closes = data.closes;
-
-// 1. TECHNICALS
-let rsi = calcRSI(closes, 14);
-let sma20 = calcSMA(closes, 20);
-let sma50 = calcSMA(closes, 50);
-let sma200 = closes.length >= 200 ? calcSMA(closes, 200) : null;
-let macd = calcMACD(closes);
-let bb = calcBollingerBands(closes, 20);
-let lastSMA20 = sma20[sma20.length - 1];
-let lastSMA50 = sma50[sma50.length - 1];
-let lastSMA200 = sma200 ? sma200[sma200.length - 1] : null;
-
-// RSI signal
-if (rsi < 30) { signals.push({name:'RSI oversold', value: rsi.toFixed(1), signal:'bullish'}); bullishCount++; }
-else if (rsi > 70) { signals.push({name:'RSI overbought', value: rsi.toFixed(1), signal:'bearish'}); bearishCount++; }
-else signals.push({name:'RSI neutral', value: rsi.toFixed(1), signal:'neutral'});
-
-// Price vs SMA20
-if (price > lastSMA20) { signals.push({name:'Above SMA(20)', value:'$'+lastSMA20.toFixed(2), signal:'bullish'}); bullishCount++; }
-else { signals.push({name:'Below SMA(20)', value:'$'+lastSMA20.toFixed(2), signal:'bearish'}); bearishCount++; }
-
-// Price vs SMA50
-if (price > lastSMA50) { signals.push({name:'Above SMA(50)', value:'$'+lastSMA50.toFixed(2), signal:'bullish'}); bullishCount++; }
-else { signals.push({name:'Below SMA(50)', value:'$'+lastSMA50.toFixed(2), signal:'bearish'}); bearishCount++; }
-
-// Price vs SMA200
-if (lastSMA200) {
-if (price > lastSMA200) { signals.push({name:'Above SMA(200)', value:'$'+lastSMA200.toFixed(2), signal:'bullish'}); bullishCount++; }
-else { signals.push({name:'Below SMA(200)', value:'$'+lastSMA200.toFixed(2), signal:'bearish'}); bearishCount++; }
+  try {
+    var resp = await fetch('https://fapi.binance.com/fapi/v1/premiumIndex?symbol=' + symbol + 'USDT');
+    var data = await resp.json();
+    var rate = parseFloat(data.lastFundingRate || 0);
+    return { rate: rate, annualized: rate * 3 * 365 * 100 };
+  } catch (e) {
+    return null;
+  }
 }
 
-// MACD
-if (macd.bullish) { signals.push({name:'MACD bullish', value:'+'+macd.histogram.toFixed(4), signal:'bullish'}); bullishCount++; }
-else { signals.push({name:'MACD bearish', value: macd.histogram.toFixed(4), signal:'bearish'}); bearishCount++; }
+// ── Druckenmiller Analysis ──
+function runAnalysis(data, fearGreed, funding) {
+  var signals = [];
+  var bull = 0, bear = 0;
+  var price = data.price;
+  var closes = data.closes;
 
-// Bollinger Bands
-if (price < bb.lower) { signals.push({name:'Below BB lower', value:'$'+bb.lower.toFixed(2), signal:'bullish'}); bullishCount++; }
-else if (price > bb.upper) { signals.push({name:'Above BB upper', value:'$'+bb.upper.toFixed(2), signal:'bearish'}); bearishCount++; }
-else signals.push({name:'BB middle', value:'$'+bb.middle.toFixed(2), signal:'neutral'});
+  var rsi = calcRSI(closes, 14);
+  var sma20 = calcSMA(closes, 20);
+  var sma50 = calcSMA(closes, 50);
+  var sma200 = closes.length >= 200 ? calcSMA(closes, 200) : null;
+  var macd = calcMACD(closes);
+  var bb = calcBollinger(closes, 20);
 
-// 2. MACRO (Liquidity lens)
-if (fearGreed) {
-if (fearGreed.value < 25) { signals.push({name:'Fear & Greed: Extreme Fear', value: fearGreed.value+'/100', signal:'bullish'}); bullishCount++; }
-else if (fearGreed.value < 45) { signals.push({name:'Fear & Greed: Fear', value: fearGreed.value+'/100', signal:'bullish'}); bullishCount++; }
-else if (fearGreed.value > 75) { signals.push({name:'Fear & Greed: Greed', value: fearGreed.value+'/100', signal:'bearish'}); bearishCount++; }
-else signals.push({name:'Fear & Greed: Neutral', value: fearGreed.value+'/100', signal:'neutral'});
+  var lastSMA20 = sma20[sma20.length - 1];
+  var lastSMA50 = sma50[sma50.length - 1];
+  var lastSMA200 = sma200 ? sma200[sma200.length - 1] : null;
+
+  // RSI
+  if (rsi < 30) { signals.push(['RSI oversold', rsi.toFixed(1), 'bullish']); bull++; }
+  else if (rsi > 70) { signals.push(['RSI overbought', rsi.toFixed(1), 'bearish']); bear++; }
+  else { signals.push(['RSI neutral', rsi.toFixed(1), 'neutral']); }
+
+  // SMA20
+  if (price > lastSMA20) { signals.push(['Above SMA20', '$' + lastSMA20.toFixed(2), 'bullish']); bull++; }
+  else { signals.push(['Below SMA20', '$' + lastSMA20.toFixed(2), 'bearish']); bear++; }
+
+  // SMA50
+  if (price > lastSMA50) { signals.push(['Above SMA50', '$' + lastSMA50.toFixed(2), 'bullish']); bull++; }
+  else { signals.push(['Below SMA50', '$' + lastSMA50.toFixed(2), 'bearish']); bear++; }
+
+  // SMA200
+  if (lastSMA200) {
+    if (price > lastSMA200) { signals.push(['Above SMA200', '$' + lastSMA200.toFixed(2), 'bullish']); bull++; }
+    else { signals.push(['Below SMA200', '$' + lastSMA200.toFixed(2), 'bearish']); bear++; }
+  }
+
+  // MACD
+  if (macd.bullish) { signals.push(['MACD bullish', '+' + macd.histogram.toFixed(4), 'bullish']); bull++; }
+  else { signals.push(['MACD bearish', macd.histogram.toFixed(4), 'bearish']); bear++; }
+
+  // Bollinger
+  if (price < bb.lower) { signals.push(['Below BB lower', '$' + bb.lower.toFixed(2), 'bullish']); bull++; }
+  else if (price > bb.upper) { signals.push(['Above BB upper', '$' + bb.upper.toFixed(2), 'bearish']); bear++; }
+  else { signals.push(['BB middle', '$' + bb.middle.toFixed(2), 'neutral']); }
+
+  // Fear and Greed
+  if (fearGreed) {
+    if (fearGreed.value < 35) { signals.push(['Fear and Greed: Fear', fearGreed.value + '/100', 'bullish']); bull++; }
+    else if (fearGreed.value > 65) { signals.push(['Fear and Greed: Greed', fearGreed.value + '/100', 'bearish']); bear++; }
+    else { signals.push(['Fear and Greed: Neutral', fearGreed.value + '/100', 'neutral']); }
+  }
+
+  // Funding rate
+  if (funding && data.isCrypto) {
+    if (funding.annualized < -10) { signals.push(['Funding negative', funding.annualized.toFixed(1) + '% ann', 'bullish']); bull++; }
+    else if (funding.annualized > 20) { signals.push(['Funding very positive', funding.annualized.toFixed(1) + '% ann', 'bearish']); bear++; }
+    else { signals.push(['Funding normal', funding.annualized.toFixed(1) + '% ann', 'neutral']); }
+  }
+
+  // Fibonacci
+  var period = Math.min(90, closes.length);
+  var periodHigh = Math.max.apply(null, closes.slice(-period));
+  var periodLow = Math.min.apply(null, closes.slice(-period));
+  var fib = calcFib(periodHigh, periodLow);
+
+  // Support/Resistance
+  var recentCloses = closes.slice(-20);
+  var recentHigh = Math.max.apply(null, recentCloses);
+  var recentLow = Math.min.apply(null, recentCloses);
+
+  // Rating
+  var total = bull + bear;
+  var ratio = bull / Math.max(total, 1);
+  var rating, ratingClass, thesis;
+
+  if (ratio >= 0.65) {
+    rating = 'BUY';
+    ratingClass = 'rating-buy';
+    thesis = 'Strong technical structure with ' + bull + ' bullish vs ' + bear + ' bearish signals. ';
+    if (fearGreed && fearGreed.value < 35) { thesis += 'Fear and Greed at ' + fearGreed.value + ' suggests contrarian buying opportunity. '; }
+    thesis += 'Price above key moving averages with MACD momentum. ';
+    if (data.isCrypto && funding && funding.annualized < 0) { thesis += 'Negative funding rates indicate shorts paying longs — potential squeeze. '; }
+    thesis += 'Druckenmiller rule: probe with 5-10% of capital, add on confirmation. Risk/reward must be 3:1 minimum.';
+  } else if (ratio <= 0.35) {
+    rating = 'SELL';
+    ratingClass = 'rating-sell';
+    thesis = 'Weak technical structure with ' + bear + ' bearish vs ' + bull + ' bullish signals. ';
+    if (fearGreed && fearGreed.value > 65) { thesis += 'Fear and Greed at ' + fearGreed.value + ' shows greed — contrarian sell. '; }
+    thesis += 'Price below key moving averages with deteriorating momentum. ';
+    if (data.isCrypto && funding && funding.annualized > 20) { thesis += 'Elevated funding rates suggest crowded longs. '; }
+    thesis += 'Capital preservation first. If holding, tighten stops. No new entries.';
+  } else {
+    rating = 'HOLD';
+    ratingClass = 'rating-hold';
+    thesis = 'Mixed signals — ' + bull + ' bullish vs ' + bear + ' bearish. Technical structure is neutral. ';
+    if (fearGreed) { thesis += 'Fear and Greed at ' + fearGreed.value + ' (' + fearGreed.label + '). '; }
+    thesis += 'Price at a decision level. Druckenmiller: "The worst thing you can do is force a trade when there is no edge." Wait for confirmation.';
+  }
+
+  // Trade Plan
+  var atr = price * 0.03;
+  var entry, target, stop, rr;
+  if (rating === 'BUY') {
+    entry = price;
+    stop = Math.max(price - 2 * atr, fib['78.6']);
+    target = fib['38.2'];
+    rr = (target - entry) / (entry - stop);
+  } else if (rating === 'SELL') {
+    entry = price;
+    stop = price + 2 * atr;
+    target = fib['78.6'];
+    rr = (entry - target) / (stop - entry);
+  } else {
+    entry = recentHigh * 1.01;
+    stop = recentLow;
+    target = periodHigh;
+    rr = (target - entry) / (entry - stop);
+  }
+
+  return {
+    rating: rating,
+    ratingClass: ratingClass,
+    thesis: thesis,
+    signals: signals,
+    bull: bull,
+    bear: bear,
+    rsi: rsi.toFixed(1),
+    sma20: lastSMA20.toFixed(2),
+    sma50: lastSMA50.toFixed(2),
+    sma200: lastSMA200 ? lastSMA200.toFixed(2) : null,
+    macd: macd,
+    bb: { upper: bb.upper.toFixed(2), lower: bb.lower.toFixed(2), middle: bb.middle.toFixed(2) },
+    fib: fib,
+    support1: recentLow.toFixed(2),
+    support2: periodLow.toFixed(2),
+    resistance1: recentHigh.toFixed(2),
+    resistance2: periodHigh.toFixed(2),
+    entry: entry.toFixed(2),
+    target: target.toFixed(2),
+    stop: stop.toFixed(2),
+    rr: rr.toFixed(2)
+  };
 }
 
-// Funding rate (crypto only)
-if (fundingRate && data.isCrypto) {
-if (fundingRate.annualized < -10) { signals.push({name:'Funding negative (shorts pay)', value: fundingRate.annualized.toFixed(1)+'% ann', signal:'bullish'}); bullishCount++; }
-else if (fundingRate.annualized > 20) { signals.push({name:'Funding very positive (longs pay)', value: fundingRate.annualized.toFixed(1)+'% ann', signal:'bearish'}); bearishCount++; }
-else signals.push({name:'Funding normal', value: fundingRate.annualized.toFixed(1)+'% ann', signal:'neutral'});
+// ── Number Formatting ──
+function fmtMC(mc) {
+  if (!mc) { return 'N/A'; }
+  if (mc > 1e12) { return '$' + (mc / 1e12).toFixed(2) + 'T'; }
+  if (mc > 1e9) { return '$' + (mc / 1e9).toFixed(2) + 'B'; }
+  if (mc > 1e6) { return '$' + (mc / 1e6).toFixed(2) + 'M'; }
+  return '$' + mc.toFixed(0);
 }
 
-// 3. FIBONACCI (90-day range)
-let period = Math.min(90, closes.length);
-let periodHigh = Math.max(...closes.slice(-period));
-let periodLow = Math.min(...closes.slice(-period));
-let fib = calcFibonacci(periodHigh, periodLow);
-
-// 4. SUPPORT/RESISTANCE
-let support1 = periodLow;
-let resistance1 = periodHigh;
-// Find recent swing levels
-let recentCloses = closes.slice(-20);
-let recentHigh = Math.max(...recentCloses);
-let recentLow = Math.min(...recentCloses);
-
-// 5. RATING DECISION (Druckenmiller framework)
-let totalSignals = bullishCount + bearishCount;
-let bullRatio = bullishCount / Math.max(totalSignals, 1);
-let rating, ratingClass, thesis;
-
-if (bullRatio >= 0.65) {
-rating = 'BUY';
-ratingClass = 'rating-buy';
-thesis = `Strong technical structure with ${bullishCount} bullish vs ${bearishCount} bearish signals. `;
-if (fearGreed && fearGreed.value < 35) thesis += `Fear & Greed at ${fearGreed.value} suggests contrarian buying opportunity. `;
-thesis += `Price is above key moving averages with MACD momentum. `;
-if (data.isCrypto && fundingRate && fundingRate.annualized < 0) thesis += `Negative funding rates indicate shorts are paying longs — potential squeeze setup. `;
-thesis += `Druckenmiller rule: probe with 5-10% of capital, add on confirmation. Risk/reward must be 3:1 minimum.`;
-} else if (bullRatio <= 0.35) {
-rating = 'SELL';
-ratingClass = 'rating-sell';
-thesis = `Weak technical structure with ${bearishCount} bearish vs ${bullishCount} bullish signals. `;
-if (fearGreed && fearGreed.value > 65) thesis += `Fear & Greed at ${fearGreed.value} shows greed — contrarian sell signal. `;
-thesis += `Price is below key moving averages with deteriorating momentum. `;
-if (data.isCrypto && fundingRate && fundingRate.annualized > 20) thesis += `Elevated funding rates (${fundingRate.annualized.toFixed(0)}% annualized) suggest crowded long positioning. `;
-thesis += `Capital preservation first. If holding, consider tightening stops. No new entries.`;
-} else {
-rating = 'HOLD';
-ratingClass = 'rating-hold';
-thesis = `Mixed signals — ${bullishCount} bullish vs ${bearishCount} bearish. Technical structure is neutral. `;
-if (fearGreed) thesis += `Fear & Greed at ${fearGreed.value} (${fearGreed.classification}). `;
-thesis += `Price is at a decision level between support and resistance. `;
-thesis += `Druckenmiller: "The worst thing you can do is force a trade when there's no edge." Wait for confirmation — either a breakout above resistance or a breakdown below support.`;
-}
-
-// 6. ENTRY / TARGET / STOP
-let atr = data.highs && data.lows ? calcATR(data.highs, data.lows, closes, 14) : price * 0.03;
-let entry, target, stop, riskReward;
-
-if (rating === 'BUY') {
-entry = price;
-stop = Math.max(price - 2 * atr, fib.level786);
-target = fib.level382;
-riskReward = (target - entry) / (entry - stop);
-} else if (rating === 'SELL') {
-entry = price;
-stop = price + 2 * atr;
-target = fib.level786;
-riskReward = (entry - target) / (stop - entry);
-} else {
-// HOLD — show levels for if breakout occurs
-entry = recentHigh * 1.01; // breakout entry
-stop = recentLow;
-target = resistance1;
-riskReward = (target - entry) / (entry - stop);
-}
-
-// Round to 2 decimals
-entry = entry.toFixed(2);
-target = target.toFixed(2);
-stop = stop.toFixed(2);
-riskReward = riskReward.toFixed(2);
-
-return {
-rating, ratingClass, thesis, signals,
-bullishCount, bearishCount,
-rsi: rsi.toFixed(1),
-sma20: lastSMA20.toFixed(2),
-sma50: lastSMA50.toFixed(2),
-sma200: lastSMA200 ? lastSMA200.toFixed(2) : null,
-macd: macd,
-bollinger: { upper: bb.upper.toFixed(2), lower: bb.lower.toFixed(2), middle: bb.middle.toFixed(2), width: bb.width.toFixed(2) },
-fibonacci: {
-'0%': fib.level0.toFixed(2),
-'23.6%': fib.level236.toFixed(2),
-'38.2%': fib.level382.toFixed(2),
-'50%': fib.level500.toFixed(2),
-'61.8%': fib.level618.toFixed(2),
-'78.6%': fib.level786.toFixed(2),
-'100%': fib.level100.toFixed(2)
-},
-support: { s1: recentLow.toFixed(2), s2: periodLow.toFixed(2) },
-resistance: { r1: recentHigh.toFixed(2), r2: periodHigh.toFixed(2) },
-entry, target, stop, riskReward,
-periodHigh: periodHigh.toFixed(2),
-periodLow: periodLow.toFixed(2)
-};
-}
-
-// ── Main search function ──
-async function searchTicker() {
-const input = document.getElementById('searchInput').value.trim();
-if (!input) return;
-
-const btn = document.getElementById('searchBtn');
-btn.disabled = true;
-btn.textContent = '...';
-
-showView('analysis');
-const content = document.getElementById('analysisContent');
-const resolved = resolveTicker(input);
-
-content.innerHTML = `
-<div class="loading">
-<div class="spinner"></div>
-<p>Analyzing ${resolved.symbol}...</p>
-<div class="loading-step active" id="loading-step-1">Fetching price data...</div>
-<div class="loading-step" id="loading-step-2">Calculating technicals...</div>
-<div class="loading-step" id="loading-step-3">Checking macro signals...</div>
-<div class="loading-step" id="loading-step-4">Applying Druckenmiller framework...</div>
-</div>
-`;
-
-try {
-// Step 1: Fetch data
-let data;
-if (resolved.type === 'crypto') {
-data = await getCryptoData(resolved.symbol);
-} else {
-data = await getStockData(resolved.symbol);
-}
-updateLoading('1', 'done');
-setLoadingStep('2');
-
-// Step 2: Fetch macro data in parallel
-updateLoading('2', 'done');
-setLoadingStep('3');
-
-let [fearGreed, fundingRate] = await Promise.all([
-getFearGreed(),
-resolved.type === 'crypto' ? getFundingRate(resolved.symbol) : Promise.resolve(null)
-]);
-updateLoading('3', 'done');
-setLoadingStep('4');
-
-// Step 3: Run Druckenmiller analysis
-let analysis = analyzeWithDruck(data, fearGreed, fundingRate);
-updateLoading('4', 'done');
-
-// Step 4: Render results
-setTimeout(() => renderAnalysis(data, analysis, fearGreed, fundingRate), 300);
-
-} catch (error) {
-console.error('Analysis error:', error);
-content.innerHTML = `
-<div class="error-card">
-<p style="font-size:18px;font-weight:700;margin-bottom:8px">⚠️ Couldn't analyze ${resolved.symbol}</p>
-<p>${error.message}</p>
-<p style="font-size:12px;margin-top:12px">This might be an invalid ticker or a rate limit. Try again or type it in the chat for a full AI analysis.</p>
-<button onclick="showView('welcome')">Back</button>
-</div>
-`;
-}
-
-btn.disabled = false;
-btn.textContent = 'Analyze';
+function fmtPrice(p) {
+  if (!p) { return 'N/A'; }
+  if (p < 1) { return p.toFixed(6); }
+  return p.toFixed(2);
 }
 
 // ── Render Analysis ──
-function renderAnalysis(data, analysis, fearGreed, fundingRate) {
-const content = document.getElementById('analysisContent');
-const isPositive = data.changePercent >= 0;
-const isCrypto = data.isCrypto;
+function renderAnalysis(data, a, fearGreed, funding) {
+  var out = document.getElementById('analysisOutput');
+  var isPos = data.changePct >= 0;
+  var isCrypto = data.isCrypto;
 
-// Format market cap
-function fmtMC(mc) {
-if (!mc) return 'N/A';
-if (mc > 1e12) return '$' + (mc / 1e12).toFixed(2) + 'T';
-if (mc > 1e9) return '$' + (mc / 1e9).toFixed(2) + 'B';
-if (mc > 1e6) return '$' + (mc / 1e6).toFixed(2) + 'M';
-return '$' + mc.toFixed(0);
+  var signalsHtml = '';
+  for (var i = 0; i < a.signals.length; i++) {
+    var s = a.signals[i];
+    var dotClass = s[2] === 'bullish' ? 'bullish' : (s[2] === 'bearish' ? 'bearish' : 'neutral');
+    signalsHtml += '<div class="signal-row"><div class="signal-dot ' + dotClass + '"></div><span class="signal-label">' + s[0] + '</span><span class="signal-value">' + s[1] + '</span></div>';
+  }
+
+  var fundamentalsHtml = '';
+  if (isCrypto) {
+    fundamentalsHtml = '<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">' + fmtMC(data.marketCap) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">24h Volume</span><span class="data-value">' + fmtMC(data.volume) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Circulating Supply</span><span class="data-value">' + (data.circulatingSupply ? data.circulatingSupply.toLocaleString() : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Max Supply</span><span class="data-value">' + (data.maxSupply ? data.maxSupply.toLocaleString() : 'Unlimited') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">All-Time High</span><span class="data-value">' + (data.ath ? '$' + data.ath.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">ATH Change</span><span class="data-value ' + (data.athChangePct < 0 ? 'negative' : 'positive') + '">' + (data.athChangePct ? data.athChangePct.toFixed(1) + '%' : 'N/A') + '</span></div>';
+  } else {
+    fundamentalsHtml = '<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">' + fmtMC(data.marketCap) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">P/E Ratio</span><span class="data-value">' + (data.peRatio ? data.peRatio.toFixed(1) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">EPS</span><span class="data-value">' + (data.eps ? '$' + data.eps.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Beta</span><span class="data-value">' + (data.beta ? data.beta.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">52W High</span><span class="data-value">' + (data.yearHigh ? '$' + data.yearHigh.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">52W Low</span><span class="data-value">' + (data.yearLow ? '$' + data.yearLow.toFixed(2) : 'N/A') + '</span></div>';
+    if (data.sector) { fundamentalsHtml += '<div class="data-row"><span class="data-label">Sector</span><span class="data-value">' + data.sector + '</span></div>'; }
+  }
+
+  var macroHtml = '';
+  if (fearGreed) { macroHtml += '<div class="data-row"><span class="data-label">Fear and Greed</span><span class="data-value">' + fearGreed.value + '/100 — ' + fearGreed.label + '</span></div>'; }
+  if (funding && isCrypto) { macroHtml += '<div class="data-row"><span class="data-label">Funding Rate</span><span class="data-value">' + funding.annualized.toFixed(1) + '% annualized</span></div>'; }
+
+  var fibKeys = ['0', '23.6', '38.2', '50', '61.8', '78.6', '100'];
+  var fibHtml = '';
+  for (var fi = 0; fi < fibKeys.length; fi++) {
+    var key = fibKeys[fi];
+    fibHtml += '<div class="data-row"><span class="data-label">' + key + '%</span><span class="data-value">$' + a.fib[key].toFixed(2) + '</span></div>';
+  }
+
+  var html = '';
+  html += '<div class="card">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">';
+  html += '<div><div style="font-size:24px;font-weight:800">' + data.symbol + '</div><div style="font-size:12px;color:var(--text2)">' + data.name + '</div></div>';
+  html += '<div style="text-align:right"><div style="font-size:22px;font-weight:700">$' + fmtPrice(data.price) + '</div><div style="font-size:13px;font-weight:600;color:' + (isPos ? 'var(--green)' : 'var(--red)') + '">' + (isPos ? '+' : '') + data.changePct.toFixed(2) + '% today</div></div>';
+  html += '</div>';
+  html += '<div class="rating-badge ' + a.ratingClass + '">' + a.rating + '</div>';
+  html += '<div class="section-title">Druckenmiller Signal Matrix</div>';
+  html += signalsHtml;
+  html += '<div class="section-title">Technical Levels</div>';
+  html += '<div class="data-row"><span class="data-label">RSI (14)</span><span class="data-value">' + a.rsi + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">SMA (20)</span><span class="data-value">$' + a.sma20 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">SMA (50)</span><span class="data-value">$' + a.sma50 + '</span></div>';
+  if (a.sma200) { html += '<div class="data-row"><span class="data-label">SMA (200)</span><span class="data-value">$' + a.sma200 + '</span></div>'; }
+  html += '<div class="data-row"><span class="data-label">MACD</span><span class="data-value ' + (a.macd.bullish ? 'positive' : 'negative') + '">' + (a.macd.bullish ? 'Bullish' : 'Bearish') + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Bollinger Upper</span><span class="data-value">$' + a.bb.upper + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Bollinger Lower</span><span class="data-value">$' + a.bb.lower + '</span></div>';
+  html += '<div class="section-title">Fibonacci Retracement (90d)</div>';
+  html += fibHtml;
+  html += '<div class="section-title">Support and Resistance</div>';
+  html += '<div class="data-row"><span class="data-label">Resistance 2</span><span class="data-value">$' + a.resistance2 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Resistance 1</span><span class="data-value">$' + a.resistance1 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Support 1</span><span class="data-value">$' + a.support1 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Support 2</span><span class="data-value">$' + a.support2 + '</span></div>';
+  html += '<div class="section-title">' + (isCrypto ? 'On-Chain Data' : 'Fundamentals') + '</div>';
+  html += fundamentalsHtml;
+  if (macroHtml) {
+    html += '<div class="section-title">Macro Context</div>';
+    html += macroHtml;
+  }
+  html += '<div class="section-title">Big Brain Ape Analysis</div>';
+  html += '<div class="thesis-box"><p>' + a.thesis + '</p></div>';
+  html += '<div class="section-title">Trade Plan</div>';
+  html += '<div class="data-row"><span class="data-label">Entry</span><span class="data-value">$' + a.entry + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Target</span><span class="data-value">$' + a.target + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value">$' + a.stop + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Risk/Reward</span><span class="data-value ' + (parseFloat(a.rr) >= 3 ? 'positive' : 'negative') + '">' + a.rr + ':1 ' + (parseFloat(a.rr) >= 3 ? 'PASS' : 'below 3:1') + '</span></div>';
+  html += '</div>';
+  html += '<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data via FMP + CoinGecko + Binance. Druckenmiller Framework. For educational purposes, not financial advice.</p>';
+
+  out.innerHTML = html;
 }
 
-// Format volume
-function fmtVol(v) {
-if (!v) return 'N/A';
-if (v > 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
-if (v > 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
-return '$' + v.toFixed(0);
-}
+// ── Main Search ──
+async function doSearch() {
+  var input = document.getElementById('searchInput').value.trim();
+  if (!input) { return; }
 
-let signalsHtml = analysis.signals.map(s => {
-let cls = s.signal === 'bullish' ? 'bullish' : s.signal === 'bearish' ? 'bearish' : 'neutral';
-return `<div class="signal-row">
-<div class="signal-dot ${cls}"></div>
-<span class="signal-label">${s.name}</span>
-<span class="signal-value">${s.value}</span>
-</div>`;
-}).join('');
+  var btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.textContent = '...';
 
-let fundamentalsHtml = '';
-if (isCrypto) {
-fundamentalsHtml = `
-<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">${fmtMC(data.marketCap)}</span></div>
-<div class="data-row"><span class="data-label">24h Volume</span><span class="data-value">${fmtVol(data.volume)}</span></div>
-<div class="data-row"><span class="data-label">Circulating Supply</span><span class="data-value">${data.circulatingSupply ? data.circulatingSupply.toLocaleString() : 'N/A'}</span></div>
-<div class="data-row"><span class="data-label">Max Supply</span><span class="data-value">${data.maxSupply ? data.maxSupply.toLocaleString() : 'Unlimited'}</span></div>
-<div class="data-row"><span class="data-label">All-Time High</span><span class="data-value">$${data.ath ? data.ath.toFixed(2) : 'N/A'}</span></div>
-<div class="data-row"><span class="data-label">ATH Change</span><span class="data-value ${data.athChangePercent < 0 ? 'negative' : 'positive'}">${data.athChangePercent ? data.athChangePercent.toFixed(1) + '%' : 'N/A'}</span></div>
-`;
-} else {
-fundamentalsHtml = `
-<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">${fmtMC(data.marketCap)}</span></div>
-<div class="data-row"><span class="data-label">P/E Ratio</span><span class="data-value">${data.peRatio ? data.peRatio.toFixed(1) : 'N/A'}</span></div>
-<div class="data-row"><span class="data-label">EPS</span><span class="data-value">${data.eps ? '$' + data.eps.toFixed(2) : 'N/A'}</span></div>
-<div class="data-row"><span class="data-label">Beta</span><span class="data-value">${data.beta ? data.beta.toFixed(2) : 'N/A'}</span></div>
-<div class="data-row"><span class="data-label">52W High</span><span class="data-value">$${data.yearHigh ? data.yearHigh.toFixed(2) : 'N/A'}</span></div>
-<div class="data-row"><span class="data-label">52W Low</span><span class="data-value">$${data.yearLow ? data.yearLow.toFixed(2) : 'N/A'}</span></div>
-${data.sector ? `<div class="data-row"><span class="data-label">Sector</span><span class="data-value">${data.sector}</span></div>` : ''}
-`;
-}
+  switchView('analysis');
+  var out = document.getElementById('analysisOutput');
+  var resolved = resolveTicker(input);
 
-content.innerHTML = `
-<div class="analysis-card">
-<div class="analysis-header">
-<div class="ticker-info">
-<div>
-<div class="ticker-symbol">${data.symbol}</div>
-<div class="ticker-name">${data.name}</div>
-</div>
-</div>
-<div class="ticker-price">
-<div class="price-value">$${data.price < 1 ? data.price.toFixed(6) : data.price.toFixed(2)}</div>
-<div class="price-change ${isPositive ? 'positive' : 'negative'}">${isPositive ? '+' : ''}${data.changePercent.toFixed(2)}% today</div>
-</div>
-</div>
+  out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analyzing ' + resolved.symbol + '...</p></div>';
 
-<div class="rating-badge ${analysis.ratingClass}">${analysis.rating}</div>
+  try {
+    var data;
+    if (resolved.isCrypto) {
+      data = await getCryptoData(resolved.symbol);
+    } else {
+      data = await getStockData(resolved.symbol);
+    }
 
-<div class="section-title">Druckenmiller Signal Matrix</div>
-${signalsHtml}
+    out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
 
-<div class="section-title">Technical Levels</div>
-<div class="data-row"><span class="data-label">RSI (14)</span><span class="data-value">${analysis.rsi}</span></div>
-<div class="data-row"><span class="data-label">SMA (20)</span><span class="data-value">$${analysis.sma20}</span></div>
-<div class="data-row"><span class="data-label">SMA (50)</span><span class="data-value">$${analysis.sma50}</span></div>
-${analysis.sma200 ? `<div class="data-row"><span class="data-label">SMA (200)</span><span class="data-value">$${analysis.sma200}</span></div>` : ''}
-<div class="data-row"><span class="data-label">MACD</span><span class="data-value ${analysis.macd.bullish ? 'positive' : 'negative'}">${analysis.macd.bullish ? 'Bullish' : 'Bearish'} (${analysis.macd.histogram.toFixed(4)})</span></div>
-<div class="data-row"><span class="data-label">Bollinger Upper</span><span class="data-value">$${analysis.bollinger.upper}</span></div>
-<div class="data-row"><span class="data-label">Bollinger Lower</span><span class="data-value">$${analysis.bollinger.lower}</span></div>
+    var fearGreed = await getFearGreed();
+    var funding = resolved.isCrypto ? await getFundingRate(resolved.symbol) : null;
 
-<div class="section-title">Fibonacci Retracement (90d)</div>
-<div class="data-row"><span class="data-label">0% (High)</span><span class="data-value">$${analysis.fibonacci['0%']}</span></div>
-<div class="data-row"><span class="data-label">38.2%</span><span class="data-value">$${analysis.fibonacci['38.2%']}</span></div>
-<div class="data-row"><span class="data-label">50.0%</span><span class="data-value">$${analysis.fibonacci['50%']}</span></div>
-<div class="data-row"><span class="data-label">61.8% (Golden)</span><span class="data-value">$${analysis.fibonacci['61.8%']}</span></div>
-<div class="data-row"><span class="data-label">78.6%</span><span class="data-value">$${analysis.fibonacci['78.6%']}</span></div>
-<div class="data-row"><span class="data-label">100% (Low)</span><span class="data-value">$${analysis.fibonacci['100%']}</span></div>
+    out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Applying Druckenmiller framework...</p></div>';
 
-<div class="section-title">Support & Resistance</div>
-<div class="data-row"><span class="data-label">Resistance 2</span><span class="data-value">$${analysis.resistance.r2}</span></div>
-<div class="data-row"><span class="data-label">Resistance 1</span><span class="data-value">$${analysis.resistance.r1}</span></div>
-<div class="data-row"><span class="data-label">Support 1</span><span class="data-value">$${analysis.support.s1}</span></div>
-<div class="data-row"><span class="data-label">Support 2</span><span class="data-value">$${analysis.support.s2}</span></div>
+    var analysis = runAnalysis(data, fearGreed, funding);
+    renderAnalysis(data, analysis, fearGreed, funding);
 
-<div class="section-title">${isCrypto ? 'On-Chain Data' : 'Fundamentals'}</div>
-${fundamentalsHtml}
+  } catch (err) {
+    out.innerHTML = '<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze ' + resolved.symbol + '</p><p>' + err.message + '</p><p style="font-size:12px;margin-top:12px">This might be an invalid ticker or a rate limit. Try again.</p><button class="btn" onclick="switchView(\'home\')">Back</button></div>';
+  }
 
-<div class="section-title">Macro Context (Liquidity Lens)</div>
-${fearGreed ? `<div class="data-row"><span class="data-label">Fear & Greed Index</span><span class="data-value">${fearGreed.value}/100 — ${fearGreed.classification}</span></div>` : ''}
-${fundingRate ? `<div class="data-row"><span class="data-label">Funding Rate (Binance)</span><span class="data-value">${fundingRate.annualized.toFixed(1)}% annualized</span></div>` : ''}
-
-<div class="section-title">Big Brain Ape's Analysis</div>
-<div class="thesis-box">
-<p>${analysis.thesis}</p>
-</div>
-
-<div class="section-title">Trade Plan</div>
-<div class="data-row"><span class="data-label">${analysis.rating === 'HOLD' ? 'Breakout Entry' : 'Entry Zone'}</span><span class="data-value">$${analysis.entry}</span></div>
-<div class="data-row"><span class="data-label">Target</span><span class="data-value">$${analysis.target}</span></div>
-<div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value">$${analysis.stop}</span></div>
-<div class="data-row"><span class="data-label">Risk/Reward</span><span class="data-value ${parseFloat(analysis.riskReward) >= 3 ? 'positive' : 'negative'}">${analysis.riskReward}:1 ${parseFloat(analysis.riskReward) >= 3 ? '✓' : '(below 3:1 minimum)'}</span></div>
-
-</div>
-<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data via FMP + CoinGecko + Binance · Druckenmiller Framework · For educational purposes, not financial advice</p>
-`;
+  btn.disabled = false;
+  btn.textContent = 'Analyze';
 }
 
 // ── Payment Functions ──
-let selectedPlan = 'single';
-let selectedAmount = '0.25';
-const planNames = {
-'single': 'Single Analysis — $0.25',
-'unlimited': 'Unlimited — $10.00/mo',
-'unlimitedplus': 'Unlimited + — $20.00/mo',
-'briefing': 'Daily Briefing — $4.99/mo'
-};
+var selectedPlan = 'single';
+var planAmounts = { single: '0.25', unlimited: '10.00', unlimitedplus: '20.00', briefing: '4.99' };
+var planLabels = { single: 'Single Analysis — $0.25', unlimited: 'Unlimited — $10.00/mo', unlimitedplus: 'Unlimited + — $20.00/mo', briefing: 'Daily Briefing — $4.99/mo' };
 
-function selectPlan(plan, amount) {
-selectedPlan = plan;
-selectedAmount = amount.replace('$', '').replace('/mo', '');
-document.getElementById('selected-plan').textContent = planNames[plan];
-// Highlight selected button
-['single','unlimited','unlimitedplus','briefing'].forEach(p => {
-const btn = document.getElementById('plan-' + p);
-if (p === plan) {
-btn.style.background = 'var(--accent)';
-btn.style.borderColor = 'var(--accent)';
-} else {
-btn.style.background = 'var(--border)';
-btn.style.borderColor = 'var(--border)';
-}
-});
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('selected-plan').textContent = planLabels[plan];
+  var planIds = ['single', 'unlimited', 'unlimitedplus', 'briefing'];
+  for (var i = 0; i < planIds.length; i++) {
+    var el = document.getElementById('plan-' + planIds[i]);
+    if (el) {
+      if (planIds[i] === plan) { el.classList.add('active'); }
+      else { el.classList.remove('active'); }
+    }
+  }
 }
 
 function payPayPal() {
-// PayPal.me link with selected amount
-const paypalUrl = `https://www.paypal.com/paypalme/bigbrainape/${selectedAmount}`;
-if (tg) tg.openLink(paypalUrl);
-else window.open(paypalUrl, '_blank');
+  var url = 'https://www.paypal.com/paypalme/bigbrainape/' + planAmounts[selectedPlan];
+  if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
 }
 
 function payVenmo() {
-// Venmo deep link with selected amount
-const venmoUrl = `https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount=${selectedAmount}&note=Big+Brain+Ape+${selectedPlan}`;
-if (tg) tg.openLink(venmoUrl);
-else window.open(venmoUrl, '_blank');
+  var url = 'https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount=' + planAmounts[selectedPlan] + '&note=Big+Brain+Ape';
+  if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
 }
 
 function payCashApp() {
-// Cash App deep link with selected amount
-const cashUrl = `https://cash.app/$bigbrainape/${selectedAmount}`;
-if (tg) tg.openLink(cashUrl);
-else window.open(cashUrl, '_blank');
+  var url = 'https://cash.app/$bigbrainape/' + planAmounts[selectedPlan];
+  if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
 }
 
-function payCrypto() {
-showView('pricing');
-}
-
-// ── Enter key + MainButton ──
+// ── Enter Key ──
 document.getElementById('searchInput').addEventListener('keypress', function(e) {
-if (e.key === 'Enter') searchTicker();
+  if (e.key === 'Enter') { doSearch(); }
 });
-if (tg && tg.MainButton) {
-tg.MainButton.setText('Analyze');
-tg.MainButton.onClick(() => {
-const input = document.getElementById('searchInput').value.trim();
-if (input) searchTicker();
-});
-}
-document.getElementById('searchInput').addEventListener('input', function() {
-if (tg && tg.MainButton) {
-if (this.value.trim()) tg.MainButton.show();
-else tg.MainButton.hide();
-}
-});
+
+// ── Set briefing date ──
+var today = new Date();
+document.getElementById('briefingDate').textContent = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 </script>
 </body>
 </html>
