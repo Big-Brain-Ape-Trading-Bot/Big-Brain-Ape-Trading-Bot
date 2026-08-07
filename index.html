@@ -288,6 +288,13 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
 tg.ready();
 tg.expand();
+
+// Set up MainButton — shows a blue button at bottom of Telegram
+tg.MainButton.setText('Analyze');
+tg.MainButton.onClick(() => {
+const input = document.getElementById('searchInput').value.trim();
+if (input) searchTicker();
+});
 }
 
 // ── View switching ──
@@ -330,13 +337,31 @@ content.innerHTML = `
 </div>
 `;
 
-// Send ticker back to bot via Telegram
-if (tg) {
-tg.sendData(JSON.stringify({action:'analyze', ticker: input}));
+// Send ticker to bot — try sendData (arrives as web_app_data message)
+// Gateway should process it as a text message
+if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+// sendData closes the app and sends data to the bot as a message
+tg.sendData(input);
+} else if (tg) {
+// Telegram WebApp but no user data — use sendData anyway
+tg.sendData(input);
 } else {
-// Not in Telegram — show demo
+// Not in Telegram — show demo with note
 setTimeout(() => showDemoAnalysis(input), 1500);
 }
+}
+
+// Show a "type in chat" fallback for when sendData isn't available
+function showChatFallback(ticker) {
+const content = document.getElementById('analysisContent');
+content.innerHTML = `
+<div class="analysis-card" style="text-align:center">
+<p style="font-size:18px;margin-bottom:12px">To get your <strong>${ticker.toUpperCase()}</strong> analysis:</p>
+<p style="color:var(--text2);font-size:14px;margin-bottom:16px">Close this app and type <strong>${ticker.toUpperCase()}</strong> in the chat with Big Brain Ape.</p>
+<p style="color:var(--text2);font-size:13px">Or tap the button below to go back.</p>
+</div>
+`;
+if (tg) tg.close();
 }
 
 // ── Demo analysis (for web preview outside Telegram) ──
@@ -398,6 +423,17 @@ document.getElementById('searchBtn').textContent = 'Analyze';
 // ── Enter key triggers search ──
 document.getElementById('searchInput').addEventListener('keypress', function(e) {
 if (e.key === 'Enter') searchTicker();
+});
+
+// ── Show MainButton when user types ──
+document.getElementById('searchInput').addEventListener('input', function() {
+if (tg && tg.MainButton) {
+if (this.value.trim()) {
+tg.MainButton.show();
+} else {
+tg.MainButton.hide();
+}
+}
 });
 
 // ── Telegram theme ──
