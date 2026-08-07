@@ -455,54 +455,58 @@ function calcFib(high, low) {
   };
 }
 
-// ── Data Fetching ──
-async function getFearGreed() {
-  try {
-    var resp = await fetch('https://api.alternative.me/fng/?limit=1');
-    var data = await resp.json();
-    return { value: parseInt(data.data[0].value), label: data.data[0].value_classification };
-  } catch (e) {
-    return { value: 50, label: 'Neutral' };
-  }
+// ── Data Fetching (Promise-based, no async/await for old WebView compat) ──
+function getFearGreed() {
+  return fetch('https://api.alternative.me/fng/?limit=1')
+    .then(function(resp) { return resp.json(); })
+    .then(function(data) {
+      return { value: parseInt(data.data[0].value), label: data.data[0].value_classification };
+    })
+    .catch(function(e) { return { value: 50, label: 'Neutral' }; });
 }
 
-async function getStockData(symbol) {
-  var histResp = await fetch('https://financialmodelingprep.com/api/v3/historical-price-full/' + symbol + '?timeseries=250&apikey=' + FMP_KEY);
-  var histData = await histResp.json();
-  if (!histData.historical || histData.historical.length === 0) { throw new Error('No data for ' + symbol); }
-  var candles = histData.historical.slice().reverse();
-  var closes = candles.map(function(c) { return c.close; });
-  var lastC = candles[candles.length - 1];
-  var prevC = candles[candles.length - 2].close;
+function getStockData(symbol) {
+  return fetch('https://financialmodelingprep.com/api/v3/historical-price-full/' + symbol + '?timeseries=250&apikey=' + FMP_KEY)
+    .then(function(histResp) { return histResp.json(); })
+    .then(function(histData) {
+      if (!histData.historical || histData.historical.length === 0) { throw new Error('No data for ' + symbol); }
+      var candles = histData.historical.slice().reverse();
+      var closes = candles.map(function(c) { return c.close; });
+      var lastC = candles[candles.length - 1];
+      var prevC = candles[candles.length - 2].close;
 
-  var quoteResp = await fetch('https://financialmodelingprep.com/api/v3/quote/' + symbol + '?apikey=' + FMP_KEY);
-  var quoteData = await quoteResp.json();
-  var quote = quoteData[0] || {};
+      return fetch('https://financialmodelingprep.com/api/v3/quote/' + symbol + '?apikey=' + FMP_KEY)
+        .then(function(quoteResp) { return quoteResp.json(); })
+        .then(function(quoteData) {
+          var quote = quoteData[0] || {};
 
-  var profileResp = await fetch('https://financialmodelingprep.com/api/v3/profile/' + symbol + '?apikey=' + FMP_KEY);
-  var profileData = await profileResp.json();
-  var profile = profileData[0] || {};
-
-  return {
-    symbol: symbol,
-    name: profile.companyName || quote.name || symbol,
-    price: lastC.close,
-    prevClose: prevC,
-    change: lastC.close - prevC,
-    changePct: ((lastC.close - prevC) / prevC) * 100,
-    marketCap: quote.marketCap,
-    peRatio: quote.pe,
-    eps: quote.eps,
-    beta: quote.beta,
-    yearHigh: quote.yearHigh,
-    yearLow: quote.yearLow,
-    sector: profile.sector || '',
-    closes: closes,
-    isCrypto: false
-  };
+          return fetch('https://financialmodelingprep.com/api/v3/profile/' + symbol + '?apikey=' + FMP_KEY)
+            .then(function(profileResp) { return profileResp.json(); })
+            .then(function(profileData) {
+              var profile = profileData[0] || {};
+              return {
+                symbol: symbol,
+                name: profile.companyName || quote.name || symbol,
+                price: lastC.close,
+                prevClose: prevC,
+                change: lastC.close - prevC,
+                changePct: ((lastC.close - prevC) / prevC) * 100,
+                marketCap: quote.marketCap,
+                peRatio: quote.pe,
+                eps: quote.eps,
+                beta: quote.beta,
+                yearHigh: quote.yearHigh,
+                yearLow: quote.yearLow,
+                sector: profile.sector || '',
+                closes: closes,
+                isCrypto: false
+              };
+            });
+        });
+    });
 }
 
-async function getCryptoData(symbol) {
+function getCryptoData(symbol) {
   var coinMap = {
     'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','XRP':'ripple','ADA':'cardano',
     'AVAX':'avalanche-2','DOT':'polkadot','LINK':'chainlink','MATIC':'matic-network',
@@ -517,187 +521,45 @@ async function getCryptoData(symbol) {
     'ENA':'ethena','ONDO':'ondo-finance','MANTA':'manta-network','STRK':'starknet'
   };
   var coinId = coinMap[symbol] || symbol.toLowerCase();
-  var marketResp = await fetch('https://api.coingecko.com/api/v3/coins/' + coinId + '/market_chart?vs_currency=usd&days=250&interval=daily');
-  var marketData = await marketResp.json();
-  if (!marketData.prices || marketData.prices.length === 0) { throw new Error('No data for ' + symbol); }
-  var prices = marketData.prices.map(function(p) { return p[1]; });
 
-  var coinResp = await fetch('https://api.coingecko.com/api/v3/coins/' + coinId + '?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false');
-  var coinData = await coinResp.json();
-  var md = coinData.market_data;
+  return fetch('https://api.coingecko.com/api/v3/coins/' + coinId + '/market_chart?vs_currency=usd&days=250&interval=daily')
+    .then(function(marketResp) { return marketResp.json(); })
+    .then(function(marketData) {
+      if (!marketData.prices || marketData.prices.length === 0) { throw new Error('No data for ' + symbol); }
+      var prices = marketData.prices.map(function(p) { return p[1]; });
 
-  return {
-    symbol: symbol,
-    name: coinData.name || symbol,
-    price: md.current_price.usd,
-    prevClose: prices[prices.length - 2] || md.current_price.usd,
-    change: md.price_change_24h || 0,
-    changePct: md.price_change_percentage_24h || 0,
-    marketCap: md.market_cap.usd,
-    volume: md.total_volume.usd,
-    circulatingSupply: md.circulating_supply,
-    maxSupply: md.max_supply,
-    ath: md.ath.usd,
-    athChangePct: md.ath_change_percentage.usd,
-    closes: prices,
-    isCrypto: true
-  };
+      return fetch('https://api.coingecko.com/api/v3/coins/' + coinId + '?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false')
+        .then(function(coinResp) { return coinResp.json(); })
+        .then(function(coinData) {
+          var md = coinData.market_data;
+          return {
+            symbol: symbol,
+            name: coinData.name || symbol,
+            price: md.current_price.usd,
+            prevClose: prices[prices.length - 2] || md.current_price.usd,
+            change: md.price_change_24h || 0,
+            changePct: md.price_change_percentage_24h || 0,
+            marketCap: md.market_cap.usd,
+            volume: md.total_volume.usd,
+            circulatingSupply: md.circulating_supply,
+            maxSupply: md.max_supply,
+            ath: md.ath.usd,
+            athChangePct: md.ath_change_percentage.usd,
+            closes: prices,
+            isCrypto: true
+          };
+        });
+    });
 }
 
-async function getFundingRate(symbol) {
-  try {
-    var resp = await fetch('https://fapi.binance.com/fapi/v1/premiumIndex?symbol=' + symbol + 'USDT');
-    var data = await resp.json();
-    var rate = parseFloat(data.lastFundingRate || 0);
-    return { rate: rate, annualized: rate * 3 * 365 * 100 };
-  } catch (e) {
-    return null;
-  }
-}
-
-// ── Druckenmiller Analysis ──
-function runAnalysis(data, fearGreed, funding) {
-  var signals = [];
-  var bull = 0, bear = 0;
-  var price = data.price;
-  var closes = data.closes;
-
-  var rsi = calcRSI(closes, 14);
-  var sma20 = calcSMA(closes, 20);
-  var sma50 = calcSMA(closes, 50);
-  var sma200 = closes.length >= 200 ? calcSMA(closes, 200) : null;
-  var macd = calcMACD(closes);
-  var bb = calcBollinger(closes, 20);
-
-  var lastSMA20 = sma20[sma20.length - 1];
-  var lastSMA50 = sma50[sma50.length - 1];
-  var lastSMA200 = sma200 ? sma200[sma200.length - 1] : null;
-
-  // RSI
-  if (rsi < 30) { signals.push(['RSI oversold', rsi.toFixed(1), 'bullish']); bull++; }
-  else if (rsi > 70) { signals.push(['RSI overbought', rsi.toFixed(1), 'bearish']); bear++; }
-  else { signals.push(['RSI neutral', rsi.toFixed(1), 'neutral']); }
-
-  // SMA20
-  if (price > lastSMA20) { signals.push(['Above SMA20', '$' + lastSMA20.toFixed(2), 'bullish']); bull++; }
-  else { signals.push(['Below SMA20', '$' + lastSMA20.toFixed(2), 'bearish']); bear++; }
-
-  // SMA50
-  if (price > lastSMA50) { signals.push(['Above SMA50', '$' + lastSMA50.toFixed(2), 'bullish']); bull++; }
-  else { signals.push(['Below SMA50', '$' + lastSMA50.toFixed(2), 'bearish']); bear++; }
-
-  // SMA200
-  if (lastSMA200) {
-    if (price > lastSMA200) { signals.push(['Above SMA200', '$' + lastSMA200.toFixed(2), 'bullish']); bull++; }
-    else { signals.push(['Below SMA200', '$' + lastSMA200.toFixed(2), 'bearish']); bear++; }
-  }
-
-  // MACD
-  if (macd.bullish) { signals.push(['MACD bullish', '+' + macd.histogram.toFixed(4), 'bullish']); bull++; }
-  else { signals.push(['MACD bearish', macd.histogram.toFixed(4), 'bearish']); bear++; }
-
-  // Bollinger
-  if (price < bb.lower) { signals.push(['Below BB lower', '$' + bb.lower.toFixed(2), 'bullish']); bull++; }
-  else if (price > bb.upper) { signals.push(['Above BB upper', '$' + bb.upper.toFixed(2), 'bearish']); bear++; }
-  else { signals.push(['BB middle', '$' + bb.middle.toFixed(2), 'neutral']); }
-
-  // Fear and Greed
-  if (fearGreed) {
-    if (fearGreed.value < 35) { signals.push(['Fear and Greed: Fear', fearGreed.value + '/100', 'bullish']); bull++; }
-    else if (fearGreed.value > 65) { signals.push(['Fear and Greed: Greed', fearGreed.value + '/100', 'bearish']); bear++; }
-    else { signals.push(['Fear and Greed: Neutral', fearGreed.value + '/100', 'neutral']); }
-  }
-
-  // Funding rate
-  if (funding && data.isCrypto) {
-    if (funding.annualized < -10) { signals.push(['Funding negative', funding.annualized.toFixed(1) + '% ann', 'bullish']); bull++; }
-    else if (funding.annualized > 20) { signals.push(['Funding very positive', funding.annualized.toFixed(1) + '% ann', 'bearish']); bear++; }
-    else { signals.push(['Funding normal', funding.annualized.toFixed(1) + '% ann', 'neutral']); }
-  }
-
-  // Fibonacci
-  var period = Math.min(90, closes.length);
-  var periodHigh = Math.max.apply(null, closes.slice(-period));
-  var periodLow = Math.min.apply(null, closes.slice(-period));
-  var fib = calcFib(periodHigh, periodLow);
-
-  // Support/Resistance
-  var recentCloses = closes.slice(-20);
-  var recentHigh = Math.max.apply(null, recentCloses);
-  var recentLow = Math.min.apply(null, recentCloses);
-
-  // Rating
-  var total = bull + bear;
-  var ratio = bull / Math.max(total, 1);
-  var rating, ratingClass, thesis;
-
-  if (ratio >= 0.65) {
-    rating = 'BUY';
-    ratingClass = 'rating-buy';
-    thesis = 'Strong technical structure with ' + bull + ' bullish vs ' + bear + ' bearish signals. ';
-    if (fearGreed && fearGreed.value < 35) { thesis += 'Fear and Greed at ' + fearGreed.value + ' suggests contrarian buying opportunity. '; }
-    thesis += 'Price above key moving averages with MACD momentum. ';
-    if (data.isCrypto && funding && funding.annualized < 0) { thesis += 'Negative funding rates indicate shorts paying longs — potential squeeze. '; }
-    thesis += 'Druckenmiller rule: probe with 5-10% of capital, add on confirmation. Risk/reward must be 3:1 minimum.';
-  } else if (ratio <= 0.35) {
-    rating = 'SELL';
-    ratingClass = 'rating-sell';
-    thesis = 'Weak technical structure with ' + bear + ' bearish vs ' + bull + ' bullish signals. ';
-    if (fearGreed && fearGreed.value > 65) { thesis += 'Fear and Greed at ' + fearGreed.value + ' shows greed — contrarian sell. '; }
-    thesis += 'Price below key moving averages with deteriorating momentum. ';
-    if (data.isCrypto && funding && funding.annualized > 20) { thesis += 'Elevated funding rates suggest crowded longs. '; }
-    thesis += 'Capital preservation first. If holding, tighten stops. No new entries.';
-  } else {
-    rating = 'HOLD';
-    ratingClass = 'rating-hold';
-    thesis = 'Mixed signals — ' + bull + ' bullish vs ' + bear + ' bearish. Technical structure is neutral. ';
-    if (fearGreed) { thesis += 'Fear and Greed at ' + fearGreed.value + ' (' + fearGreed.label + '). '; }
-    thesis += 'Price at a decision level. Druckenmiller: "The worst thing you can do is force a trade when there is no edge." Wait for confirmation.';
-  }
-
-  // Trade Plan
-  var atr = price * 0.03;
-  var entry, target, stop, rr;
-  if (rating === 'BUY') {
-    entry = price;
-    stop = Math.max(price - 2 * atr, fib['78.6']);
-    target = fib['38.2'];
-    rr = (target - entry) / (entry - stop);
-  } else if (rating === 'SELL') {
-    entry = price;
-    stop = price + 2 * atr;
-    target = fib['78.6'];
-    rr = (entry - target) / (stop - entry);
-  } else {
-    entry = recentHigh * 1.01;
-    stop = recentLow;
-    target = periodHigh;
-    rr = (target - entry) / (entry - stop);
-  }
-
-  return {
-    rating: rating,
-    ratingClass: ratingClass,
-    thesis: thesis,
-    signals: signals,
-    bull: bull,
-    bear: bear,
-    rsi: rsi.toFixed(1),
-    sma20: lastSMA20.toFixed(2),
-    sma50: lastSMA50.toFixed(2),
-    sma200: lastSMA200 ? lastSMA200.toFixed(2) : null,
-    macd: macd,
-    bb: { upper: bb.upper.toFixed(2), lower: bb.lower.toFixed(2), middle: bb.middle.toFixed(2) },
-    fib: fib,
-    support1: recentLow.toFixed(2),
-    support2: periodLow.toFixed(2),
-    resistance1: recentHigh.toFixed(2),
-    resistance2: periodHigh.toFixed(2),
-    entry: entry.toFixed(2),
-    target: target.toFixed(2),
-    stop: stop.toFixed(2),
-    rr: rr.toFixed(2)
-  };
+function getFundingRate(symbol) {
+  return fetch('https://fapi.binance.com/fapi/v1/premiumIndex?symbol=' + symbol + 'USDT')
+    .then(function(resp) { return resp.json(); })
+    .then(function(data) {
+      var rate = parseFloat(data.lastFundingRate || 0);
+      return { rate: rate, annualized: rate * 3 * 365 * 100 };
+    })
+    .catch(function(e) { return null; });
 }
 
 // ── Number Formatting ──
@@ -801,7 +663,7 @@ function renderAnalysis(data, a, fearGreed, funding) {
 }
 
 // ── Main Search ──
-async function doSearch() {
+function doSearch() {
   var input = document.getElementById('searchInput').value.trim();
   if (!input) { return; }
 
@@ -815,27 +677,26 @@ async function doSearch() {
 
   out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analyzing ' + resolved.symbol + '...</p></div>';
 
-  try {
-    var data;
-    if (resolved.isCrypto) {
-      data = await getCryptoData(resolved.symbol);
-    } else {
-      data = await getStockData(resolved.symbol);
-    }
+  var dataPromise = resolved.isCrypto ? getCryptoData(resolved.symbol) : getStockData(resolved.symbol);
+  var fearPromise = getFearGreed();
+  var fundingPromise = resolved.isCrypto ? getFundingRate(resolved.symbol) : Promise.resolve(null);
 
-    out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
-
-    var fearGreed = await getFearGreed();
-    var funding = resolved.isCrypto ? await getFundingRate(resolved.symbol) : null;
-
-    out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Applying Druckenmiller framework...</p></div>';
-
-    var analysis = runAnalysis(data, fearGreed, funding);
-    renderAnalysis(data, analysis, fearGreed, funding);
-
-  } catch (err) {
-    out.innerHTML = '<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze ' + resolved.symbol + '</p><p>' + err.message + '</p><p style="font-size:12px;margin-top:12px">This might be an invalid ticker or a rate limit. Try again.</p><button class="btn" onclick="switchView(\'home\')">Back</button></div>';
-  }
+  dataPromise
+    .then(function(data) {
+      out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
+      return Promise.all([data, fearPromise, fundingPromise]);
+    })
+    .then(function(results) {
+      var data = results[0];
+      var fearGreed = results[1];
+      var funding = results[2];
+      out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Applying Druckenmiller framework...</p></div>';
+      var analysis = runAnalysis(data, fearGreed, funding);
+      renderAnalysis(data, analysis, fearGreed, funding);
+    })
+    .catch(function(err) {
+      out.innerHTML = '<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze ' + resolved.symbol + '</p><p>' + err.message + '</p><p style="font-size:12px;margin-top:12px">This might be an invalid ticker or a rate limit. Try again.</p><button class="btn" onclick="switchView(\'home\')">Back</button></div>';
+    });
 
   btn.disabled = false;
   btn.textContent = 'Analyze';
