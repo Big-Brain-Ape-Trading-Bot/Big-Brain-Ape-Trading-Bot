@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Big Brain Ape</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--green:#3fb950;--red:#f85149;--blue:#58a6ff;--gold:#d29922;--accent:#8b5cf6;--purple:#a855f7}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.header{position:sticky;top:0;background:var(--bg);z-index:100;padding:16px 16px 8px;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.logo-icon{font-size:28px}
+.logo-text{font-size:20px;font-weight:700;letter-spacing:-0.5px}
+.logo-text span{color:var(--accent)}
+.search-bar{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;transition:border-color 0.2s}
+.search-bar:focus-within{border-color:var(--accent)}
+.search-bar input{flex:1;background:none;border:none;color:var(--text);font-size:16px;outline:none}
+.search-bar input::placeholder{color:var(--text2)}
+.search-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.search-btn:active{opacity:0.7}
+.search-btn:disabled{opacity:0.4;cursor:not-allowed}
+.content{padding:16px;padding-bottom:100px}
+.welcome{text-align:center;padding:40px 20px}
+.welcome h2{font-size:22px;margin-bottom:8px}
+.welcome p{color:var(--text2);font-size:15px}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.15s,border-color 0.2s}
+.feature-card:active{transform:scale(0.97);border-color:var(--accent)}
+.feature-icon{font-size:28px;margin-bottom:8px}
+.feature-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.feature-desc{font-size:11px;color:var(--text2)}
+.analysis-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.analysis-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.ticker-info{display:flex;align-items:center;gap:12px}
+.ticker-symbol{font-size:24px;font-weight:800}
+.ticker-name{font-size:12px;color:var(--text2)}
+.ticker-price{text-align:right}
+.price-value{font-size:22px;font-weight:700}
+.price-change{font-size:13px;font-weight:600;margin-top:2px}
+.positive{color:var(--green)}
+.negative{color:var(--red)}
+.rating-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:700;margin-bottom:16px}
+.rating-buy{background:rgba(63,185,80,0.15);color:var(--green);border:1px solid rgba(63,185,80,0.3)}
+.rating-hold{background:rgba(210,153,34,0.15);color:var(--gold);border:1px solid rgba(210,153,34,0.3)}
+.rating-sell{background:rgba(248,81,73,0.15);color:var(--red);border:1px solid rgba(248,81,73,0.3)}
+.section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px}
+.data-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(48,54,61,0.5)}
+.data-row:last-child{border:none}
+.data-label{color:var(--text2);font-size:14px}
+.data-value{font-size:14px;font-weight:600}
+.thesis-box{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:14px;margin-top:12px}
+.thesis-box p{font-size:14px;line-height:1.6}
+.loading{text-align:center;padding:40px}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--text2)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0 16px;z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 12px;border-radius:8px;transition:color 0.2s}
+.nav-item.active{color:var(--accent)}
+.nav-item:not(.active){color:var(--text2)}
+.nav-icon{font-size:20px}
+.nav-label{font-size:10px;font-weight:600}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px}
+.pricing-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.pricing-price{font-size:24px;font-weight:800;color:var(--accent);margin-bottom:8px}
+.pricing-features{list-style:none}
+.pricing-features li{font-size:14px;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:8px}
+.pricing-features li::before{content:'✓';color:var(--green);font-weight:700}
+.pay-btn{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:12px;transition:opacity 0.2s}
+.pay-btn:active{opacity:0.7}
+.briefing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.briefing-date{font-size:12px;color:var(--text2);margin-bottom:8px}
+.briefing-section{margin-bottom:16px}
+.briefing-section h3{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--blue)}
+.briefing-section p{font-size:14px;color:var(--text);line-height:1.6}
+.trading-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.position-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.position-row:last-child{border:none}
+.position-left{display:flex;flex-direction:column}
+.position-symbol{font-size:16px;font-weight:700}
+.position-side{font-size:12px;font-weight:600}
+.position-side.long{color:var(--green)}
+.position-side.short{color:var(--red)}
+.position-right{text-align:right}
+.position-pnl{font-size:16px;font-weight:700}
+.position-size{font-size:12px;color:var(--text2)}
+.portfolio-summary{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(168,85,247,0.05));border:1px solid rgba(139,92,246,0.2);border-radius:16px;padding:20px;margin-bottom:16px}
+.portfolio-total{font-size:28px;font-weight:800;margin-bottom:4px}
+.portfolio-label{font-size:13px;color:var(--text2)}
+.portfolio-pnl{font-size:16px;font-weight:700;margin-top:8px}
+.wallet-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(88,160,255,0.1);border:1px solid rgba(88,160,255,0.2);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--blue);margin-top:12px}
+.wallet-badge code{font-size:10px;font-family:monospace}
+.view-hidden{display:none}
+.pay-instruction{background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.2);border-radius:10px;padding:14px;margin-top:12px;font-size:13px;color:var(--gold);line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="logo">
+<span class="logo-icon">🦍</span>
+<span class="logo-text">Big Brain <span>Ape</span></span>
+</div>
+<div class="search-bar">
+<input type="text" id="searchInput" placeholder="Type ticker or company name..." autocomplete="off" spellcheck="false">
+<button class="search-btn" id="searchBtn" onclick="searchTicker()">Analyze</button>
+</div>
+</div>
+
+<div class="content" id="content">
+
+<!-- WELCOME VIEW -->
+<div id="welcomeView">
+<div class="welcome">
+<h2>Stock & Crypto Analysis</h2>
+<p>Your first analysis is free. Just type a ticker above.</p>
+<div class="feature-grid">
+<div class="feature-card" onclick="quickSearch('NVDA')">
+<div class="feature-icon">📊</div>
+<div class="feature-title">Stocks</div>
+<div class="feature-desc">NVDA, TSLA, AAPL</div>
+</div>
+<div class="feature-card" onclick="quickSearch('BTC')">
+<div class="feature-icon">₿</div>
+<div class="feature-title">Crypto</div>
+<div class="feature-desc">BTC, ETH, SOL</div>
+</div>
+<div class="feature-card" onclick="showView('briefing')">
+<div class="feature-icon">📰</div>
+<div class="feature-title">Daily Briefing</div>
+<div class="feature-desc">Fed, oil, gold, BTC</div>
+</div>
+<div class="feature-card" onclick="showView('pricing')">
+<div class="feature-icon">💳</div>
+<div class="feature-title">Pricing</div>
+<div class="feature-desc">From $0.25</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ANALYSIS VIEW -->
+<div id="analysisView" class="view-hidden">
+<div id="analysisContent"></div>
+</div>
+
+<!-- BRIEFING VIEW -->
+<div id="briefingView" class="view-hidden">
+<div class="briefing-card">
+<div class="briefing-date" id="briefingDate">Loading today's briefing...</div>
+<div id="briefingContent">
+<p style="color:var(--text2)">Type "daily news" in the chat to get today's macro briefing delivered to you, or check back here after it's published.</p>
+</div>
+</div>
+</div>
+
+<!-- TRADING VIEW -->
+<div id="tradingView" class="view-hidden">
+<div class="portfolio-summary">
+<div class="portfolio-label">Total Portfolio Value</div>
+<div class="portfolio-total" id="portfolioTotal">$1,239.41</div>
+<div class="portfolio-pnl positive" id="portfolioPnl">+$120.55 (+10.5%)</div>
+<div style="margin-top:12px">
+<div class="data-row"><span class="data-label">Total Deposited</span><span class="data-value">$1,145.38</span></div>
+<div class="data-row"><span class="data-label">Positions</span><span class="data-value">3 open</span></div>
+<div class="data-row"><span class="data-label">Cash Available</span><span class="data-value">$104.11</span></div>
+</div>
+</div>
+<div class="trading-card">
+<div class="section-title">Open Positions</div>
+<div class="position-row">
+<div class="position-left">
+<span class="position-symbol">NVDA</span>
+<span class="position-side long">LONG · 3x</span>
+</div>
+<div class="position-right">
+<div class="position-pnl positive">+$72.57</div>
+<div class="position-size">$488.72 margin</div>
+</div>
+</div>
+<div class="position-row">
+<div class="position-left">
+<span class="position-symbol">GOLD</span>
+<span class="position-side long">LONG · 3x</span>
+</div>
+<div class="position-right">
+<div class="position-pnl positive">+$38.18</div>
+<div class="position-size">$423.51 margin</div>
+</div>
+</div>
+<div class="position-row">
+<div class="position-left">
+<span class="position-symbol">SP500</span>
+<span class="position-side long">LONG · 3x</span>
+</div>
+<div class="position-right">
+<div class="position-pnl positive">+$9.80</div>
+<div class="position-size">$205.37 margin</div>
+</div>
+</div>
+</div>
+<div class="trading-card">
+<div class="section-title">Trading Strategy</div>
+<p style="font-size:14px;color:var(--text2);line-height:1.6">Long risk assets (NVDA, GOLD, SP500) in a risk-on regime. Fed liquidity expanding, dollar weakening. Concentrated book — 3 positions only. Max leverage 5x, currently using 3x.</p>
+</div>
+</div>
+
+<!-- PRICING VIEW -->
+<div id="pricingView" class="view-hidden">
+<div class="pricing-card">
+<div class="pricing-title">Single Analysis</div>
+<div class="pricing-price">$0.25</div>
+<ul class="pricing-features">
+<li>Full stock or crypto analysis</li>
+<li>Technicals, fundamentals, macro</li>
+<li>Buy/Sell/Hold rating</li>
+<li>Entry, target, stop levels</li>
+<li>Risk/reward calculation</li>
+</ul>
+</div>
+<div class="pricing-card">
+<div class="pricing-title">Daily Briefing — Weekly</div>
+<div class="pricing-price">$0.99</div>
+<ul class="pricing-features">
+<li>7 days of auto-delivered briefings</li>
+<li>Fed policy, inflation, geopolitics</li>
+<li>Oil, gold, BTC price updates</li>
+<li>Top earnings & crypto headlines</li>
+</ul>
+</div>
+<div class="pricing-card" style="border-color:var(--accent)">
+<div class="pricing-title">Daily Briefing — Monthly</div>
+<div class="pricing-price">$4.99</div>
+<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">★ Best Value</div>
+<ul class="pricing-features">
+<li>30 days of auto-delivered briefings</li>
+<li>Everything in weekly, save 20%</li>
+<li>Fed policy, inflation, geopolitics</li>
+<li>Oil, gold, BTC price updates</li>
+<li>Top earnings & crypto headlines</li>
+</ul>
+</div>
+<div class="pricing-card">
+<div class="pricing-title">Daily Briefing — Quarterly</div>
+<div class="pricing-price">$9.99</div>
+<ul class="pricing-features">
+<li>90 days of auto-delivered briefings</li>
+<li>Everything in monthly, save 33%</li>
+<li>Fed policy, inflation, geopolitics</li>
+<li>Oil, gold, BTC price updates</li>
+</ul>
+</div>
+<div class="pay-instruction">
+Send USDC on the Base network to:<br>
+<code style="font-size:11px;word-break:break-all">0x37a8023762c69f7150d878733fd9f635f1070fc6</code><br><br>
+Then type <strong>"I paid"</strong> in the chat to activate.
+</div>
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+<div class="nav-item active" onclick="showView('welcome')" id="nav-home">
+<div class="nav-icon">🔍</div>
+<div class="nav-label">Analyze</div>
+</div>
+<div class="nav-item" onclick="showView('briefing')" id="nav-briefing">
+<div class="nav-icon">📰</div>
+<div class="nav-label">Briefing</div>
+</div>
+<div class="nav-item" onclick="showView('trading')" id="nav-trading">
+<div class="nav-icon">📈</div>
+<div class="nav-label">Trading</div>
+</div>
+<div class="nav-item" onclick="showView('pricing')" id="nav-pricing">
+<div class="nav-icon">💳</div>
+<div class="nav-label">Pricing</div>
+</div>
+</div>
+
+<script>
+// ── Telegram Web App init ──
+const tg = window.Telegram?.WebApp;
+if (tg) {
+tg.ready();
+tg.expand();
+}
+
+// ── View switching ──
+function showView(view) {
+['welcomeView','analysisView','briefingView','tradingView','pricingView'].forEach(v => {
+document.getElementById(v).classList.add('view-hidden');
+});
+document.getElementById(view + 'View').classList.remove('view-hidden');
+
+['nav-home','nav-briefing','nav-trading','nav-pricing'].forEach(n => {
+document.getElementById(n).classList.remove('active');
+});
+const navMap = {welcome:'nav-home',analysis:'nav-home',briefing:'nav-briefing',trading:'nav-trading',pricing:'nav-pricing'};
+if (navMap[view]) document.getElementById(navMap[view]).classList.add('active');
+window.scrollTo(0, 0);
+}
+
+// ── Quick search from feature cards ──
+function quickSearch(ticker) {
+document.getElementById('searchInput').value = ticker;
+searchTicker();
+}
+
+// ── Search ticker ──
+function searchTicker() {
+const input = document.getElementById('searchInput').value.trim();
+if (!input) return;
+
+const btn = document.getElementById('searchBtn');
+btn.disabled = true;
+btn.textContent = '...';
+
+showView('analysis');
+const content = document.getElementById('analysisContent');
+content.innerHTML = `
+<div class="loading">
+<div class="spinner"></div>
+<p>Analyzing ${input.toUpperCase()}...</p>
+<p style="font-size:12px;margin-top:4px">Pulling live data, technicals, and macro context</p>
+</div>
+`;
+
+// Send ticker back to bot via Telegram
+if (tg) {
+tg.sendData(JSON.stringify({action:'analyze', ticker: input}));
+} else {
+// Not in Telegram — show demo
+setTimeout(() => showDemoAnalysis(input), 1500);
+}
+}
+
+// ── Demo analysis (for web preview outside Telegram) ──
+function showDemoAnalysis(ticker) {
+const content = document.getElementById('analysisContent');
+const isPositive = Math.random() > 0.4;
+const change = (Math.random() * 8 - 2).toFixed(2);
+const price = (Math.random() * 400 + 50).toFixed(2);
+const rating = isPositive ? (parseFloat(change) > 3 ? 'BUY' : 'HOLD') : 'HOLD';
+const ratingClass = rating === 'BUY' ? 'rating-buy' : rating === 'SELL' ? 'rating-sell' : 'rating-hold';
+
+content.innerHTML = `
+<div class="analysis-card">
+<div class="analysis-header">
+<div class="ticker-info">
+<div>
+<div class="ticker-symbol">${ticker.toUpperCase()}</div>
+<div class="ticker-name">Demo Analysis</div>
+</div>
+</div>
+<div class="ticker-price">
+<div class="price-value">$${price}</div>
+<div class="price-change ${isPositive ? 'positive' : 'negative'}">${isPositive ? '+' : ''}${change}%</div>
+</div>
+</div>
+<div class="rating-badge ${ratingClass}">${rating}</div>
+<div class="section-title">Technical Levels</div>
+<div class="data-row"><span class="data-label">RSI (14)</span><span class="data-value">${(Math.random()*30+35).toFixed(1)}</span></div>
+<div class="data-row"><span class="data-label">SMA (20)</span><span class="data-value">$${(parseFloat(price)*0.98).toFixed(2)}</span></div>
+<div class="data-row"><span class="data-label">SMA (50)</span><span class="data-value">$${(parseFloat(price)*0.95).toFixed(2)}</span></div>
+<div class="data-row"><span class="data-label">SMA (200)</span><span class="data-value">$${(parseFloat(price)*0.88).toFixed(2)}</span></div>
+<div class="data-row"><span class="data-label">52W High</span><span class="data-value">$${(parseFloat(price)*1.15).toFixed(2)}</span></div>
+<div class="data-row"><span class="data-label">52W Low</span><span class="data-value">$${(parseFloat(price)*0.72).toFixed(2)}</span></div>
+<div class="section-title">Fundamentals</div>
+<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">$${(Math.random()*900+100).toFixed(0)}B</span></div>
+<div class="data-row"><span class="data-label">P/E Ratio</span><span class="data-value">${(Math.random()*30+8).toFixed(1)}</span></div>
+<div class="data-row"><span class="data-label">Volume (24h)</span><span class="data-value">$${(Math.random()*50+5).toFixed(1)}B</span></div>
+<div class="section-title">Macro Context</div>
+<div class="data-row"><span class="data-label">Fear & Greed</span><span class="data-value">27 — Fear</span></div>
+<div class="data-row"><span class="data-label">Fed Policy</span><span class="data-value">Dovish tilt</span></div>
+<div class="data-row"><span class="data-label">Dollar (DXY)</span><span class="data-value">Weakening</span></div>
+<div class="section-title">Big Brain Ape's Take</div>
+<div class="thesis-box">
+<p>${rating === 'BUY' ? 'Risk/reward favors longs here. Technical structure is constructive with price above key moving averages. Macro tailwinds from Fed liquidity expansion. Start with a probe position (5-10% of capital).' : 'Mixed signals. Technical structure is neutral with price at a key decision level. Macro is transition regime. Wait for confirmation before entering. Capital preservation first.'}</p>
+</div>
+<div class="section-title">Entry Plan</div>
+<div class="data-row"><span class="data-label">Entry Zone</span><span class="data-value">$${(parseFloat(price)*0.99).toFixed(2)} - $${price}</span></div>
+<div class="data-row"><span class="data-label">Target</span><span class="data-value">$${(parseFloat(price)*1.12).toFixed(2)}</span></div>
+<div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value">$${(parseFloat(price)*0.92).toFixed(2)}</span></div>
+<div class="data-row"><span class="data-label">Risk/Reward</span><span class="data-value">3.2:1</span></div>
+</div>
+<p style="text-align:center;color:var(--text2);font-size:12px;padding:8px">Demo data — open inside Telegram for live analysis</p>
+`;
+
+document.getElementById('searchBtn').disabled = false;
+document.getElementById('searchBtn').textContent = 'Analyze';
+}
+
+// ── Enter key triggers search ──
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+if (e.key === 'Enter') searchTicker();
+});
+
+// ── Telegram theme ──
+if (tg && tg.colorScheme === 'dark') {
+// Already dark
+}
+</script>
+</body>
+</html>
