@@ -233,6 +233,101 @@ body {
 .nav-item .nav-icon { font-size: 20px; }
 .nav-item .nav-label { font-size: 10px; color: var(--text2); margin-top: 2px; }
 .nav-item.active .nav-label { color: var(--accent); font-weight: 700; }
+
+/* === ANALYSIS PAGE REDESIGN === */
+.tv-chart-container {
+  margin: 0 -16px 12px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.tv-chart-container iframe {
+  width: 100%; border: none; display: block;
+}
+.price-header-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px 16px; margin-bottom: 14px;
+}
+.phc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.phc-symbol { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+.phc-name { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.phc-price { font-size: 28px; font-weight: 800; text-align: right; }
+.phc-change { font-size: 14px; font-weight: 700; text-align: right; margin-top: 2px; }
+.phc-rating { margin-top: 14px; }
+
+.analyst-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; margin-bottom: 14px;
+}
+.analyst-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.analyst-consensus { font-size: 16px; font-weight: 800; }
+.analyst-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+.analyst-bar .seg-sb { background: var(--green); }
+.analyst-bar .seg-b { background: #58a6ff; }
+.analyst-bar .seg-h { background: var(--orange); }
+.analyst-bar .seg-s { background: var(--red); }
+.analyst-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); }
+.analyst-labels span { text-align: center; }
+.analyst-target {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+}
+.analyst-target .at-label { font-size: 12px; color: var(--text2); }
+.analyst-target .at-value { font-size: 16px; font-weight: 700; }
+.analyst-target .at-upside { font-size: 13px; font-weight: 700; }
+
+.trade-plan-card {
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(63,185,80,0.04));
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 14px; padding: 16px; margin-bottom: 14px;
+}
+.trade-plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tp-cell { background: rgba(22,27,34,0.6); border-radius: 10px; padding: 10px 12px; }
+.tp-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+.tp-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+.tp-rr { grid-column: span 2; text-align: center; padding: 12px; }
+.tp-rr .tp-value { font-size: 22px; }
+
+.earnings-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; margin-bottom: 14px;
+}
+.earnings-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(48,54,61,0.5); }
+.earnings-row:last-child { border-bottom: none; }
+.er-label { font-size: 13px; color: var(--text2); }
+.er-value { font-size: 13px; font-weight: 600; }
+
+.company-info-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; margin-bottom: 14px;
+}
+.company-info-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+.company-info-row .cir-label { color: var(--text2); }
+.company-info-row .cir-value { font-weight: 600; }
+.company-desc { font-size: 12px; line-height: 1.6; color: var(--text2); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+.collapsible-header {
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; padding: 14px 16px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; margin-bottom: 8px;
+}
+.collapsible-header .ch-title { font-size: 13px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+.collapsible-header .ch-arrow { font-size: 14px; color: var(--text2); transition: transform 0.2s; }
+.collapsible-header.open .ch-arrow { transform: rotate(180deg); }
+.collapsible-body { display: none; padding: 0; }
+.collapsible-body.open { display: block; }
+.collapsible-body .card { border-radius: 14px; margin-bottom: 14px; }
+
+.tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tech-cell { background: rgba(22,27,34,0.5); border-radius: 8px; padding: 8px 10px; }
+.tech-cell .tc-label { font-size: 10px; color: var(--text2); text-transform: uppercase; }
+.tech-cell .tc-value { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+.section-label {
+  font-size: 11px; font-weight: 700; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 4px;
+}
+
 </style>
 </head>
 <body>
@@ -720,6 +815,81 @@ function getFearGreed() {
     .catch(function(e) { return { value: 50, label: 'Neutral' }; });
 }
 
+
+// ==========================================
+// ANALYST DATA FETCHING
+// ==========================================
+function getAnalystConsensus(symbol) {
+  var url = 'https://financialmodelingprep.com/stable/grades-consensus?symbol=' + symbol + '&apikey=' + FMP_KEY;
+  return httpGet(url)
+    .then(function(data) {
+      if (!data || data.length === 0) { return null; }
+      var d = data[0];
+      return {
+        consensus: d.consensus || 'N/A',
+        strongBuy: d.strongBuy || 0,
+        buy: d.buy || 0,
+        hold: d.hold || 0,
+        sell: d.sell || 0,
+        strongSell: d.strongSell || 0
+      };
+    })
+    .catch(function(e) { return null; });
+}
+
+function getPriceTarget(symbol) {
+  var url = 'https://financialmodelingprep.com/stable/price-target-summary?symbol=' + symbol + '&apikey=' + FMP_KEY;
+  return httpGet(url)
+    .then(function(data) {
+      if (!data || data.length === 0) { return null; }
+      var d = data[0];
+      return {
+        lastQuarterTarget: d.lastQuarterAvgPriceTarget || null,
+        lastQuarterCount: d.lastQuarterCount || 0,
+        lastYearTarget: d.lastYearAvgPriceTarget || null,
+        lastYearCount: d.lastYearCount || 0
+      };
+    })
+    .catch(function(e) { return null; });
+}
+
+function getEarningsData(symbol) {
+  var url = 'https://financialmodelingprep.com/stable/earnings?symbol=' + symbol + '&apikey=' + FMP_KEY;
+  return httpGet(url)
+    .then(function(data) {
+      if (!data || data.length === 0) { return null; }
+      // Find last actual earnings and next estimated
+      var past = [];
+      var future = [];
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].epsActual !== null && data[i].epsActual !== undefined) {
+          past.push(data[i]);
+        } else if (data[i].epsEstimated !== null && data[i].epsEstimated !== undefined) {
+          future.push(data[i]);
+        }
+      }
+      return {
+        lastEarnings: past.length > 0 ? past[0] : null,
+        nextEarnings: future.length > 0 ? future[future.length - 1] : null
+      };
+    })
+    .catch(function(e) { return null; });
+}
+
+function getAnalystData(symbol) {
+  return Promise.all([
+    getAnalystConsensus(symbol),
+    getPriceTarget(symbol),
+    getEarningsData(symbol)
+  ]).then(function(results) {
+    return {
+      consensus: results[0],
+      priceTarget: results[1],
+      earnings: results[2]
+    };
+  });
+}
+
 function getStockData(symbol) {
   var profileUrl = 'https://financialmodelingprep.com/stable/profile?symbol=' + symbol + '&apikey=' + FMP_KEY;
   var ratiosUrl = 'https://financialmodelingprep.com/stable/ratios?symbol=' + symbol + '&apikey=' + FMP_KEY;
@@ -1026,229 +1196,268 @@ function fmtPrice(p) {
 // ==========================================
 // RENDER ANALYSIS
 // ==========================================
-function renderAnalysis(data, a, fearGreed, funding) {
+function renderAnalysis(data, a, fearGreed, funding, analyst) {
   var out = document.getElementById('analysisOutput');
   var isPos = data.changePct >= 0;
   var isCrypto = data.isCrypto;
+  var symbol = data.symbol;
+  var price = data.price;
 
-  // Signal matrix HTML
+  // TradingView symbol mapping
+  var tvSymbol;
+  if (isCrypto) {
+    tvSymbol = 'BINANCE:' + symbol + 'USDT';
+  } else {
+    var exchange = data.exchange || 'NASDAQ';
+    tvSymbol = exchange + ':' + symbol;
+  }
+
+  // --- 1. Price Header Card ---
+  var headerCard = '';
+  headerCard += '<div class="price-header-card">';
+  headerCard += '<div class="phc-top">';
+  headerCard += '<div><div class="phc-symbol">' + symbol + '</div><div class="phc-name">' + data.name + '</div></div>';
+  headerCard += '<div><div class="phc-price">$' + fmtPrice(price) + '</div><div class="phc-change ' + (isPos ? 'positive' : 'negative') + '">' + (isPos ? '+' : '') + data.changePct.toFixed(2) + '%</div></div>';
+  headerCard += '</div>';
+  headerCard += '<div class="phc-rating"><div class="rating-badge ' + a.ratingClass + '">' + a.rating + '</div></div>';
+  headerCard += '</div>';
+
+  // --- 2. TradingView Chart ---
+  var chartHtml = '';
+  chartHtml += '<div class="section-label">Live Chart</div>';
+  chartHtml += '<div class="tv-chart-container" id="tvChartContainer"></div>';
+
+  // --- 3. Signal Matrix (compact) ---
   var signalsHtml = '';
   for (var i = 0; i < a.signals.length; i++) {
     var s = a.signals[i];
     var dotClass = s[2] === 'bullish' ? 'bullish' : (s[2] === 'bearish' ? 'bearish' : 'neutral');
     signalsHtml += '<div class="signal-row"><div class="signal-dot ' + dotClass + '"></div><span class="signal-label">' + s[0] + '</span><span class="signal-value">' + s[1] + '</span></div>';
   }
+  var signalCard = '<div class="section-label">Signal Matrix</div><div class="card">' + signalsHtml + '</div>';
 
-  // Fundamentals HTML
-  var fundamentalsHtml = '';
-  if (isCrypto) {
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">' + fmtMC(data.marketCap) + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">24h Volume</span><span class="data-value">' + fmtMC(data.volume) + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">Circulating Supply</span><span class="data-value">' + (data.circulatingSupply ? data.circulatingSupply.toLocaleString() : 'N/A') + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">Max Supply</span><span class="data-value">' + (data.maxSupply ? data.maxSupply.toLocaleString() : 'Unlimited') + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">All-Time High</span><span class="data-value">' + (data.ath ? '$' + data.ath.toFixed(2) : 'N/A') + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">ATH Change</span><span class="data-value ' + (data.athChangePct < 0 ? 'negative' : 'positive') + '">' + (data.athChangePct ? data.athChangePct.toFixed(1) + '%' : 'N/A') + '</span></div>';
+  // --- 4. Trade Plan Card (standout) ---
+  var rrPass = parseFloat(a.rr) >= 3;
+  var tradePlan = '';
+  tradePlan += '<div class="section-label">Trade Plan</div>';
+  tradePlan += '<div class="trade-plan-card">';
+  tradePlan += '<div class="trade-plan-grid">';
+  tradePlan += '<div class="tp-cell"><div class="tp-label">Entry</div><div class="tp-value">$' + a.entry + '</div></div>';
+  tradePlan += '<div class="tp-cell"><div class="tp-label">Target</div><div class="tp-value" style="color:var(--green)">$' + a.target + '</div></div>';
+  tradePlan += '<div class="tp-cell"><div class="tp-label">Stop Loss</div><div class="tp-value" style="color:var(--red)">$' + a.stop + '</div></div>';
+  tradePlan += '<div class="tp-cell"><div class="tp-label">Risk / Reward</div><div class="tp-value" style="color:' + (rrPass ? 'var(--green)' : 'var(--red)') + '">' + a.rr + ':1</div></div>';
+  tradePlan += '</div>';
+  if (!rrPass) {
+    tradePlan += '<div style="text-align:center;font-size:11px;color:var(--red);margin-top:8px">Below 3:1 minimum. Size position accordingly.</div>';
   } else {
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">' + fmtMC(data.marketCap) + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">P/E Ratio</span><span class="data-value">' + (data.peRatio ? data.peRatio.toFixed(1) : 'N/A') + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">EPS</span><span class="data-value">' + (data.eps ? '$' + data.eps.toFixed(2) : 'N/A') + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">Beta</span><span class="data-value">' + (data.beta ? data.beta.toFixed(2) : 'N/A') + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">52W High</span><span class="data-value">$' + data.yearHigh.toFixed(2) + '</span></div>';
-    fundamentalsHtml += '<div class="data-row"><span class="data-label">52W Low</span><span class="data-value">$' + data.yearLow.toFixed(2) + '</span></div>';
-    if (data.sector) { fundamentalsHtml += '<div class="data-row"><span class="data-label">Sector</span><span class="data-value">' + data.sector + '</span></div>'; }
+    tradePlan += '<div style="text-align:center;font-size:11px;color:var(--green);margin-top:8px">Passes 3:1 Druckenmiller minimum.</div>';
+  }
+  tradePlan += '</div>';
+
+  // --- 5. Analysis Box ---
+  var analysisBox = '<div class="section-label">Big Brain Ape Analysis</div><div class="thesis-box"><p>' + a.thesis + '</p></div>';
+
+  // --- 6. Analyst Ratings + Price Targets ---
+  var analystHtml = '';
+  if (analyst && analyst.consensus) {
+    var c = analyst.consensus;
+    var total = c.strongBuy + c.buy + c.hold + c.sell + c.strongSell;
+    var sbPct = total > 0 ? (c.strongBuy / total * 100) : 0;
+    var bPct = total > 0 ? (c.buy / total * 100) : 0;
+    var hPct = total > 0 ? (c.hold / total * 100) : 0;
+    var sPct = total > 0 ? (c.sell / total * 100) : 0;
+    var consensusColor = c.consensus === 'Strong Buy' ? 'var(--green)' : c.consensus === 'Buy' ? '#58a6ff' : c.consensus === 'Hold' ? 'var(--orange)' : 'var(--red)';
+
+    analystHtml += '<div class="section-label">Analyst Ratings</div>';
+    analystHtml += '<div class="analyst-card">';
+    analystHtml += '<div class="analyst-header"><div class="analyst-consensus" style="color:' + consensusColor + '">' + c.consensus + '</div><div style="font-size:12px;color:var(--text2)">' + total + ' analysts</div></div>';
+    analystHtml += '<div class="analyst-bar">';
+    if (sbPct > 0) analystHtml += '<div class="seg-sb" style="width:' + sbPct + '%"></div>';
+    if (bPct > 0) analystHtml += '<div class="seg-b" style="width:' + bPct + '%"></div>';
+    if (hPct > 0) analystHtml += '<div class="seg-h" style="width:' + hPct + '%"></div>';
+    if (sPct > 0) analystHtml += '<div class="seg-s" style="width:' + sPct + '%"></div>';
+    analystHtml += '</div>';
+    analystHtml += '<div class="analyst-labels">';
+    analystHtml += '<span>Strong Buy<br>' + c.strongBuy + '</span>';
+    analystHtml += '<span>Buy<br>' + c.buy + '</span>';
+    analystHtml += '<span>Hold<br>' + c.hold + '</span>';
+    analystHtml += '<span>Sell<br>' + c.sell + '</span>';
+    analystHtml += '<span>Strong Sell<br>' + c.strongSell + '</span>';
+    analystHtml += '</div>';
+
+    if (analyst.priceTarget && analyst.priceTarget.lastQuarterTarget) {
+      var target = analyst.priceTarget.lastQuarterTarget;
+      var upside = price > 0 ? ((target - price) / price * 100) : 0;
+      analystHtml += '<div class="analyst-target">';
+      analystHtml += '<div><div class="at-label">Analyst Target (' + analyst.priceTarget.lastQuarterCount + ' analysts)</div><div class="at-value">$' + target.toFixed(2) + '</div></div>';
+      analystHtml += '<div style="text-align:right"><div class="at-label">Upside</div><div class="at-upside" style="color:' + (upside >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (upside >= 0 ? '+' : '') + upside.toFixed(1) + '%</div></div>';
+      analystHtml += '</div>';
+    }
+    analystHtml += '</div>';
   }
 
-  // Macro context HTML
-  var macroHtml = '';
-  if (fearGreed) {
-    macroHtml += '<div class="data-row"><span class="data-label">Fear and Greed</span><span class="data-value">' + fearGreed.value + '/100 ' + fearGreed.label + '</span></div>';
-  }
-  if (funding && isCrypto) {
-    macroHtml += '<div class="data-row"><span class="data-label">Funding Rate</span><span class="data-value">' + funding.annualized.toFixed(1) + '% annualized</span></div>';
+  // --- 7. Earnings Card ---
+  var earningsHtml = '';
+  if (analyst && analyst.earnings) {
+    var e = analyst.earnings;
+    earningsHtml += '<div class="section-label">Earnings</div>';
+    earningsHtml += '<div class="earnings-card">';
+    if (e.lastEarnings) {
+      var le = e.lastEarnings;
+      var epsBeat = le.epsActual - le.epsEstimated;
+      earningsHtml += '<div class="earnings-row"><span class="er-label">Last Report</span><span class="er-value">' + formatDate(le.date) + '</span></div>';
+      earningsHtml += '<div class="earnings-row"><span class="er-label">EPS Actual vs Est</span><span class="er-value">$' + (le.epsActual || 'N/A') + ' vs $' + (le.epsEstimated || 'N/A') + ' <span style="color:' + (epsBeat >= 0 ? 'var(--green)' : 'var(--red)') + '">(' + (epsBeat >= 0 ? '+' : '') + epsBeat.toFixed(2) + ')</span></span></div>';
+      if (le.revenueActual) {
+        earningsHtml += '<div class="earnings-row"><span class="er-label">Revenue Actual</span><span class="er-value">' + fmtMC(le.revenueActual) + '</span></div>';
+      }
+    }
+    if (e.nextEarnings) {
+      var ne = e.nextEarnings;
+      earningsHtml += '<div class="earnings-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:10px"><span class="er-label">Next Report (Est)</span><span class="er-value">' + formatDate(ne.date) + '</span></div>';
+      earningsHtml += '<div class="earnings-row"><span class="er-label">EPS Estimate</span><span class="er-value">$' + (ne.epsEstimated || 'N/A') + '</span></div>';
+      if (ne.revenueEstimated) {
+        earningsHtml += '<div class="earnings-row"><span class="er-label">Revenue Estimate</span><span class="er-value">' + fmtMC(ne.revenueEstimated) + '</span></div>';
+      }
+    }
+    earningsHtml += '</div>';
   }
 
-  // Fibonacci HTML
+  // --- 8. Company Info ---
+  var companyHtml = '';
+  if (!isCrypto && (data.sector || data.description || data.ceo)) {
+    companyHtml += '<div class="section-label">Company Overview</div>';
+    companyHtml += '<div class="company-info-card">';
+    if (data.sector) companyHtml += '<div class="company-info-row"><span class="cir-label">Sector</span><span class="cir-value">' + data.sector + '</span></div>';
+    if (data.industry) companyHtml += '<div class="company-info-row"><span class="cir-label">Industry</span><span class="cir-value">' + data.industry + '</span></div>';
+    if (data.ceo) companyHtml += '<div class="company-info-row"><span class="cir-label">CEO</span><span class="cir-value">' + data.ceo + '</span></div>';
+    if (data.employees) companyHtml += '<div class="company-info-row"><span class="cir-label">Employees</span><span class="cir-value">' + data.employees.toLocaleString() + '</span></div>';
+    if (data.peRatio) companyHtml += '<div class="company-info-row"><span class="cir-label">P/E Ratio</span><span class="cir-value">' + data.peRatio.toFixed(1) + '</span></div>';
+    if (data.eps) companyHtml += '<div class="company-info-row"><span class="cir-label">EPS</span><span class="cir-value">$' + data.eps.toFixed(2) + '</span></div>';
+    if (data.marketCap) companyHtml += '<div class="company-info-row"><span class="cir-label">Market Cap</span><span class="cir-value">' + fmtMC(data.marketCap) + '</span></div>';
+    if (data.beta) companyHtml += '<div class="company-info-row"><span class="cir-label">Beta</span><span class="cir-value">' + data.beta.toFixed(2) + '</span></div>';
+    if (data.description) companyHtml += '<div class="company-desc">' + data.description.substring(0, 300) + (data.description.length > 300 ? '...' : '') + '</div>';
+    companyHtml += '</div>';
+  }
+
+  // --- 9. Technical Levels (compact grid) ---
+  var techHtml = '';
+  techHtml += '<div class="section-label">Technical Levels</div>';
+  techHtml += '<div class="card"><div class="tech-grid">';
+  techHtml += '<div class="tech-cell"><div class="tc-label">RSI (14)</div><div class="tc-value">' + a.rsi + '</div></div>';
+  techHtml += '<div class="tech-cell"><div class="tc-label">MACD</div><div class="tc-value" style="color:' + (a.macd.bullish ? 'var(--green)' : 'var(--red)') + '">' + (a.macd.bullish ? 'Bullish' : 'Bearish') + '</div></div>';
+  techHtml += '<div class="tech-cell"><div class="tc-label">SMA 20</div><div class="tc-value">$' + a.sma20 + '</div></div>';
+  techHtml += '<div class="tech-cell"><div class="tc-label">SMA 50</div><div class="tc-value">$' + a.sma50 + '</div></div>';
+  if (a.sma200) techHtml += '<div class="tech-cell"><div class="tc-label">SMA 200</div><div class="tc-value">$' + a.sma200 + '</div></div>';
+  techHtml += '<div class="tech-cell"><div class="tc-label">Bollinger</div><div class="tc-value">$' + a.bb.lower + ' - $' + a.bb.upper + '</div></div>';
+  if (data.volume && data.avgVolume) {
+    var volRatio = (data.volume / data.avgVolume).toFixed(1);
+    techHtml += '<div class="tech-cell"><div class="tc-label">Volume</div><div class="tc-value">' + volRatio + 'x avg</div></div>';
+  }
+  if (data.yearHigh) techHtml += '<div class="tech-cell"><div class="tc-label">52W Range</div><div class="tc-value">$' + data.yearLow.toFixed(0) + ' - $' + data.yearHigh.toFixed(0) + '</div></div>';
+  techHtml += '</div></div>';
+
+  // --- 10. Support/Resistance + Fibonacci (collapsible) ---
+  var srFibHtml = '';
+  srFibHtml += '<div class="collapsible-header" onclick="toggleCollapse(\'srfib\')"><span class="ch-title">Support / Resistance / Fibonacci</span><span class="ch-arrow" id="arrow-srfib">\u25BC</span></div>';
+  srFibHtml += '<div class="collapsible-body" id="body-srfib">';
+  srFibHtml += '<div class="card">';
+  srFibHtml += '<div class="section-title" style="margin-top:0">Support and Resistance</div>';
+  srFibHtml += '<div class="data-row"><span class="data-label">Resistance 2</span><span class="data-value">$' + a.resistance2 + '</span></div>';
+  srFibHtml += '<div class="data-row"><span class="data-label">Resistance 1</span><span class="data-value">$' + a.resistance1 + '</span></div>';
+  srFibHtml += '<div class="data-row"><span class="data-label">Support 1</span><span class="data-value">$' + a.support1 + '</span></div>';
+  srFibHtml += '<div class="data-row"><span class="data-label">Support 2</span><span class="data-value">$' + a.support2 + '</span></div>';
   var fibKeys = ['0','23.6','38.2','50','61.8','78.6','100'];
-  var fibHtml = '';
+  srFibHtml += '<div class="section-title">Fibonacci Retracement</div>';
   for (var fi = 0; fi < fibKeys.length; fi++) {
     var key = fibKeys[fi];
-    fibHtml += '<div class="data-row"><span class="data-label">' + key + '%</span><span class="data-value">$' + a.fib[key].toFixed(2) + '</span></div>';
+    srFibHtml += '<div class="data-row"><span class="data-label">' + key + '%</span><span class="data-value">$' + a.fib[key].toFixed(2) + '</span></div>';
+  }
+  srFibHtml += '</div></div>';
+
+  // --- Macro context ---
+  var macroHtml = '';
+  if (fearGreed || (funding && isCrypto)) {
+    macroHtml += '<div class="section-label">Macro Context</div><div class="card">';
+    if (fearGreed) macroHtml += '<div class="data-row"><span class="data-label">Fear and Greed</span><span class="data-value">' + fearGreed.value + '/100 ' + fearGreed.label + '</span></div>';
+    if (funding && isCrypto) macroHtml += '<div class="data-row"><span class="data-label">Funding Rate</span><span class="data-value">' + funding.annualized.toFixed(1) + '% annualized</span></div>';
+    macroHtml += '</div>';
   }
 
-  // Build full HTML
-  var html = '';
-  html += '<div class="card">';
-  html += '<div class="card-header">';
-  html += '<div><div class="sym">' + data.symbol + '</div><div class="name">' + data.name + '</div></div>';
-  html += '<div><div class="price">$' + fmtPrice(data.price) + '</div><div class="change ' + (isPos ? 'positive' : 'negative') + '">' + (isPos ? '+' : '') + data.changePct.toFixed(2) + '%</div></div>';
-  html += '</div>';
-  html += '<div class="rating-badge ' + a.ratingClass + '">' + a.rating + '</div>';
+  // --- Footer ---
+  var footer = '<p style="text-align:center;color:var(--text2);font-size:11px;padding:12px 8px">Live data via FMP + CoinGecko + TradingView. Druckenmiller Framework. Not financial advice.</p>';
 
-  html += '<div class="section-title">Price Chart</div>';
-  html += '<canvas id="priceChart" width="320" height="180" style="width:100%;height:auto;border-radius:10px;background:#0d1117;margin-bottom:8px"></canvas>';
-  html += '<div style="display:flex;gap:12px;font-size:10px;color:var(--text2);margin-bottom:12px;flex-wrap:wrap">';
-  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:2px;background:#8b5cf6"></div>Price</div>';
-  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;background:rgba(63,185,80,0.25);border:1px solid #3fb950"></div>Buy Zone</div>';
-  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:1px;background:#f85149;border-top:1px dashed #f85149"></div>Stop</div>';
-  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:1px;background:#3fb950;border-top:1px dashed #3fb950"></div>Target</div>';
-  html += '</div>';
+  // --- Assemble ---
+  out.innerHTML = headerCard + chartHtml + signalCard + tradePlan + analysisBox + analystHtml + earningsHtml + companyHtml + techHtml + srFibHtml + macroHtml + footer;
 
-  html += '<div class="section-title">Signal Matrix</div>';
-  html += signalsHtml;
-
-  html += '<div class="section-title">Technical Levels</div>';
-  html += '<div class="data-row"><span class="data-label">RSI (14)</span><span class="data-value">' + a.rsi + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">SMA (20)</span><span class="data-value">$' + a.sma20 + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">SMA (50)</span><span class="data-value">$' + a.sma50 + '</span></div>';
-  if (a.sma200) { html += '<div class="data-row"><span class="data-label">SMA (200)</span><span class="data-value">$' + a.sma200 + '</span></div>'; }
-  html += '<div class="data-row"><span class="data-label">MACD</span><span class="data-value ' + (a.macd.bullish ? 'positive' : 'negative') + '">' + (a.macd.bullish ? 'Bullish' : 'Bearish') + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Bollinger Upper</span><span class="data-value">$' + a.bb.upper + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Bollinger Lower</span><span class="data-value">$' + a.bb.lower + '</span></div>';
-
-  html += '<div class="section-title">Fibonacci Retracement</div>';
-  html += fibHtml;
-
-  html += '<div class="section-title">Support and Resistance</div>';
-  html += '<div class="data-row"><span class="data-label">Resistance 2</span><span class="data-value">$' + a.resistance2 + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Resistance 1</span><span class="data-value">$' + a.resistance1 + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Support 1</span><span class="data-value">$' + a.support1 + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Support 2</span><span class="data-value">$' + a.support2 + '</span></div>';
-
-  html += '<div class="section-title">' + (isCrypto ? 'On-Chain Data' : 'Fundamentals') + '</div>';
-  html += fundamentalsHtml;
-
-  if (macroHtml) {
-    html += '<div class="section-title">Macro Context</div>';
-    html += macroHtml;
-  }
-
-  html += '<div class="section-title">Analysis</div>';
-  html += '<div class="thesis-box"><p>' + a.thesis + '</p></div>';
-
-  html += '<div class="section-title">Trade Plan</div>';
-  html += '<div class="data-row"><span class="data-label">Entry</span><span class="data-value">$' + a.entry + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Target</span><span class="data-value">$' + a.target + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value">$' + a.stop + '</span></div>';
-  html += '<div class="data-row"><span class="data-label">Risk/Reward</span><span class="data-value ' + (parseFloat(a.rr) >= 3 ? 'positive' : 'negative') + '">' + a.rr + ':1 ' + (parseFloat(a.rr) >= 3 ? 'PASS' : 'below 3:1') + '</span></div>';
-
-  html += '</div>';
-  html += '<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data via FMP + CoinGecko + Binance. Druckenmiller Framework. Not financial advice.</p>';
-
-  out.innerHTML = html;
-
-  // Draw the price chart with buy zone
-  drawChart(data, a);
+  // --- Load TradingView chart ---
+  loadTradingViewChart(tvSymbol);
 }
 
 // ==========================================
-// CHART DRAWING (Canvas, no external library)
+// TRADINGVIEW CHART
 // ==========================================
-function drawChart(data, a) {
-  var canvas = document.getElementById('priceChart');
-  if (!canvas) { return; }
-  var ctx = canvas.getContext('2d');
-  var w = canvas.width;
-  var h = canvas.height;
-  var closes = data.closes || [];
-  if (closes.length < 2) { return; }
+function loadTradingViewChart(tvSymbol) {
+  var container = document.getElementById('tvChartContainer');
+  if (!container) { return; }
+  container.innerHTML = '';
 
-  // Use last 90 data points for readability
-  var displayCloses = closes.slice(-90);
+  var widgetDiv = document.createElement('div');
+  widgetDiv.className = 'tradingview-widget-container';
+  widgetDiv.style.height = '400px';
+  var innerDiv = document.createElement('div');
+  innerDiv.className = 'tradingview-widget-container__widget';
+  innerDiv.style.height = '400px';
+  widgetDiv.appendChild(innerDiv);
 
-  // Calculate Y range — include stop and target for full visibility
-  var minPrice = Math.min.apply(null, displayCloses);
-  var maxPrice = Math.max.apply(null, displayCloses);
-  var stop = parseFloat(a.stop);
-  var target = parseFloat(a.target);
-  var entry = parseFloat(a.entry);
-  minPrice = Math.min(minPrice, stop);
-  maxPrice = Math.max(maxPrice, target);
-  var padding = (maxPrice - minPrice) * 0.1;
-  minPrice -= padding;
-  maxPrice += padding;
-  var range = maxPrice - minPrice;
-  if (range === 0) { range = 1; }
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.async = true;
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.innerHTML = JSON.stringify({
+    "symbol": tvSymbol,
+    "interval": "D",
+    "theme": "dark",
+    "style": "1",
+    "locale": "en",
+    "width": "100%",
+    "height": "400",
+    "hide_side_toolbar": false,
+    "allow_symbol_change": true,
+    "studies": ["STD;SMA", "STD;RSI"],
+    "support_host": "https://www.tradingview.com"
+  });
 
-  // Clear
-  ctx.fillStyle = '#0d1117';
-  ctx.fillRect(0, 0, w, h);
+  widgetDiv.appendChild(script);
+  container.appendChild(widgetDiv);
+}
 
-  // Draw buy zone (shaded area between entry and stop)
-  var buyZoneTop = h - ((Math.max(entry, stop) - minPrice) / range) * h;
-  var buyZoneBottom = h - ((Math.min(entry, stop) - minPrice) / range) * h;
-  ctx.fillStyle = 'rgba(63, 185, 80, 0.18)';
-  ctx.fillRect(0, buyZoneBottom, w, buyZoneTop - buyZoneBottom);
-  ctx.strokeStyle = 'rgba(63, 185, 80, 0.4)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(0, buyZoneBottom, w, buyZoneTop - buyZoneBottom);
-
-  // Draw stop loss line (dashed red)
-  var stopY = h - ((stop - minPrice) / range) * h;
-  ctx.strokeStyle = '#f85149';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 3]);
-  ctx.beginPath();
-  ctx.moveTo(0, stopY);
-  ctx.lineTo(w, stopY);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = '#f85149';
-  ctx.font = '9px sans-serif';
-  ctx.fillText('Stop $' + stop.toFixed(0), 4, stopY - 3);
-
-  // Draw target line (dashed green)
-  var targetY = h - ((target - minPrice) / range) * h;
-  ctx.strokeStyle = '#3fb950';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 3]);
-  ctx.beginPath();
-  ctx.moveTo(0, targetY);
-  ctx.lineTo(w, targetY);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = '#3fb950';
-  ctx.fillText('Target $' + target.toFixed(0), 4, targetY - 3);
-
-  // Draw entry line (dashed purple)
-  var entryY = h - ((entry - minPrice) / range) * h;
-  ctx.strokeStyle = '#8b5cf6';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([2, 2]);
-  ctx.beginPath();
-  ctx.moveTo(0, entryY);
-  ctx.lineTo(w, entryY);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // Draw price line
-  ctx.strokeStyle = '#8b5cf6';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (var i = 0; i < displayCloses.length; i++) {
-    var x = (i / (displayCloses.length - 1)) * w;
-    var y = h - ((displayCloses[i] - minPrice) / range) * h;
-    if (i === 0) { ctx.moveTo(x, y); }
-    else { ctx.lineTo(x, y); }
+// ==========================================
+// COLLAPSIBLE SECTIONS
+// ==========================================
+function toggleCollapse(id) {
+  var body = document.getElementById('body-' + id);
+  var arrow = document.getElementById('arrow-' + id);
+  var header = body.previousSibling;
+  if (body.classList.contains('open')) {
+    body.classList.remove('open');
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+    if (header) header.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+    if (header) header.classList.add('open');
   }
-  ctx.stroke();
+}
 
-  // Fill area below price line with gradient
-  ctx.lineTo(w, h);
-  ctx.lineTo(0, h);
-  ctx.closePath();
-  var grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, 'rgba(139, 92, 246, 0.15)');
-  grad.addColorStop(1, 'rgba(139, 92, 246, 0)');
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // Draw current price dot
-  var lastX = w;
-  var lastY = h - ((displayCloses[displayCloses.length - 1] - minPrice) / range) * h;
-  ctx.fillStyle = '#8b5cf6';
-  ctx.beginPath();
-  ctx.arc(lastX - 4, lastY, 3, 0, Math.PI * 2);
-  ctx.fill();
+// ==========================================
+// DATE FORMATTING
+// ==========================================
+function formatDate(dateStr) {
+  if (!dateStr) { return 'N/A'; }
+  var parts = dateStr.split('-');
+  if (parts.length < 3) { return dateStr; }
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(parts[1]) - 1] + ' ' + parseInt(parts[2]) + ', ' + parts[0];
 }
 
 // ==========================================
@@ -1271,19 +1480,21 @@ function doSearch() {
   var dataPromise = resolved.isCrypto ? getCryptoData(resolved.symbol) : getStockData(resolved.symbol);
   var fearPromise = getFearGreed();
   var fundingPromise = resolved.isCrypto ? getFundingRate(resolved.symbol) : Promise.resolve(null);
+  var analystPromise = resolved.isCrypto ? Promise.resolve(null) : getAnalystData(resolved.symbol);
 
   dataPromise
     .then(function(data) {
       out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
-      return Promise.all([data, fearPromise, fundingPromise]);
+      return Promise.all([data, fearPromise, fundingPromise, analystPromise]);
     })
     .then(function(results) {
       out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Applying framework...</p></div>';
       var data = results[0];
       var fearGreed = results[1];
       var funding = results[2];
+      var analyst = results[3];
       var analysis = runAnalysis(data, fearGreed, funding);
-      renderAnalysis(data, analysis, fearGreed, funding);
+      renderAnalysis(data, analysis, fearGreed, funding, analyst);
     })
     .catch(function(err) {
       var errMsg = err.message || 'Unknown error';
