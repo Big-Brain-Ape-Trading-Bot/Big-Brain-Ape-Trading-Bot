@@ -506,7 +506,8 @@ var OWNER_ID = 8503471418;
 var INVOICE_LINKS = {
   'single': 'https://t.me/$s81y1tCnuUcxAQAAAI5HPAfwhE0',
   'unlimited': 'https://t.me/$UxHSBNCnuUcyAQAAeTmsnxZ3l9w',
-  'unlimitedplus': 'https://t.me/$0Dxf9NCnuUczAQAAZVaAmpVoXes'
+  'unlimitedplus': 'https://t.me/$0Dxf9NCnuUczAQAAZVaAmpVoXes',
+  'briefing': 'https://t.me/$_6U6JdCnuUc0AQAA7eIezXa7hXg'
 };
 
 function getUserId() {
@@ -599,6 +600,7 @@ function showPaywall() {
   html += '<div class="paywall-title">Free Analysis Used</div>';
   html += '<div class="paywall-desc">You have used your free analysis. Pay with Telegram Stars to unlock more analyses. No leaving the app.</div>';
   html += '<button class="paywall-btn" onclick="payStars(\'single\')">Pay <span class="paywall-stars">25 Stars</span> — One Analysis</button>';
+  html += '<button class="paywall-btn" style="background:rgba(255,184,77,.15);color:#FFB84D;border:1px solid #FFB84D" onclick="payStars(\'briefing\')">Pay <span class="paywall-stars">500 Stars</span> — Daily Briefing (30 days)</button>';
   html += '<button class="paywall-btn" style="background:rgba(139,92,246,.2);color:var(--accent);border:1px solid var(--accent)" onclick="payStars(\'unlimited\')">Pay <span class="paywall-stars">1000 Stars</span> — Unlimited (30 days)</button>';
   html += '<button class="paywall-btn" style="background:rgba(139,92,246,.2);color:var(--accent);border:1px solid var(--accent)" onclick="payStars(\'unlimitedplus\')">Pay <span class="paywall-stars">2000 Stars</span> — Unlimited+ (30 days)</button>';
   html += '<div style="font-size:11px;color:var(--text2);margin-top:12px">Or pay with USDC on Base — type in the chat</div>';
@@ -627,6 +629,10 @@ function payStars(tier) {
         setSubExpiry(30);
         if (tg.showAlert) { tg.showAlert('Unlimited+ activated for 30 days! Analyze away.'); }
         else { alert('Unlimited+ activated for 30 days!'); }
+      } else if (tier === 'briefing') {
+        try { localStorage.setItem('bba_briefing_sub', String(Date.now() + 30*24*60*60*1000)); } catch(e) {}
+        if (tg.showAlert) { tg.showAlert('Daily Briefing subscription activated! Briefings delivered every morning in chat.'); }
+        else { alert('Daily Briefing subscription activated! Briefings delivered every morning in chat.'); }
       }
       switchView('home');
     } else if (status === 'cancelled') {
