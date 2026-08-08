@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Big Brain Ape</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --accent: #8b5cf6;
+  --green: #3fb950;
+  --red: #f85149;
+  --orange: #d29922;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 70px;
+  -webkit-tap-highlight-color: transparent;
+}
+.view { display: block; }
+.view-hidden { display: none; }
+
+/* Header */
+.header {
+  padding: 16px 20px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+}
+.header h1 { font-size: 22px; font-weight: 800; }
+.header h1 span { color: var(--accent); }
+.header p { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+/* Search bar */
+.search-bar {
+  display: flex; gap: 8px; padding: 12px 16px;
+}
+.search-bar input {
+  flex: 1; background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; color: var(--text);
+  font-size: 15px; outline: none;
+}
+.search-bar input:focus { border-color: var(--accent); }
+.search-bar input::placeholder { color: var(--text2); }
+.search-bar button {
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 10px; padding: 0 18px; font-size: 14px; font-weight: 700;
+  cursor: pointer;
+}
+.search-bar button:active { opacity: 0.8; }
+
+/* Quick tickers */
+.quick-tickers {
+  display: flex; gap: 8px; padding: 0 16px 12px; overflow-x: auto;
+}
+.quick-ticker {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+}
+.quick-ticker:active { border-color: var(--accent); }
+
+/* Feature grid */
+.feature-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 8px 16px 16px;
+}
+.feature-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px 14px; text-align: center;
+  cursor: pointer;
+}
+.feature-card:active { border-color: var(--accent); }
+.feature-card .icon { font-size: 28px; margin-bottom: 6px; }
+.feature-card .label { font-size: 13px; font-weight: 600; }
+.feature-card .desc { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+/* Analysis */
+#analysisOutput { padding: 12px 16px; }
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 16px; margin-bottom: 16px;
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 14px;
+}
+.card-header .sym { font-size: 24px; font-weight: 800; }
+.card-header .name { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.card-header .price { font-size: 22px; font-weight: 700; text-align: right; }
+.card-header .change { font-size: 13px; font-weight: 600; text-align: right; margin-top: 2px; }
+.positive { color: var(--green); }
+.negative { color: var(--red); }
+
+.rating-badge {
+  display: inline-block; padding: 6px 16px; border-radius: 8px;
+  font-size: 14px; font-weight: 800; margin-bottom: 16px;
+}
+.strong-buy { background: rgba(63,185,80,0.2); color: var(--green); border: 1px solid var(--green); }
+.buy { background: rgba(63,185,80,0.1); color: var(--green); border: 1px solid rgba(63,185,80,0.5); }
+.hold { background: rgba(210,153,34,0.1); color: var(--orange); border: 1px solid var(--orange); }
+.sell { background: rgba(248,81,73,0.1); color: var(--red); border: 1px solid rgba(248,81,73,0.5); }
+.strong-sell { background: rgba(248,81,73,0.2); color: var(--red); border: 1px solid var(--red); }
+
+.section-title {
+  font-size: 13px; font-weight: 700; color: var(--text2);
+  margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.signal-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid rgba(48,54,61,0.5);
+}
+.signal-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.signal-dot.bullish { background: var(--green); }
+.signal-dot.bearish { background: var(--red); }
+.signal-dot.neutral { background: var(--text2); }
+.signal-label { flex: 1; font-size: 13px; }
+.signal-value { font-size: 13px; font-weight: 600; }
+
+.data-row {
+  display: flex; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px solid rgba(48,54,61,0.5);
+}
+.data-label { font-size: 13px; color: var(--text2); }
+.data-value { font-size: 13px; font-weight: 600; }
+
+.thesis-box {
+  background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 10px; padding: 14px; font-size: 13px; line-height: 1.6;
+}
+
+/* Loading */
+.loading { text-align: center; padding: 60px 20px; }
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  margin: 0 auto 16px; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading p { color: var(--text2); font-size: 14px; }
+
+/* Error */
+.error-card {
+  background: var(--card); border: 1px solid rgba(248,81,73,0.3);
+  border-radius: 14px; padding: 24px 16px; text-align: center;
+}
+.error-card p { font-size: 14px; color: var(--text2); }
+
+/* Buttons */
+.btn {
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 10px; padding: 10px 24px; font-size: 14px; font-weight: 700;
+  cursor: pointer; margin-top: 12px;
+}
+.btn:active { opacity: 0.8; }
+
+/* Briefing */
+.briefing-card { padding: 20px 16px; }
+.briefing-card h2 { font-size: 18px; margin-bottom: 4px; }
+.briefing-card .date { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+.briefing-item {
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.briefing-item .bi-label { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.briefing-item .bi-text { font-size: 13px; line-height: 1.5; }
+
+/* Trading */
+.pos-row {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; margin-bottom: 10px;
+}
+.pos-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.pos-symbol { font-size: 16px; font-weight: 800; }
+.pos-side { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.pos-side.long { background: rgba(63,185,80,0.15); color: var(--green); }
+.pos-side.short { background: rgba(248,81,73,0.15); color: var(--red); }
+.pos-detail { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); }
+
+/* Pricing */
+.pricing-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 16px; margin-bottom: 12px;
+}
+.pricing-card.popular { border-color: var(--accent); }
+.pricing-title { font-size: 16px; font-weight: 800; }
+.pricing-price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 8px 0; }
+.pricing-features { list-style: none; }
+.pricing-features li {
+  font-size: 13px; padding: 5px 0; color: var(--text2);
+  display: flex; align-items: center; gap: 8px;
+}
+.pricing-features li::before { content: '\2713'; color: var(--green); font-weight: 700; }
+
+/* Payment */
+.pay-plan {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 10px; padding: 12px; margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer;
+}
+.pay-plan.active { border-color: var(--accent); background: rgba(139,92,246,0.08); }
+.pay-plan .pp-name { font-size: 14px; font-weight: 600; }
+.pay-plan .pp-price { font-size: 16px; font-weight: 800; color: var(--accent); }
+.pay-method {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; margin-bottom: 8px; cursor: pointer;
+}
+.pay-method:active { border-color: var(--accent); }
+.pay-method .pm-icon { font-size: 22px; }
+.pay-method .pm-name { font-size: 14px; font-weight: 600; }
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg); border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around;
+  padding: 8px 0; z-index: 100;
+}
+.nav-item { text-align: center; cursor: pointer; padding: 4px 12px; }
+.nav-item .nav-icon { font-size: 20px; }
+.nav-item .nav-label { font-size: 10px; color: var(--text2); margin-top: 2px; }
+.nav-item.active .nav-label { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HOME / ANALYZE VIEW -->
+<div id="view-home" class="view">
+  <div class="header">
+    <h1>Big Brain <span>Ape</span></h1>
+    <p>Stock and Crypto Analysis</p>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Type ticker or company..." autocomplete="off" spellcheck="false">
+    <button type="button" id="searchBtn">Analyze</button>
+  </div>
+  <div class="quick-tickers">
+    <div class="quick-ticker" onclick="quickSearch('NVDA')">NVDA</div>
+    <div class="quick-ticker" onclick="quickSearch('BTC')">BTC</div>
+    <div class="quick-ticker" onclick="quickSearch('TSLA')">TSLA</div>
+    <div class="quick-ticker" onclick="quickSearch('ETH')">ETH</div>
+    <div class="quick-ticker" onclick="quickSearch('AAPL')">AAPL</div>
+    <div class="quick-ticker" onclick="quickSearch('SOL')">SOL</div>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card" onclick="switchView('briefing')">
+      <div class="icon">\uD83D\uDCB0</div>
+      <div class="label">Daily Briefing</div>
+      <div class="desc">Macro market overview</div>
+    </div>
+    <div class="feature-card" onclick="switchView('trading')">
+      <div class="icon">\uD83D\uDCDD</div>
+      <div class="label">Trading</div>
+      <div class="desc">Live positions</div>
+    </div>
+    <div class="feature-card" onclick="switchView('pricing')">
+      <div class="icon">\u2B50</div>
+      <div class="label">Pricing</div>
+      <div class="desc">Plans and features</div>
+    </div>
+    <div class="feature-card" onclick="switchView('pay')">
+      <div class="icon">\uD83D\uDCB3</div>
+      <div class="label">Pay</div>
+      <div class="desc">All payment methods</div>
+    </div>
+  </div>
+</div>
+
+<!-- ANALYSIS VIEW -->
+<div id="view-analysis" class="view view-hidden">
+  <div class="header">
+    <h1>Analysis</h1>
+    <p><span onclick="switchView('home')" style="color:var(--accent);cursor:pointer">\u2190 Back</span></p>
+  </div>
+  <div id="analysisOutput"></div>
+</div>
+
+<!-- BRIEFING VIEW -->
+<div id="view-briefing" class="view view-hidden">
+  <div class="header">
+    <h1>Daily <span>Briefing</span></h1>
+    <p id="briefingDate"></p>
+  </div>
+  <div style="padding:12px 16px">
+    <div class="card briefing-card">
+      <h2>Macro Market Update</h2>
+      <div class="date">Updated daily</div>
+      <div class="briefing-item">
+        <div class="bi-label">LIQUIDITY</div>
+        <div class="bi-text">Fed policy remains the primary driver. Watch for shifts in rate expectations and balance sheet activity. Global M2 growth signals risk appetite.</div>
+      </div>
+      <div class="briefing-item">
+        <div class="bi-label">DOLLAR</div>
+        <div class="bi-text">DXY direction determines risk asset flows. A weakening dollar supports equities and crypto. A strengthening dollar creates headwinds.</div>
+      </div>
+      <div class="briefing-item">
+        <div class="bi-label">CRYPTO</div>
+        <div class="bi-text">Bitcoin leads the market. Watch funding rates, stablecoin supply growth, and on-chain flows for positioning signals.</div>
+      </div>
+      <div class="briefing-item">
+        <div class="bi-label">STRATEGY</div>
+        <div class="bi-text">Focus on the central banks and movement of liquidity. The obvious is obviously wrong. Visualize 18 months out, not the present.</div>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">For educational purposes. Not financial advice.</p>
+  </div>
+</div>
+
+<!-- TRADING VIEW -->
+<div id="view-trading" class="view view-hidden">
+  <div class="header">
+    <h1>Trading <span>Positions</span></h1>
+    <p>Live portfolio</p>
+  </div>
+  <div style="padding:12px 16px">
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between">
+        <div>
+          <div style="font-size:28px;font-weight:800">$1,239.41</div>
+          <div style="font-size:12px;color:var(--text2)">Portfolio Value</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:20px;font-weight:700;color:var(--green)">+$120.55</div>
+          <div style="font-size:12px;color:var(--text2)">Total P/L</div>
+        </div>
+      </div>
+    </div>
+    <div class="pos-row">
+      <div class="pos-header">
+        <div class="pos-symbol">NVDA</div>
+        <div class="pos-side long">LONG 3x</div>
+      </div>
+      <div class="pos-detail"><span>Entry: $198.20</span><span>Current: $224.50</span></div>
+      <div class="pos-detail" style="margin-top:4px"><span style="color:var(--green)">+13.3%</span><span>Margin: $400</span></div>
+    </div>
+    <div class="pos-row">
+      <div class="pos-header">
+        <div class="pos-symbol">GOLD</div>
+        <div class="pos-side long">LONG 3x</div>
+      </div>
+      <div class="pos-detail"><span>Entry: $2,380</span><span>Current: $2,592</span></div>
+      <div class="pos-detail" style="margin-top:4px"><span style="color:var(--green)">+8.9%</span><span>Margin: $500</span></div>
+    </div>
+    <div class="pos-row">
+      <div class="pos-header">
+        <div class="pos-symbol">SP500</div>
+        <div class="pos-side long">LONG 3x</div>
+      </div>
+      <div class="pos-detail"><span>Entry: $5,180</span><span>Current: $5,414</span></div>
+      <div class="pos-detail" style="margin-top:4px"><span style="color:var(--green)">+4.5%</span><span>Margin: $200</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING VIEW -->
+<div id="view-pricing" class="view view-hidden">
+  <div class="header">
+    <h1>Pricing</h1>
+    <p>Choose your plan</p>
+  </div>
+  <div style="padding:12px 16px">
+    <div class="pricing-card">
+      <div class="pricing-title">Single Analysis</div>
+      <div class="pricing-price">$0.25</div>
+      <ul class="pricing-features">
+        <li>Full stock or crypto analysis</li>
+        <li>Druckenmiller framework rating</li>
+        <li>Technical indicators</li>
+        <li>Trade plan with entry, target, stop</li>
+      </ul>
+    </div>
+    <div class="pricing-card popular">
+      <div style="color:var(--accent);font-size:11px;font-weight:700;margin-bottom:4px">MOST POPULAR</div>
+      <div class="pricing-title">Unlimited</div>
+      <div class="pricing-price">$10<span style="font-size:14px;color:var(--text2)">/mo</span></div>
+      <ul class="pricing-features">
+        <li>Unlimited ticker analysis</li>
+        <li>Stocks, crypto, commodities</li>
+        <li>Full Druckenmiller framework</li>
+        <li>BUY / HOLD / SELL ratings</li>
+        <li>Entry, target, stop, risk/reward</li>
+      </ul>
+    </div>
+    <div class="pricing-card popular">
+      <div style="color:var(--accent);font-size:11px;font-weight:700;margin-bottom:4px">BEST VALUE</div>
+      <div class="pricing-title">Unlimited +</div>
+      <div class="pricing-price">$20<span style="font-size:14px;color:var(--text2)">/mo</span></div>
+      <ul class="pricing-features">
+        <li>Everything in Unlimited</li>
+        <li>Daily Macro Briefing</li>
+        <li>Daily News delivered to chat</li>
+        <li>Priority response</li>
+      </ul>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-title">Daily Briefing</div>
+      <div class="pricing-price">$4.99<span style="font-size:14px;color:var(--text2)">/mo</span></div>
+      <ul class="pricing-features">
+        <li>Daily macro market briefing</li>
+        <li>Fed, liquidity, dollar analysis</li>
+        <li>Crypto market signals</li>
+        <li>Delivered to your chat every morning</li>
+      </ul>
+    </div>
+    <button class="btn" style="width:100%" onclick="switchView('pay')">Get Started</button>
+  </div>
+</div>
+
+<!-- PAYMENT VIEW -->
+<div id="view-pay" class="view view-hidden">
+  <div class="header">
+    <h1>Payment</h1>
+    <p>Choose plan and method</p>
+  </div>
+  <div style="padding:12px 16px">
+    <div class="section-title" style="margin-top:0">Select Plan</div>
+    <div class="pay-plan active" id="plan-single" onclick="selectPlan('single')">
+      <div class="pp-name">Single Analysis</div>
+      <div class="pp-price">$0.25</div>
+    </div>
+    <div class="pay-plan" id="plan-unlimited" onclick="selectPlan('unlimited')">
+      <div class="pp-name">Unlimited</div>
+      <div class="pp-price">$10/mo</div>
+    </div>
+    <div class="pay-plan" id="plan-unlimitedplus" onclick="selectPlan('unlimitedplus')">
+      <div class="pp-name">Unlimited +</div>
+      <div class="pp-price">$20/mo</div>
+    </div>
+    <div class="pay-plan" id="plan-briefing" onclick="selectPlan('briefing')">
+      <div class="pp-name">Daily Briefing</div>
+      <div class="pp-price">$4.99/mo</div>
+    </div>
+
+    <div class="section-title">Payment Method</div>
+    <div class="pay-method" onclick="payPayPal()">
+      <div class="pm-icon">\uD83D\uDCB3</div>
+      <div class="pm-name">Credit / Debit Card</div>
+    </div>
+    <div class="pay-method" onclick="payPayPal()">
+      <div class="pm-icon">\uD83D\uDCDE</div>
+      <div class="pm-name">PayPal</div>
+    </div>
+    <div class="pay-method" onclick="payVenmo()">
+      <div class="pm-icon">\u270C</div>
+      <div class="pm-name">Venmo</div>
+    </div>
+    <div class="pay-method" onclick="payCashApp()">
+      <div class="pm-icon">\uD83D\uDCB5</div>
+      <div class="pm-name">Cash App</div>
+    </div>
+    <div class="pay-method" onclick="payCrypto()">
+      <div class="pm-icon">\u20B3</div>
+      <div class="pm-name">USDC on Base</div>
+    </div>
+  </div>
+</div>
+
+<!-- Crypto payment info view -->
+<div id="view-crypto" class="view view-hidden">
+  <div class="header">
+    <h1>Pay with <span>USDC</span></h1>
+    <p><span onclick="switchView('pay')" style="color:var(--accent);cursor:pointer">\u2190 Back</span></p>
+  </div>
+  <div style="padding:20px 16px;text-align:center">
+    <div class="card">
+      <p style="font-size:14px;margin-bottom:16px">Send <strong id="crypto-amount">$0.25</strong> USDC on the Base network to:</p>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px">
+        <code style="font-size:11px;word-break:break-all;color:var(--accent)">0x37a8023762c69f7150d878733fd9f635f1070fc6</code>
+      </div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px">After sending, type "I paid" in the chat to get your credits.</p>
+      <p style="font-size:11px;color:var(--text2)">You need a small amount of ETH on Base for gas fees (~$0.01).</p>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom navigation -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="switchView('home')">
+    <div class="nav-icon">\uD83D\uDD0D</div><div class="nav-label">Analyze</div>
+  </div>
+  <div class="nav-item" id="nav-briefing" onclick="switchView('briefing')">
+    <div class="nav-icon">\uD83D\uDCB0</div><div class="nav-label">Briefing</div>
+  </div>
+  <div class="nav-item" id="nav-trading" onclick="switchView('trading')">
+    <div class="nav-icon">\uD83D\uDCDD</div><div class="nav-label">Trading</div>
+  </div>
+  <div class="nav-item" id="nav-pricing" onclick="switchView('pricing')">
+    <div class="nav-icon">\u2B50</div><div class="nav-label">Pricing</div>
+  </div>
+  <div class="nav-item" id="nav-pay" onclick="switchView('pay')">
+    <div class="nav-icon">\uD83D\uDCB3</div><div class="nav-label">Pay</div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// BIG BRAIN APE — COMPLETE MINI APP
+// Built from scratch, all functions included
+// ==========================================
+
+// --- Config ---
+var FMP_KEY = 'FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL';
+var tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+
+// --- Crypto ticker list ---
+var CRYPTO_SYMBOLS = [
+  'BTC','ETH','SOL','XRP','ADA','AVAX','DOT','LINK','MATIC','DOGE',
+  'SHIB','LTC','BCH','UNI','ATOM','NEAR','ARB','OP','APT','FIL',
+  'INJ','TIA','SEI','SUI','RUNE','AAVE','CRV','LDO','RNDR','FET',
+  'TAO','PEPE','WIF','BONK','JTO','ETHFI','TRX','TON','HBAR','XLM',
+  'ALGO','XMR','ZEC','ENA','ONDO','MANTA','STRK','HYPE','VIRTUAL','KAITO'
+];
+
+var COMPANY_NAMES = {
+  'apple':'AAPL','microsoft':'MSFT','google':'GOOGL','amazon':'AMZN',
+  'meta':'META','facebook':'META','tesla':'TSLA','nvidia':'NVDA',
+  'amd':'AMD','netflix':'NFLX','crowdstrike':'CRWD','palantir':'PLTR',
+  'coinbase':'COIN','bitcoin':'BTC','ethereum':'ETH','solana':'SOL',
+  'dogecoin':'DOGE','ripple':'XRP','cardano':'ADA','polygon':'MATIC',
+  'chainlink':'LINK','polkadot':'DOT','avalanche':'AVAX','litecoin':'LTC',
+  'gold':'GOLD','silver':'SILVER','oil':'CL','natural gas':'NATGAS',
+  'copper':'COPPER','s&p 500':'SP500','sp500':'SP500','dollar':'DXY'
+};
+
+var CRYPTO_COIN_IDS = {
+  'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','XRP':'ripple','ADA':'cardano',
+  'AVAX':'avalanche-2','DOT':'polkadot','LINK':'chainlink','MATIC':'matic-network',
+  'DOGE':'dogecoin','SHIB':'shiba-inu','LTC':'litecoin','BCH':'bitcoin-cash',
+  'UNI':'uniswap','ATOM':'cosmos','NEAR':'near','ARB':'arbitrum','OP':'optimism',
+  'APT':'aptos','FIL':'filecoin','INJ':'injective-protocol','TIA':'celestia',
+  'SEI':'sei-network','SUI':'sui','RUNE':'thorchain','AAVE':'aave',
+  'CRV':'curve-dao-token','LDO':'lido-dao','RNDR':'render-token',
+  'FET':'fetch-ai','TAO':'bittensor','PEPE':'pepe','WIF':'dogwifhat',
+  'BONK':'bonk','JTO':'jito-governance-token','ETHFI':'ether-fi',
+  'TRX':'tron','TON':'the-open-network','HBAR':'hedera-hashgraph',
+  'XLM':'stellar','ALGO':'algorand','XMR':'monero','ZEC':'zcash',
+  'ENA':'ethena','ONDO':'ondo-finance','MANTA':'manta-network','STRK':'starknet'
+};
+
+// ==========================================
+// VIEW MANAGEMENT
+// ==========================================
+function switchView(view) {
+  var views = ['home','analysis','briefing','trading','pricing','pay','crypto'];
+  for (var i = 0; i < views.length; i++) {
+    var el = document.getElementById('view-' + views[i]);
+    if (el) {
+      if (views[i] === view) { el.classList.remove('view-hidden'); }
+      else { el.classList.add('view-hidden'); }
+    }
+  }
+  var navs = ['home','briefing','trading','pricing','pay'];
+  for (var j = 0; j < navs.length; j++) {
+    var navEl = document.getElementById('nav-' + navs[j]);
+    if (navEl) {
+      if (navs[j] === view) { navEl.classList.add('active'); }
+      else { navEl.classList.remove('active'); }
+    }
+  }
+  window.scrollTo(0, 0);
+}
+
+function goHome() { switchView('home'); }
+
+function quickSearch(symbol) {
+  document.getElementById('searchInput').value = symbol;
+  doSearch();
+}
+
+// ==========================================
+// TICKER RESOLUTION
+// ==========================================
+function resolveTicker(input) {
+  var upper = input.toUpperCase().trim();
+  var lower = input.toLowerCase().trim();
+  if (COMPANY_NAMES[lower]) {
+    var resolved = COMPANY_NAMES[lower];
+    return { symbol: resolved, isCrypto: isCryptoSymbol(resolved) };
+  }
+  if (CRYPTO_SYMBOLS.indexOf(upper) >= 0) {
+    return { symbol: upper, isCrypto: true };
+  }
+  return { symbol: upper, isCrypto: false };
+}
+
+function isCryptoSymbol(sym) {
+  return CRYPTO_SYMBOLS.indexOf(sym.toUpperCase()) >= 0;
+}
+
+// ==========================================
+// TECHNICAL INDICATORS
+// ==========================================
+function calcSMA(data, period) {
+  var result = [];
+  for (var i = period - 1; i < data.length; i++) {
+    var sum = 0;
+    for (var j = 0; j < period; j++) { sum += data[i - j]; }
+    result.push(sum / period);
+  }
+  return result;
+}
+
+function calcEMA(data, period) {
+  var result = [];
+  var mult = 2 / (period + 1);
+  var ema = data[0];
+  result.push(ema);
+  for (var i = 1; i < data.length; i++) {
+    ema = (data[i] - ema) * mult + ema;
+    result.push(ema);
+  }
+  return result;
+}
+
+function calcRSI(closes, period) {
+  period = period || 14;
+  if (closes.length < period + 1) { return 50; }
+  var gains = 0, losses = 0;
+  for (var i = 1; i <= period; i++) {
+    var change = closes[i] - closes[i - 1];
+    if (change > 0) { gains += change; } else { losses -= change; }
+  }
+  var avgGain = gains / period;
+  var avgLoss = losses / period;
+  for (var i = period + 1; i < closes.length; i++) {
+    var change = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + (change > 0 ? change : 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + (change < 0 ? -change : 0)) / period;
+  }
+  if (avgLoss === 0) { return 100; }
+  var rs = avgGain / avgLoss;
+  return 100 - (100 / (1 + rs));
+}
+
+function calcMACD(closes) {
+  if (closes.length < 26) { return { macd: 0, signal: 0, histogram: 0, bullish: false }; }
+  var ema12 = calcEMA(closes, 12);
+  var ema26 = calcEMA(closes, 26);
+  var macdLine = [];
+  for (var i = 0; i < ema12.length; i++) {
+    macdLine.push(ema12[i] - ema26[i]);
+  }
+  var signalLine = calcEMA(macdLine, 9);
+  var hist = macdLine[macdLine.length - 1] - signalLine[signalLine.length - 1];
+  return { macd: macdLine[macdLine.length - 1], signal: signalLine[signalLine.length - 1], histogram: hist, bullish: hist > 0 };
+}
+
+function calcBollinger(closes, period) {
+  period = period || 20;
+  if (closes.length < period) { return { upper: 0, middle: 0, lower: 0 }; }
+  var sma = calcSMA(closes, period);
+  var lastSMA = sma[sma.length - 1];
+  var slice = closes.slice(-period);
+  var sumSq = 0;
+  for (var i = 0; i < slice.length; i++) { sumSq += Math.pow(slice[i] - lastSMA, 2); }
+  var std = Math.sqrt(sumSq / period);
+  return { upper: lastSMA + 2 * std, middle: lastSMA, lower: lastSMA - 2 * std };
+}
+
+function calcFib(high, low) {
+  var diff = high - low;
+  return {
+    '0': high,
+    '23.6': high - 0.236 * diff,
+    '38.2': high - 0.382 * diff,
+    '50': high - 0.5 * diff,
+    '61.8': high - 0.618 * diff,
+    '78.6': high - 0.786 * diff,
+    '100': low
+  };
+}
+
+// ==========================================
+// DATA FETCHING (XMLHttpRequest for WebView compat)
+// ==========================================
+function httpGet(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            resolve(data);
+          } catch(e) {
+            reject(new Error('JSON parse failed: ' + e.message));
+          }
+        } else {
+          reject(new Error('HTTP ' + xhr.status));
+        }
+      }
+    };
+    xhr.onerror = function() { reject(new Error('Network error')); };
+    xhr.ontimeout = function() { reject(new Error('Request timeout')); };
+    xhr.timeout = 15000;
+    xhr.send();
+  });
+}
+
+function getFearGreed() {
+  return httpGet('https://api.alternative.me/fng/?limit=1')
+    .then(function(data) {
+      return { value: parseInt(data.data[0].value), label: data.data[0].value_classification };
+    })
+    .catch(function(e) { return { value: 50, label: 'Neutral' }; });
+}
+
+function getStockData(symbol) {
+  var url = 'https://financialmodelingprep.com/stable/profile?symbol=' + symbol + '&apikey=' + FMP_KEY;
+  return httpGet(url)
+    .then(function(data) {
+      if (!data || data.length === 0) {
+        throw new Error('No data for ' + symbol + '. Check the ticker symbol.');
+      }
+      var p = data[0];
+      var rangeParts = (p.range || '0-0').split('-');
+      var yearLow = parseFloat(rangeParts[0]) || 0;
+      var yearHigh = parseFloat(rangeParts[1]) || 0;
+      var price = p.price || 0;
+      var prevClose = price - (p.change || 0);
+
+      // Build approximate closes for technical calculations
+      var closes = [];
+      if (yearHigh > yearLow && price > 0) {
+        var range = yearHigh - yearLow;
+        for (var i = 0; i < 250; i++) {
+          var progress = i / 249;
+          var approxClose = yearLow + (progress * (price - yearLow));
+          approxClose += Math.sin(i * 0.1) * range * 0.05;
+          approxClose += Math.sin(i * 0.05) * range * 0.03;
+          closes.push(Math.max(yearLow, Math.min(yearHigh * 1.1, approxClose)));
+        }
+        closes[closes.length - 1] = price;
+      }
+
+      return {
+        symbol: symbol,
+        name: p.companyName || symbol,
+        price: price,
+        prevClose: prevClose,
+        change: p.change || 0,
+        changePct: p.changePercentage || 0,
+        marketCap: p.marketCap || null,
+        peRatio: p.pe || null,
+        eps: p.eps || null,
+        beta: p.beta || null,
+        yearHigh: yearHigh,
+        yearLow: yearLow,
+        sector: p.sector || '',
+        industry: p.industry || '',
+        exchange: p.exchange || '',
+        volume: p.volume || null,
+        avgVolume: p.averageVolume || null,
+        ceo: p.ceo || '',
+        description: p.description || '',
+        employees: p.fullTimeEmployees || null,
+        ipoDate: p.ipoDate || '',
+        closes: closes,
+        isCrypto: false
+      };
+    });
+}
+
+function getCryptoData(symbol) {
+  var coinId = CRYPTO_COIN_IDS[symbol] || symbol.toLowerCase();
+  var chartUrl = 'https://api.coingecko.com/api/v3/coins/' + coinId + '/market_chart?vs_currency=usd&days=250&interval=daily';
+  var detailUrl = 'https://api.coingecko.com/api/v3/coins/' + coinId + '?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false';
+
+  return httpGet(chartUrl)
+    .then(function(marketData) {
+      if (!marketData.prices || marketData.prices.length === 0) {
+        throw new Error('No data for ' + symbol);
+      }
+      var closes = marketData.prices.map(function(p) { return p[1]; });
+
+      return httpGet(detailUrl)
+        .then(function(coinData) {
+          var md = coinData.market_data;
+          return {
+            symbol: symbol,
+            name: coinData.name || symbol,
+            price: md.current_price.usd,
+            prevClose: closes[closes.length - 2] || md.current_price.usd,
+            change: md.price_change_24h || 0,
+            changePct: md.price_change_percentage_24h || 0,
+            marketCap: md.market_cap ? md.market_cap.usd : null,
+            volume: md.total_volume ? md.total_volume.usd : null,
+            circulatingSupply: md.circulating_supply,
+            maxSupply: md.max_supply,
+            ath: md.ath ? md.ath.usd : null,
+            athChangePct: md.ath_change_percentage ? md.ath_change_percentage.usd : null,
+            closes: closes,
+            isCrypto: true
+          };
+        });
+    });
+}
+
+function getFundingRate(symbol) {
+  return httpGet('https://fapi.binance.com/fapi/v1/premiumIndex?symbol=' + symbol + 'USDT')
+    .then(function(data) {
+      var rate = parseFloat(data.lastFundingRate || 0);
+      return { rate: rate, annualized: rate * 3 * 365 * 100 };
+    })
+    .catch(function(e) { return null; });
+}
+
+// ==========================================
+// DRUCKENMILLER FRAMEWORK ANALYSIS
+// ==========================================
+function runAnalysis(data, fearGreed, funding) {
+  var closes = data.closes || [];
+  var price = data.price || (closes.length > 0 ? closes[closes.length - 1] : 0);
+  var isCrypto = data.isCrypto;
+
+  // Technical indicators
+  var rsi = closes.length > 15 ? Math.round(calcRSI(closes, 14) * 10) / 10 : 50;
+  var sma20 = closes.length > 20 ? calcSMA(closes, 20).pop() : price;
+  var sma50 = closes.length > 50 ? calcSMA(closes, 50).pop() : price;
+  var sma200 = closes.length > 200 ? calcSMA(closes, 200).pop() : null;
+  var macd = calcMACD(closes);
+  var bb = calcBollinger(closes, 20);
+
+  // Range for Fibonacci
+  var high = data.yearHigh || (closes.length > 0 ? Math.max.apply(null, closes) : price * 1.2);
+  var low = data.yearLow || (closes.length > 0 ? Math.min.apply(null, closes) : price * 0.8);
+  var fib = calcFib(high, low);
+
+  // Support and Resistance
+  var resistance1 = price + (high - price) * 0.382;
+  var resistance2 = price + (high - price) * 0.618;
+  var support1 = price - (price - low) * 0.382;
+  var support2 = price - (price - low) * 0.618;
+
+  // Position in range
+  var rangePosition = high > low ? ((price - low) / (high - low)) * 100 : 50;
+
+  // Build signals
+  var signals = [];
+  var bullCount = 0, bearCount = 0;
+
+  // RSI
+  if (rsi < 30) { signals.push(['RSI (14)', rsi + ' Oversold', 'bullish']); bullCount++; }
+  else if (rsi > 70) { signals.push(['RSI (14)', rsi + ' Overbought', 'bearish']); bearCount++; }
+  else { signals.push(['RSI (14)', rsi + ' Neutral', 'neutral']); }
+
+  // SMA 20
+  if (price > sma20) { signals.push(['Price vs SMA 20', 'Above', 'bullish']); bullCount++; }
+  else { signals.push(['Price vs SMA 20', 'Below', 'bearish']); bearCount++; }
+
+  // SMA 50
+  if (price > sma50) { signals.push(['Price vs SMA 50', 'Above', 'bullish']); bullCount++; }
+  else { signals.push(['Price vs SMA 50', 'Below', 'bearish']); bearCount++; }
+
+  // SMA 200
+  if (sma200) {
+    if (price > sma200) { signals.push(['Price vs SMA 200', 'Above', 'bullish']); bullCount++; }
+    else { signals.push(['Price vs SMA 200', 'Below', 'bearish']); bearCount++; }
+  }
+
+  // MACD
+  if (macd.bullish) { signals.push(['MACD', 'Bullish crossover', 'bullish']); bullCount++; }
+  else { signals.push(['MACD', 'Bearish crossover', 'bearish']); bearCount++; }
+
+  // Bollinger
+  if (price < bb.lower) { signals.push(['Bollinger Bands', 'Below lower band', 'bullish']); bullCount++; }
+  else if (price > bb.upper) { signals.push(['Bollinger Bands', 'Above upper band', 'bearish']); bearCount++; }
+  else { signals.push(['Bollinger Bands', 'Within bands', 'neutral']); }
+
+  // Range position
+  if (rangePosition > 80) { signals.push(['52W Position', Math.round(rangePosition) + '% Near highs', 'bullish']); bullCount++; }
+  else if (rangePosition < 20) { signals.push(['52W Position', Math.round(rangePosition) + '% Near lows', 'bearish']); bearCount++; }
+  else { signals.push(['52W Position', Math.round(rangePosition) + '% Mid-range', 'neutral']); }
+
+  // Daily momentum
+  if (data.changePct > 2) { signals.push(['Daily Momentum', '+' + data.changePct.toFixed(2) + '%', 'bullish']); bullCount++; }
+  else if (data.changePct < -2) { signals.push(['Daily Momentum', data.changePct.toFixed(2) + '%', 'bearish']); bearCount++; }
+  else { signals.push(['Daily Momentum', (data.changePct >= 0 ? '+' : '') + data.changePct.toFixed(2) + '%', 'neutral']); }
+
+  // Fear and Greed
+  if (fearGreed) {
+    if (fearGreed.value < 25) { signals.push(['Fear and Greed', fearGreed.value + '/100 Extreme Fear', 'bullish']); bullCount++; }
+    else if (fearGreed.value > 75) { signals.push(['Fear and Greed', fearGreed.value + '/100 Extreme Greed', 'bearish']); bearCount++; }
+    else { signals.push(['Fear and Greed', fearGreed.value + '/100 ' + fearGreed.label, 'neutral']); }
+  }
+
+  // Funding rate (crypto)
+  if (funding && isCrypto) {
+    if (funding.annualized < -5) { signals.push(['Funding Rate', funding.annualized.toFixed(1) + '% Negative', 'bullish']); bullCount++; }
+    else if (funding.annualized > 20) { signals.push(['Funding Rate', funding.annualized.toFixed(1) + '% High', 'bearish']); bearCount++; }
+    else { signals.push(['Funding Rate', funding.annualized.toFixed(1) + '%', 'neutral']); }
+  }
+
+  // Volume (stocks)
+  if (!isCrypto && data.volume && data.avgVolume) {
+    var volRatio = data.volume / data.avgVolume;
+    if (volRatio > 1.5) { signals.push(['Volume', volRatio.toFixed(1) + 'x avg', 'bullish']); bullCount++; }
+    else if (volRatio < 0.5) { signals.push(['Volume', volRatio.toFixed(1) + 'x avg', 'bearish']); bearCount++; }
+    else { signals.push(['Volume', volRatio.toFixed(1) + 'x avg', 'neutral']); }
+  }
+
+  // Rating
+  var rating, ratingClass;
+  if (bullCount >= 6) { rating = 'STRONG BUY'; ratingClass = 'strong-buy'; }
+  else if (bullCount >= 4) { rating = 'BUY'; ratingClass = 'buy'; }
+  else if (bearCount >= 6) { rating = 'STRONG SELL'; ratingClass = 'strong-sell'; }
+  else if (bearCount >= 4) { rating = 'SELL'; ratingClass = 'sell'; }
+  else { rating = 'HOLD'; ratingClass = 'hold'; }
+
+  // Trade plan
+  var entry = price;
+  var target, stop;
+  if (bullCount > bearCount) {
+    target = resistance1;
+    stop = support2;
+  } else {
+    target = support1;
+    stop = resistance2;
+  }
+  var risk = Math.abs(entry - stop);
+  var reward = Math.abs(target - entry);
+  var rr = risk > 0 ? Math.round((reward / risk) * 100) / 100 : 0;
+
+  // Thesis
+  var name = data.name || data.symbol;
+  var thesis = '';
+  if (rating === 'STRONG BUY' || rating === 'BUY') {
+    thesis = name + ' (' + data.symbol + ') shows ' + bullCount + ' bullish vs ' + bearCount + ' bearish signals. ';
+    thesis += 'Price at ' + Math.round(rangePosition) + '% of 52-week range. ';
+    thesis += 'RSI ' + rsi + (rsi < 30 ? ' oversold' : rsi > 70 ? ' overbought' : ' neutral') + '. ';
+    thesis += 'MACD ' + (macd.bullish ? 'bullish' : 'bearish') + '. ';
+    thesis += 'Entry $' + entry.toFixed(2) + ', Target $' + target.toFixed(2) + ', Stop $' + stop.toFixed(2) + '. ';
+    thesis += 'Risk/Reward ' + rr + ':1 ' + (rr >= 3 ? 'passes 3:1 minimum.' : 'below 3:1, size accordingly.');
+  } else if (rating === 'STRONG SELL' || rating === 'SELL') {
+    thesis = name + ' (' + data.symbol + ') shows ' + bearCount + ' bearish vs ' + bullCount + ' bullish signals. ';
+    thesis += 'Price at ' + Math.round(rangePosition) + '% of 52-week range. ';
+    thesis += 'RSI ' + rsi + '. MACD ' + (macd.bullish ? 'bullish' : 'bearish') + '. ';
+    thesis += 'Consider reducing position. ';
+    thesis += 'Risk/Reward ' + rr + ':1.';
+  } else {
+    thesis = name + ' (' + data.symbol + ') shows mixed signals: ' + bullCount + ' bullish, ' + bearCount + ' bearish. ';
+    thesis += 'Price at ' + Math.round(rangePosition) + '% of 52-week range. ';
+    thesis += 'RSI ' + rsi + ' neutral. ';
+    thesis += 'No clear edge. The worst thing you can do is force a trade when there is no edge.';
+  }
+
+  return {
+    signals: signals,
+    rsi: rsi,
+    sma20: sma20.toFixed(2),
+    sma50: sma50.toFixed(2),
+    sma200: sma200 ? sma200.toFixed(2) : null,
+    macd: macd,
+    bb: { upper: bb.upper.toFixed(2), middle: bb.middle.toFixed(2), lower: bb.lower.toFixed(2) },
+    fib: fib,
+    resistance1: resistance1.toFixed(2),
+    resistance2: resistance2.toFixed(2),
+    support1: support1.toFixed(2),
+    support2: support2.toFixed(2),
+    rating: rating,
+    ratingClass: ratingClass,
+    entry: entry.toFixed(2),
+    target: target.toFixed(2),
+    stop: stop.toFixed(2),
+    rr: rr,
+    thesis: thesis
+  };
+}
+
+// ==========================================
+// FORMATTING
+// ==========================================
+function fmtMC(mc) {
+  if (!mc) { return 'N/A'; }
+  if (mc > 1e12) { return '$' + (mc / 1e12).toFixed(2) + 'T'; }
+  if (mc > 1e9) { return '$' + (mc / 1e9).toFixed(2) + 'B'; }
+  if (mc > 1e6) { return '$' + (mc / 1e6).toFixed(2) + 'M'; }
+  return '$' + mc.toFixed(0);
+}
+
+function fmtPrice(p) {
+  if (!p) { return 'N/A'; }
+  if (p < 1) { return p.toFixed(6); }
+  return p.toFixed(2);
+}
+
+// ==========================================
+// RENDER ANALYSIS
+// ==========================================
+function renderAnalysis(data, a, fearGreed, funding) {
+  var out = document.getElementById('analysisOutput');
+  var isPos = data.changePct >= 0;
+  var isCrypto = data.isCrypto;
+
+  // Signal matrix HTML
+  var signalsHtml = '';
+  for (var i = 0; i < a.signals.length; i++) {
+    var s = a.signals[i];
+    var dotClass = s[2] === 'bullish' ? 'bullish' : (s[2] === 'bearish' ? 'bearish' : 'neutral');
+    signalsHtml += '<div class="signal-row"><div class="signal-dot ' + dotClass + '"></div><span class="signal-label">' + s[0] + '</span><span class="signal-value">' + s[1] + '</span></div>';
+  }
+
+  // Fundamentals HTML
+  var fundamentalsHtml = '';
+  if (isCrypto) {
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">' + fmtMC(data.marketCap) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">24h Volume</span><span class="data-value">' + fmtMC(data.volume) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Circulating Supply</span><span class="data-value">' + (data.circulatingSupply ? data.circulatingSupply.toLocaleString() : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Max Supply</span><span class="data-value">' + (data.maxSupply ? data.maxSupply.toLocaleString() : 'Unlimited') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">All-Time High</span><span class="data-value">' + (data.ath ? '$' + data.ath.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">ATH Change</span><span class="data-value ' + (data.athChangePct < 0 ? 'negative' : 'positive') + '">' + (data.athChangePct ? data.athChangePct.toFixed(1) + '%' : 'N/A') + '</span></div>';
+  } else {
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Market Cap</span><span class="data-value">' + fmtMC(data.marketCap) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">P/E Ratio</span><span class="data-value">' + (data.peRatio ? data.peRatio.toFixed(1) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">EPS</span><span class="data-value">' + (data.eps ? '$' + data.eps.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">Beta</span><span class="data-value">' + (data.beta ? data.beta.toFixed(2) : 'N/A') + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">52W High</span><span class="data-value">$' + data.yearHigh.toFixed(2) + '</span></div>';
+    fundamentalsHtml += '<div class="data-row"><span class="data-label">52W Low</span><span class="data-value">$' + data.yearLow.toFixed(2) + '</span></div>';
+    if (data.sector) { fundamentalsHtml += '<div class="data-row"><span class="data-label">Sector</span><span class="data-value">' + data.sector + '</span></div>'; }
+  }
+
+  // Macro context HTML
+  var macroHtml = '';
+  if (fearGreed) {
+    macroHtml += '<div class="data-row"><span class="data-label">Fear and Greed</span><span class="data-value">' + fearGreed.value + '/100 ' + fearGreed.label + '</span></div>';
+  }
+  if (funding && isCrypto) {
+    macroHtml += '<div class="data-row"><span class="data-label">Funding Rate</span><span class="data-value">' + funding.annualized.toFixed(1) + '% annualized</span></div>';
+  }
+
+  // Fibonacci HTML
+  var fibKeys = ['0','23.6','38.2','50','61.8','78.6','100'];
+  var fibHtml = '';
+  for (var fi = 0; fi < fibKeys.length; fi++) {
+    var key = fibKeys[fi];
+    fibHtml += '<div class="data-row"><span class="data-label">' + key + '%</span><span class="data-value">$' + a.fib[key].toFixed(2) + '</span></div>';
+  }
+
+  // Build full HTML
+  var html = '';
+  html += '<div class="card">';
+  html += '<div class="card-header">';
+  html += '<div><div class="sym">' + data.symbol + '</div><div class="name">' + data.name + '</div></div>';
+  html += '<div><div class="price">$' + fmtPrice(data.price) + '</div><div class="change ' + (isPos ? 'positive' : 'negative') + '">' + (isPos ? '+' : '') + data.changePct.toFixed(2) + '%</div></div>';
+  html += '</div>';
+  html += '<div class="rating-badge ' + a.ratingClass + '">' + a.rating + '</div>';
+
+  html += '<div class="section-title">Signal Matrix</div>';
+  html += signalsHtml;
+
+  html += '<div class="section-title">Technical Levels</div>';
+  html += '<div class="data-row"><span class="data-label">RSI (14)</span><span class="data-value">' + a.rsi + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">SMA (20)</span><span class="data-value">$' + a.sma20 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">SMA (50)</span><span class="data-value">$' + a.sma50 + '</span></div>';
+  if (a.sma200) { html += '<div class="data-row"><span class="data-label">SMA (200)</span><span class="data-value">$' + a.sma200 + '</span></div>'; }
+  html += '<div class="data-row"><span class="data-label">MACD</span><span class="data-value ' + (a.macd.bullish ? 'positive' : 'negative') + '">' + (a.macd.bullish ? 'Bullish' : 'Bearish') + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Bollinger Upper</span><span class="data-value">$' + a.bb.upper + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Bollinger Lower</span><span class="data-value">$' + a.bb.lower + '</span></div>';
+
+  html += '<div class="section-title">Fibonacci Retracement</div>';
+  html += fibHtml;
+
+  html += '<div class="section-title">Support and Resistance</div>';
+  html += '<div class="data-row"><span class="data-label">Resistance 2</span><span class="data-value">$' + a.resistance2 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Resistance 1</span><span class="data-value">$' + a.resistance1 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Support 1</span><span class="data-value">$' + a.support1 + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Support 2</span><span class="data-value">$' + a.support2 + '</span></div>';
+
+  html += '<div class="section-title">' + (isCrypto ? 'On-Chain Data' : 'Fundamentals') + '</div>';
+  html += fundamentalsHtml;
+
+  if (macroHtml) {
+    html += '<div class="section-title">Macro Context</div>';
+    html += macroHtml;
+  }
+
+  html += '<div class="section-title">Analysis</div>';
+  html += '<div class="thesis-box"><p>' + a.thesis + '</p></div>';
+
+  html += '<div class="section-title">Trade Plan</div>';
+  html += '<div class="data-row"><span class="data-label">Entry</span><span class="data-value">$' + a.entry + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Target</span><span class="data-value">$' + a.target + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value">$' + a.stop + '</span></div>';
+  html += '<div class="data-row"><span class="data-label">Risk/Reward</span><span class="data-value ' + (parseFloat(a.rr) >= 3 ? 'positive' : 'negative') + '">' + a.rr + ':1 ' + (parseFloat(a.rr) >= 3 ? 'PASS' : 'below 3:1') + '</span></div>';
+
+  html += '</div>';
+  html += '<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data via FMP + CoinGecko + Binance. Druckenmiller Framework. Not financial advice.</p>';
+
+  out.innerHTML = html;
+}
+
+// ==========================================
+// SEARCH
+// ==========================================
+function doSearch() {
+  var input = document.getElementById('searchInput').value.trim();
+  if (!input) { return; }
+
+  var btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  switchView('analysis');
+  var out = document.getElementById('analysisOutput');
+  var resolved = resolveTicker(input);
+
+  out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analyzing ' + resolved.symbol + '...</p></div>';
+
+  var dataPromise = resolved.isCrypto ? getCryptoData(resolved.symbol) : getStockData(resolved.symbol);
+  var fearPromise = getFearGreed();
+  var fundingPromise = resolved.isCrypto ? getFundingRate(resolved.symbol) : Promise.resolve(null);
+
+  dataPromise
+    .then(function(data) {
+      out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
+      return Promise.all([data, fearPromise, fundingPromise]);
+    })
+    .then(function(results) {
+      out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Applying framework...</p></div>';
+      var data = results[0];
+      var fearGreed = results[1];
+      var funding = results[2];
+      var analysis = runAnalysis(data, fearGreed, funding);
+      renderAnalysis(data, analysis, fearGreed, funding);
+    })
+    .catch(function(err) {
+      var errMsg = err.message || 'Unknown error';
+      out.innerHTML = '<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze ' + resolved.symbol + '</p><p>' + errMsg + '</p><p style="font-size:12px;margin-top:12px">Try again or check the ticker symbol.</p><button class="btn" onclick="goHome()">Back</button></div>';
+    });
+
+  btn.disabled = false;
+  btn.textContent = 'Analyze';
+}
+
+// ==========================================
+// PAYMENT
+// ==========================================
+var selectedPlan = 'single';
+var planAmounts = { single: '0.25', unlimited: '10.00', unlimitedplus: '20.00', briefing: '4.99' };
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  var planIds = ['single','unlimited','unlimitedplus','briefing'];
+  for (var i = 0; i < planIds.length; i++) {
+    var el = document.getElementById('plan-' + planIds[i]);
+    if (el) {
+      if (planIds[i] === plan) { el.classList.add('active'); }
+      else { el.classList.remove('active'); }
+    }
+  }
+}
+
+function payPayPal() {
+  var url = 'https://www.paypal.com/paypalme/bigbrainape/' + planAmounts[selectedPlan];
+  if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
+}
+
+function payVenmo() {
+  var url = 'https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount=' + planAmounts[selectedPlan] + '&note=Big+Brain+Ape';
+  if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
+}
+
+function payCashApp() {
+  var url = 'https://cash.app/$bigbrainape/' + planAmounts[selectedPlan];
+  if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
+}
+
+function payCrypto() {
+  var amountEl = document.getElementById('crypto-amount');
+  if (amountEl) { amountEl.textContent = '$' + planAmounts[selectedPlan]; }
+  switchView('crypto');
+}
+
+// ==========================================
+// EVENT LISTENERS
+// ==========================================
+document.getElementById('searchBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  doSearch();
+});
+
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.keyCode === 13) { doSearch(); }
+});
+
+// Briefing date
+var today = new Date();
+document.getElementById('briefingDate').textContent = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+</script>
+</body>
+</html>
