@@ -372,7 +372,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="quick-ticker" onclick="quickSearch('SOL')">SOL</div>
 </div>
 <div class="feature-grid">
-<div class="feature-card" onclick="switchView('briefing')"><div class="icon">&#128176;</div><div class="label">Daily Briefing</div><div class="desc">Macro market overview</div></div>
+<div class="feature-card" onclick="switchView('briefing')"><div class="icon">&#128176;</div><div class="label">Daily Macro Briefing</div><div class="desc">Macro market overview</div></div>
 <div class="feature-card" onclick="switchView('trading')"><div class="icon">&#128221;</div><div class="label">Trading</div><div class="desc">Live positions</div></div>
 <div class="feature-card" onclick="switchView('pricing')"><div class="icon">&#11088;</div><div class="label">Pricing</div><div class="desc">Plans and features</div></div>
 <div class="feature-card" onclick="switchView('pay')"><div class="icon">&#128179;</div><div class="label">Pay</div><div class="desc">All payment methods</div></div>
@@ -444,7 +444,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="pricing-card"><div class="pricing-title">Single Stock Analysis</div><div class="pricing-price">$0.25</div><ul class="pricing-features"><li>Full stock or crypto analysis</li><li>Druckenmiller framework rating</li><li>Technical indicators</li><li>Trade plan with entry, target, stop</li></ul></div>
 <div class="pricing-card popular"><div style="color:var(--accent);font-size:11px;font-weight:700;margin-bottom:4px">MOST POPULAR</div><div class="pricing-title">Unlimited Stock Analysis</div><div class="pricing-price">$10<span style="font-size:14px;color:var(--text2)">/mo</span></div><ul class="pricing-features"><li>Unlimited ticker analysis</li><li>Stocks, crypto, commodities</li><li>Full Druckenmiller framework</li><li>BUY / HOLD / SELL ratings</li><li>Entry, target, stop, risk/reward</li></ul></div>
 <div class="pricing-card popular"><div style="color:var(--accent);font-size:11px;font-weight:700;margin-bottom:4px">BEST VALUE</div><div class="pricing-title">Unlimited +</div><div class="pricing-price">$20<span style="font-size:14px;color:var(--text2)">/mo</span></div><ul class="pricing-features"><li>Everything in Unlimited</li><li>Daily Macro Briefing</li><li>Daily News delivered to chat</li><li>Priority response</li></ul></div>
-<div class="pricing-card"><div class="pricing-title">Daily Briefing</div><div class="pricing-price">$5<span style="font-size:14px;color:var(--text2)">/mo</span></div><ul class="pricing-features"><li>Daily macro market briefing</li><li>Fed, liquidity, dollar analysis</li><li>Crypto market signals</li><li>Delivered to your chat every morning</li></ul></div>
+<div class="pricing-card"><div class="pricing-title">Daily Macro Briefing</div><div class="pricing-price">$5<span style="font-size:14px;color:var(--text2)">/mo</span></div><ul class="pricing-features"><li>Daily macro market briefing</li><li>Fed, liquidity, dollar analysis</li><li>Crypto market signals</li><li>Delivered to your chat every morning</li></ul></div>
 <div class="pricing-card"><div class="pricing-title">Single Briefing</div><div class="pricing-price">$0.25</div><ul class="pricing-features"><li>One-time macro briefing</li><li>Fed, liquidity, dollar analysis</li><li>Crypto market signals</li><li>Read in the Briefing tab</li></ul></div>
 <button class="btn" style="width:100%" onclick="switchView('pay')">Get Started</button>
 </div>
@@ -458,7 +458,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="pay-plan active" id="plan-single" onclick="selectPlan('single')"><div class="pp-name">Single Analysis</div><div class="pp-price">$0.25</div></div>
 <div class="pay-plan" id="plan-unlimited" onclick="selectPlan('unlimited')"><div class="pp-name">Unlimited Stock Analysis</div><div class="pp-price">$10/mo</div></div>
 <div class="pay-plan" id="plan-unlimitedplus" onclick="selectPlan('unlimitedplus')"><div class="pp-name">Unlimited +</div><div class="pp-price">$20/mo</div></div>
-<div class="pay-plan" id="plan-briefing" onclick="selectPlan('briefing')"><div class="pp-name">Daily Briefing</div><div class="pp-price">$4.99/mo</div></div>
+<div class="pay-plan" id="plan-briefing" onclick="selectPlan('briefing')"><div class="pp-name">Daily Macro Briefing</div><div class="pp-price">$4.99/mo</div></div>
 <div class="section-title">Payment Method</div>
 <div class="pay-method" onclick="payPayPal()"><div class="pm-icon">&#128179;</div><div class="pm-name">Credit / Debit Card</div></div>
 <div class="pay-method" onclick="payPayPal()"><div class="pm-icon">&#128222;</div><div class="pm-name">PayPal</div></div>
@@ -636,7 +636,7 @@ function showPaywall() {
   html += '<div class="paywall-desc">You have used your free analysis. Pay with Telegram Stars to unlock more analyses. No leaving the app.</div>';
   html += '<button class="paywall-btn" onclick="payStars(\'single\')">Pay <span class="paywall-stars">25 Stars</span> — Single Stock Analysis</button>';
   html += '<button class="paywall-btn" style="background:rgba(255,184,77,.15);color:#FFB84D;border:1px solid #FFB84D" onclick="payStars(\'briefing_single\')">Pay <span class="paywall-stars">25 Stars</span> — Single Briefing</button>';
-  html += '<button class="paywall-btn" style="background:rgba(255,184,77,.15);color:#FFB84D;border:1px solid #FFB84D" onclick="payStars(\'briefing\')">Pay <span class="paywall-stars">500 Stars</span> — Daily Briefing (30 days)</button>';
+  html += '<button class="paywall-btn" style="background:rgba(255,184,77,.15);color:#FFB84D;border:1px solid #FFB84D" onclick="payStars(\'briefing\')">Pay <span class="paywall-stars">500 Stars</span> — Daily Macro Briefing (30 days)</button>';
   html += '<button class="paywall-btn" style="background:rgba(139,92,246,.2);color:var(--accent);border:1px solid var(--accent)" onclick="payStars(\'unlimited\')">Pay <span class="paywall-stars">1000 Stars</span> — Unlimited Stock Analysis (30 days)</button>';
   html += '<button class="paywall-btn" style="background:rgba(139,92,246,.2);color:var(--accent);border:1px solid var(--accent)" onclick="payStars(\'unlimitedplus\')">Pay <span class="paywall-stars">2000 Stars</span> — Unlimited+ (30 days)</button>';
   html += '<div style="font-size:11px;color:var(--text2);margin-top:12px">Or pay with USDC on Base — type in the chat</div>';
@@ -667,8 +667,8 @@ function payStars(tier) {
         else { alert('Unlimited+ activated for 30 days!'); }
       } else if (tier === 'briefing') {
         try { localStorage.setItem('bba_briefing_sub', String(Date.now() + 30*24*60*60*1000)); } catch(e) {}
-        if (tg.showAlert) { tg.showAlert('Daily Briefing subscription activated! Briefings delivered every morning in chat.'); }
-        else { alert('Daily Briefing subscription activated! Briefings delivered every morning in chat.'); }
+        if (tg.showAlert) { tg.showAlert('Daily Macro Briefing subscription activated! Briefings delivered every morning in chat.'); }
+        else { alert('Daily Macro Briefing subscription activated! Briefings delivered every morning in chat.'); }
       } else if (tier === 'briefing_single') {
         addBriefingCredits(1);
         if (tg.showAlert) { tg.showAlert('Briefing credit added! Tap the Briefing tab to read todays macro briefing.'); }
