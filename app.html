@@ -328,6 +328,82 @@ body {
   text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 4px;
 }
 
+
+/* === CHART CONTROLS === */
+.chart-controls {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
+}
+.tf-group { display: flex; gap: 4px; }
+.tf-btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600;
+  color: var(--text2); cursor: pointer;
+}
+.tf-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.ind-group { display: flex; gap: 4px; flex-wrap: wrap; }
+.ind-btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 600;
+  color: var(--text2); cursor: pointer;
+}
+.ind-btn.active { background: rgba(139,92,246,0.2); color: var(--accent); border-color: var(--accent); }
+
+/* === CATALYSTS / RISKS === */
+.cr-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.cr-row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(48,54,61,0.5); }
+.cr-row:last-child { border-bottom: none; }
+.cr-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.cr-text { font-size: 13px; line-height: 1.5; }
+
+/* === CONFIDENCE SCORE === */
+.confidence-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.confidence-label { font-size: 13px; color: var(--text2); }
+.confidence-score { font-size: 24px; font-weight: 800; }
+.confidence-bar { width: 80px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.confidence-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+/* === SHARE BUTTON === */
+.share-btn {
+  background: var(--card); border: 1px solid var(--accent);
+  border-radius: 10px; padding: 12px; width: 100%;
+  font-size: 14px; font-weight: 700; color: var(--accent);
+  cursor: pointer; margin-bottom: 14px; text-align: center;
+}
+.share-btn:active { opacity: 0.7; }
+
+/* === RELATIVE STRENGTH === */
+.rs-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+.rs-bar { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin: 4px 0 8px; overflow: hidden; }
+.rs-fill { height: 100%; border-radius: 3px; }
+
+/* === MOBILE RESPONSIVENESS === */
+@media (max-width: 480px) {
+  .header h1 { font-size: 20px; }
+  .phc-symbol { font-size: 22px; }
+  .phc-price { font-size: 24px; }
+  .search-bar input { font-size: 16px; }
+  .search-bar button { padding: 0 14px; font-size: 13px; }
+  .tp-value { font-size: 16px; }
+  .tp-rr .tp-value { font-size: 20px; }
+  .tv-chart-container iframe { max-width: 100%; }
+  .chart-controls { gap: 6px; }
+  .tf-btn { padding: 5px 10px; font-size: 11px; }
+  .ind-btn { padding: 5px 8px; font-size: 10px; }
+  .tech-cell { padding: 6px 8px; }
+  .tech-cell .tc-value { font-size: 13px; }
+  .card { padding: 14px 12px; }
+  .confidence-score { font-size: 20px; }
+}
+
+/* Prevent horizontal scroll on all screen sizes */
+body { overflow-x: hidden; }
+.view, .card, .price-header-card, .analyst-card, .trade-plan-card, .earnings-card, .company-info-card, .cr-card, .confidence-card {
+  max-width: 100%; overflow-x: hidden;
+}
+.tv-chart-container { max-width: 100%; overflow: hidden; }
+.tradingview-widget-container { max-width: 100%; }
+
 </style>
 </head>
 <body>
@@ -1196,7 +1272,228 @@ function fmtPrice(p) {
 // ==========================================
 // RENDER ANALYSIS
 // ==========================================
-function renderAnalysis(data, a, fearGreed, funding, analyst) {
+
+// ==========================================
+// CHART STATE & CONTROLS
+// ==========================================
+var chartInterval = 'D';
+var chartIndicators = { ema: true, volume: false, rsi: false };
+var currentTvSymbol = '';
+var currentAnalysis = null;
+var currentData = null;
+
+function changeTimeframe(tf) {
+  chartInterval = tf;
+  var btns = document.querySelectorAll('.tf-btn');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].getAttribute('data-tf') === tf) { btns[i].classList.add('active'); }
+    else { btns[i].classList.remove('active'); }
+  }
+  loadTradingViewChart(currentTvSymbol);
+}
+
+function toggleIndicator(ind) {
+  chartIndicators[ind] = !chartIndicators[ind];
+  var btn = document.getElementById('ind-' + ind);
+  if (btn) {
+    if (chartIndicators[ind]) { btn.classList.add('active'); }
+    else { btn.classList.remove('active'); }
+  }
+  loadTradingViewChart(currentTvSymbol);
+}
+
+// ==========================================
+// CONFIDENCE SCORE
+// ==========================================
+function calcConfidence(a, data) {
+  var score = 0;
+  var maxScore = 10;
+
+  // Signal alignment (0-3 points)
+  var bullCount = 0, bearCount = 0;
+  for (var i = 0; i < a.signals.length; i++) {
+    if (a.signals[i][2] === 'bullish') bullCount++;
+    if (a.signals[i][2] === 'bearish') bearCount++;
+  }
+  var total = bullCount + bearCount;
+  if (total > 0) {
+    var alignment = Math.abs(bullCount - bearCount) / total;
+    score += alignment * 3;
+  }
+
+  // Risk/Reward (0-2 points)
+  var rr = parseFloat(a.rr);
+  if (rr >= 3) score += 2;
+  else if (rr >= 2) score += 1.5;
+  else if (rr >= 1) score += 1;
+
+  // RSI quality (0-2 points) — good entries are oversold or neutral
+  var rsi = a.rsi;
+  if (rsi < 30) score += 2;        // Oversold = good entry
+  else if (rsi >= 30 && rsi <= 55) score += 1.5;  // Neutral-bullish
+  else if (rsi > 70) score += 0.5;  // Overbought but momentum
+  else score += 1;
+
+  // MACD alignment (0-1.5 points)
+  if (a.macd.bullish) score += 1.5;
+  else score += 0.5;
+
+  // Trend (0-1.5 points) — price above SMA50
+  var price = data.price;
+  var sma50 = parseFloat(a.sma50);
+  if (price > sma50) score += 1.5;
+  else score += 0.5;
+
+  return Math.min(10, Math.round(score * 10) / 10);
+}
+
+// ==========================================
+// KEY CATALYSTS / RISKS
+// ==========================================
+function generateCatalysts(data, a, analyst) {
+  var catalysts = [];
+  var risks = [];
+  var isCrypto = data.isCrypto;
+
+  // Earnings catalyst
+  if (analyst && analyst.earnings && analyst.earnings.nextEarnings) {
+    var ne = analyst.earnings.nextEarnings;
+    var daysToEarn = daysUntil(ne.date);
+    if (daysToEarn !== null && daysToEarn <= 30) {
+      catalysts.push('Earnings report in ' + daysToEarn + ' days (Est EPS $' + (ne.epsEstimated || 'N/A') + '). Volatility expected.');
+    } else if (daysToEarn !== null && daysToEarn <= 90) {
+      catalysts.push('Earnings in ' + daysToEarn + ' days. Position ahead of report.');
+    }
+  }
+
+  // Earnings beat/miss
+  if (analyst && analyst.earnings && analyst.earnings.lastEarnings) {
+    var le = analyst.earnings.lastEarnings;
+    var epsBeat = le.epsActual - le.epsEstimated;
+    if (epsBeat > 0) {
+      catalysts.push('Last earnings beat by $' + epsBeat.toFixed(2) + ' per share. Positive momentum.');
+    } else if (epsBeat < 0) {
+      risks.push('Last earnings missed by $' + Math.abs(epsBeat).toFixed(2) + ' per share.');
+    }
+  }
+
+  // Analyst sentiment
+  if (analyst && analyst.consensus) {
+    var c = analyst.consensus;
+    var totalAnalysts = c.strongBuy + c.buy + c.hold + c.sell + c.strongSell;
+    var buyPct = totalAnalysts > 0 ? ((c.strongBuy + c.buy) / totalAnalysts * 100) : 0;
+    if (buyPct > 70) {
+      catalysts.push('Strong analyst consensus: ' + c.consensus + ' from ' + totalAnalysts + ' analysts (' + Math.round(buyPct) + '% buy).');
+    } else if (buyPct < 40) {
+      risks.push('Weak analyst sentiment: only ' + Math.round(buyPct) + '% buy rating.');
+    }
+  }
+
+  // Price target upside
+  if (analyst && analyst.priceTarget && analyst.priceTarget.lastQuarterTarget) {
+    var target = analyst.priceTarget.lastQuarterTarget;
+    var upside = data.price > 0 ? ((target - data.price) / data.price * 100) : 0;
+    if (upside > 15) {
+      catalysts.push('Analyst price target $' + target.toFixed(0) + ' implies ' + Math.round(upside) + '% upside.');
+    } else if (upside < -5) {
+      risks.push('Trading above analyst target of $' + target.toFixed(0) + ' (' + Math.round(upside) + '% vs target).');
+    }
+  }
+
+  // Technical catalysts
+  if (a.rsi < 30) {
+    catalysts.push('RSI at ' + a.rsi + ' — oversold conditions, potential bounce.');
+  } else if (a.rsi > 75) {
+    risks.push('RSI at ' + a.rsi + ' — overbought, pullback risk.');
+  }
+
+  if (a.macd.bullish) {
+    catalysts.push('MACD bullish crossover — momentum building.');
+  } else {
+    risks.push('MACD bearish crossover — momentum weakening.');
+  }
+
+  // Range position
+  var rangePos = data.yearHigh > data.yearLow ? ((data.price - data.yearLow) / (data.yearHigh - data.yearLow) * 100) : 50;
+  if (rangePos < 25) {
+    catalysts.push('Trading near 52-week lows (' + Math.round(rangePos) + '% of range). Potential value.');
+  } else if (rangePos > 90) {
+    risks.push('Trading near 52-week highs (' + Math.round(rangePos) + '% of range). Extended.');
+  }
+
+  // Crypto-specific
+  if (isCrypto) {
+    catalysts.push('Crypto markets driven by liquidity flows and Fed policy. Watch BTC dominance.');
+  }
+
+  // Fallback if nothing
+  if (catalysts.length === 0) catalysts.push('No major catalysts identified. Monitor for news and earnings.');
+  if (risks.length === 0) risks.push('No major risks identified. Standard position sizing applies.');
+
+  return { catalysts: catalysts, risks: risks };
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  var parts = dateStr.split('-');
+  if (parts.length < 3) return null;
+  var target = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  var now = new Date();
+  var diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+// ==========================================
+// RELATIVE STRENGTH vs SPY
+// ==========================================
+function getSPYData() {
+  var url = 'https://financialmodelingprep.com/stable/profile?symbol=SPY&apikey=' + FMP_KEY;
+  return httpGet(url)
+    .then(function(data) {
+      if (!data || data.length === 0) return null;
+      return { changePct: data[0].changePercentage || 0, price: data[0].price || 0 };
+    })
+    .catch(function(e) { return null; });
+}
+
+// ==========================================
+// SHARE ANALYSIS
+// ==========================================
+function shareAnalysis(data, a) {
+  var text = data.symbol + ' Analysis — Big Brain Ape\n';
+  text += 'Rating: ' + a.rating + '\n';
+  text += 'Price: $' + fmtPrice(data.price) + ' (' + (data.changePct >= 0 ? '+' : '') + data.changePct.toFixed(2) + '%)\n';
+  text += 'Entry: $' + a.entry + ' | Target: $' + a.target + ' | Stop: $' + a.stop + '\n';
+  text += 'Risk/Reward: ' + a.rr + ':1\n';
+  text += 'RSI: ' + a.rsi + ' | MACD: ' + (a.macd.bullish ? 'Bullish' : 'Bearish') + '\n';
+  text += '\n' + a.thesis;
+
+  // Try Telegram switchInlineQuery first
+  if (tg && tg.switchInlineQuery) {
+    tg.switchInlineQuery(text, ['users', 'groups', 'channels']);
+    return;
+  }
+  // Fallback: Web Share API
+  if (navigator.share) {
+    navigator.share({ title: data.symbol + ' Analysis', text: text });
+    return;
+  }
+  // Last resort: copy to clipboard
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (tg && tg.showAlert) { tg.showAlert('Analysis copied to clipboard!'); }
+    else { alert('Analysis copied to clipboard!'); }
+  } catch(e) {
+    alert('Could not share. Please screenshot this analysis.');
+  }
+}
+
+function renderAnalysis(data, a, fearGreed, funding, analyst, spyData) {
   var out = document.getElementById('analysisOutput');
   var isPos = data.changePct >= 0;
   var isCrypto = data.isCrypto;
@@ -1222,9 +1519,31 @@ function renderAnalysis(data, a, fearGreed, funding, analyst) {
   headerCard += '<div class="phc-rating"><div class="rating-badge ' + a.ratingClass + '">' + a.rating + '</div></div>';
   headerCard += '</div>';
 
-  // --- 2. TradingView Chart ---
+  // --- Confidence Score ---
+  var confidence = calcConfidence(a, data);
+  var confColor = confidence >= 7 ? 'var(--green)' : confidence >= 4 ? 'var(--orange)' : 'var(--red)';
+  var confHtml = '';
+  confHtml += '<div class="confidence-card">';
+  confHtml += '<div><div class="confidence-label">Confidence Score</div><div class="confidence-score" style="color:' + confColor + '">' + confidence + '/10</div></div>';
+  confHtml += '<div class="confidence-bar"><div class="confidence-fill" style="width:' + (confidence * 10) + '%;background:' + confColor + '"></div></div>';
+  confHtml += '</div>';
+
+  // --- 2. TradingView Chart with Controls ---
   var chartHtml = '';
   chartHtml += '<div class="section-label">Live Chart</div>';
+  chartHtml += '<div class="chart-controls">';
+  chartHtml += '<div class="tf-group">';
+  chartHtml += '<button class="tf-btn" data-tf="60" onclick="changeTimeframe(\'60\')">1H</button>';
+  chartHtml += '<button class="tf-btn" data-tf="240" onclick="changeTimeframe(\'240\')">4H</button>';
+  chartHtml += '<button class="tf-btn active" data-tf="D" onclick="changeTimeframe(\'D\')">Daily</button>';
+  chartHtml += '<button class="tf-btn" data-tf="W" onclick="changeTimeframe(\'W\')">Weekly</button>';
+  chartHtml += '</div>';
+  chartHtml += '<div class="ind-group">';
+  chartHtml += '<button class="ind-btn active" id="ind-ema" onclick="toggleIndicator(\'ema\')">EMA</button>';
+  chartHtml += '<button class="ind-btn" id="ind-volume" onclick="toggleIndicator(\'volume\')">Vol</button>';
+  chartHtml += '<button class="ind-btn" id="ind-rsi" onclick="toggleIndicator(\'rsi\')">RSI</button>';
+  chartHtml += '</div>';
+  chartHtml += '</div>';
   chartHtml += '<div class="tv-chart-container" id="tvChartContainer"></div>';
 
   // --- 3. Signal Matrix (compact) ---
@@ -1256,6 +1575,19 @@ function renderAnalysis(data, a, fearGreed, funding, analyst) {
 
   // --- 5. Analysis Box ---
   var analysisBox = '<div class="section-label">Big Brain Ape Analysis</div><div class="thesis-box"><p>' + a.thesis + '</p></div>';
+
+  // --- 5b. Key Catalysts / Risks ---
+  var cr = generateCatalysts(data, a, analyst);
+  var crHtml = '';
+  crHtml += '<div class="section-label">Key Catalysts / Risks</div>';
+  crHtml += '<div class="cr-card">';
+  for (var ci = 0; ci < cr.catalysts.length; ci++) {
+    crHtml += '<div class="cr-row"><div class="cr-icon" style="color:var(--green)">\u2191</div><div class="cr-text">' + cr.catalysts[ci] + '</div></div>';
+  }
+  for (var ri = 0; ri < cr.risks.length; ri++) {
+    crHtml += '<div class="cr-row"><div class="cr-icon" style="color:var(--red)">\u2193</div><div class="cr-text">' + cr.risks[ri] + '</div></div>';
+  }
+  crHtml += '</div>';
 
   // --- 6. Analyst Ratings + Price Targets ---
   var analystHtml = '';
@@ -1339,6 +1671,21 @@ function renderAnalysis(data, a, fearGreed, funding, analyst) {
     companyHtml += '</div>';
   }
 
+  // --- 8b. Relative Strength vs SPY ---
+  var rsHtml = '';
+  if (spyData && !isCrypto) {
+    var stockChange = data.changePct;
+    var spyChange = spyData.changePct;
+    var rsDiff = stockChange - spyChange;
+    var rsColor = rsDiff >= 0 ? 'var(--green)' : 'var(--red)';
+    rsHtml += '<div class="section-label">Relative Strength vs SPY</div>';
+    rsHtml += '<div class="card">';
+    rsHtml += '<div class="rs-row"><span class="data-label">' + symbol + ' Today</span><span class="data-value" style="color:' + (stockChange >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (stockChange >= 0 ? '+' : '') + stockChange.toFixed(2) + '%</span></div>';
+    rsHtml += '<div class="rs-row"><span class="data-label">SPY Today</span><span class="data-value" style="color:' + (spyChange >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (spyChange >= 0 ? '+' : '') + spyChange.toFixed(2) + '%</span></div>';
+    rsHtml += '<div class="rs-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:10px"><span class="data-label" style="font-weight:700">Relative Strength</span><span class="data-value" style="font-weight:700;color:' + rsColor + '">' + (rsDiff >= 0 ? '+' : '') + rsDiff.toFixed(2) + '%</span></div>';
+    rsHtml += '</div>';
+  }
+
   // --- 9. Technical Levels (compact grid) ---
   var techHtml = '';
   techHtml += '<div class="section-label">Technical Levels</div>';
@@ -1386,8 +1733,15 @@ function renderAnalysis(data, a, fearGreed, funding, analyst) {
   // --- Footer ---
   var footer = '<p style="text-align:center;color:var(--text2);font-size:11px;padding:12px 8px">Live data via FMP + CoinGecko + TradingView. Druckenmiller Framework. Not financial advice.</p>';
 
+  // --- Share Button ---
+  var shareHtml = '<button class="share-btn" onclick="shareAnalysis(currentData, currentAnalysis)">Share This Analysis</button>';
+
   // --- Assemble ---
-  out.innerHTML = headerCard + chartHtml + signalCard + tradePlan + analysisBox + analystHtml + earningsHtml + companyHtml + techHtml + srFibHtml + macroHtml + footer;
+  out.innerHTML = headerCard + confHtml + chartHtml + signalCard + tradePlan + analysisBox + crHtml + analystHtml + earningsHtml + companyHtml + rsHtml + techHtml + srFibHtml + macroHtml + shareHtml + footer;
+
+  // Store for share function
+  currentData = data;
+  currentAnalysis = a;
 
   // --- Load TradingView chart ---
   loadTradingViewChart(tvSymbol);
@@ -1397,9 +1751,23 @@ function renderAnalysis(data, a, fearGreed, funding, analyst) {
 // TRADINGVIEW CHART
 // ==========================================
 function loadTradingViewChart(tvSymbol) {
+  currentTvSymbol = tvSymbol;
   var container = document.getElementById('tvChartContainer');
   if (!container) { return; }
   container.innerHTML = '';
+
+  // Build studies array based on toggles
+  var studies = [];
+  if (chartIndicators.ema) {
+    studies.push("STD;EMA");
+    studies.push("STD;SMA");
+  }
+  if (chartIndicators.rsi) {
+    studies.push("STD;RSI");
+  }
+  if (chartIndicators.volume) {
+    studies.push("STD;Vol");
+  }
 
   var widgetDiv = document.createElement('div');
   widgetDiv.className = 'tradingview-widget-container';
@@ -1415,7 +1783,7 @@ function loadTradingViewChart(tvSymbol) {
   script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
   script.innerHTML = JSON.stringify({
     "symbol": tvSymbol,
-    "interval": "D",
+    "interval": chartInterval,
     "theme": "dark",
     "style": "1",
     "locale": "en",
@@ -1423,7 +1791,7 @@ function loadTradingViewChart(tvSymbol) {
     "height": "400",
     "hide_side_toolbar": false,
     "allow_symbol_change": true,
-    "studies": ["STD;SMA", "STD;RSI"],
+    "studies": studies,
     "support_host": "https://www.tradingview.com"
   });
 
@@ -1466,6 +1834,8 @@ function formatDate(dateStr) {
 function doSearch() {
   var input = document.getElementById('searchInput').value.trim();
   if (!input) { return; }
+  chartInterval = 'D';
+  chartIndicators = { ema: true, volume: false, rsi: false };
 
   var btn = document.getElementById('searchBtn');
   btn.disabled = true;
@@ -1481,11 +1851,12 @@ function doSearch() {
   var fearPromise = getFearGreed();
   var fundingPromise = resolved.isCrypto ? getFundingRate(resolved.symbol) : Promise.resolve(null);
   var analystPromise = resolved.isCrypto ? Promise.resolve(null) : getAnalystData(resolved.symbol);
+  var spyPromise = resolved.isCrypto ? Promise.resolve(null) : getSPYData();
 
   dataPromise
     .then(function(data) {
       out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
-      return Promise.all([data, fearPromise, fundingPromise, analystPromise]);
+      return Promise.all([data, fearPromise, fundingPromise, analystPromise, spyPromise]);
     })
     .then(function(results) {
       out.innerHTML = '<div class="loading"><div class="spinner"></div><p>Applying framework...</p></div>';
@@ -1493,8 +1864,9 @@ function doSearch() {
       var fearGreed = results[1];
       var funding = results[2];
       var analyst = results[3];
+      var spyData = results[4];
       var analysis = runAnalysis(data, fearGreed, funding);
-      renderAnalysis(data, analysis, fearGreed, funding, analyst);
+      renderAnalysis(data, analysis, fearGreed, funding, analyst, spyData);
     })
     .catch(function(err) {
       var errMsg = err.message || 'Unknown error';
