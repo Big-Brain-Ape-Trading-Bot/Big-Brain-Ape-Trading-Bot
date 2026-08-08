@@ -479,10 +479,32 @@ function getFearGreed() {
 
 function getStockData(symbol) {
   var fmpUrl = 'https://financialmodelingprep.com/stable/profile?symbol=' + symbol + '&apikey=' + FMP_KEY;
-  return fetch(fmpUrl)
-    .then(function(resp) { return resp.json(); })
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', fmpUrl, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            if (!data || data.length === 0) { reject(new Error('No data for ' + symbol + '. Empty response from API.')); return; }
+            resolve(data);
+          } catch(e) {
+            reject(new Error('JSON parse failed: ' + e.message + ' | Response: ' + xhr.responseText.substring(0, 100)));
+            return;
+          }
+        } else {
+          reject(new Error('HTTP ' + xhr.status + ' from FMP API'));
+          return;
+        }
+      }
+    };
+    xhr.onerror = function() { reject(new Error('Network error: Cannot reach FMP API. WebView may block external requests.')); };
+    xhr.ontimeout = function() { reject(new Error('Request timeout to FMP API')); };
+    xhr.timeout = 15000;
+    xhr.send();
+  })
     .then(function(data) {
-      if (!data || data.length === 0) { throw new Error('No data for ' + symbol + '. Check the ticker symbol.'); }
       var p = data[0];
       var rangeParts = (p.range || '0-0').split('-');
       var yearLow = parseFloat(rangeParts[0]) || 0;
@@ -725,7 +747,9 @@ function doSearch() {
       renderAnalysis(data, analysis, fearGreed, funding);
     })
     .catch(function(err) {
-      out.innerHTML = '<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze ' + resolved.symbol + '</p><p>' + err.message + '</p><p style="font-size:12px;margin-top:12px">This might be an invalid ticker or a rate limit. Try again.</p><button class="btn" onclick="goHome()">Back</button></div>';
+      var errMsg = err.message || err.toString() || 'Unknown error';
+      var errType = err.name || 'Error';
+      out.innerHTML = '<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze ' + resolved.symbol + '</p><p>' + errMsg + '</p><p style="font-size:11px;margin-top:8px;color:#999">Type: ' + errType + '</p><p style="font-size:12px;margin-top:12px">This might be an invalid ticker or a rate limit. Try again.</p><button class="btn" onclick="goHome()">Back</button></div>';
     });
 
   btn.disabled = false;
