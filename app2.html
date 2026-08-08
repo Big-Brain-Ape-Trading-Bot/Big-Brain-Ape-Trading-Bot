@@ -352,6 +352,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .paywall-btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:12px 24px;font-size:13px;font-weight:600;cursor:pointer;width:100%}
 .paywall-stars{color:#FFB84D;font-weight:800}
 
+
+/* === BRIEFING GRID === */
+.briefing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.briefing-mini-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center}
+.bmc-label{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:4px}
+.bmc-price{font-size:16px;font-weight:800;margin-bottom:2px}
+.bmc-change{font-size:12px;font-weight:700}
+@media(max-width:380px){.briefing-grid{grid-template-columns:repeat(2,1fr);gap:6px}.bmc-price{font-size:14px}}
+
 </style>
 </head>
 <body>
@@ -387,17 +396,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <!-- BRIEFING VIEW -->
 <div id="view-briefing" class="view view-hidden">
-<div class="header"><h1>Daily <span>Briefing</span></h1><p id="briefingDate"></p></div>
-<div style="padding:12px 16px">
-<div class="card briefing-card">
-<h2>Macro Market Update</h2>
-<div class="date">Updated daily</div>
-<div class="briefing-item"><div class="bi-label">LIQUIDITY</div><div class="bi-text">Fed policy remains the primary driver. Watch for shifts in rate expectations and balance sheet activity. Global M2 growth signals risk appetite.</div></div>
-<div class="briefing-item"><div class="bi-label">DOLLAR</div><div class="bi-text">DXY direction determines risk asset flows. A weakening dollar supports equities and crypto. A strengthening dollar creates headwinds.</div></div>
-<div class="briefing-item"><div class="bi-label">CRYPTO</div><div class="bi-text">Bitcoin leads the market. Watch funding rates, stablecoin supply growth, and on-chain flows for positioning signals.</div></div>
-<div class="briefing-item"><div class="bi-label">STRATEGY</div><div class="bi-text">Focus on the central banks and movement of liquidity. The obvious is obviously wrong. Visualize 18 months out, not the present.</div></div>
-</div>
-<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">For educational purposes. Not financial advice.</p>
+<div class="header"><h1>Daily <span>Macro Briefing</span></h1><p id="briefingDate"></p></div>
+<div id="briefingContent" style="padding:12px 16px"></div>
 </div>
 </div>
 
@@ -624,6 +624,142 @@ function hasBriefingAccess() {
   } catch(e) {}
   if (hasSub()) return true; // unlimited subs include briefing access
   return false;
+}
+
+function renderBriefingView() {
+  var container = document.getElementById('briefingContent');
+  if (!container) return;
+  if (hasBriefingAccess()) {
+    container.innerHTML = '<div style="text-align:center;padding:40px"><div style="font-size:24px;margin-bottom:10px">&#8987;</div><div style="color:var(--text2)">Loading live market data...</div></div>';
+    loadRealBriefing();
+  } else {
+    container.innerHTML = '<div class="paywall"><div class="paywall-icon">&#128240;</div><div class="paywall-title">Daily Macro Briefing</div><div class="paywall-desc">Fed policy, oil, gold, BTC, top earnings, and geopolitics — delivered every morning.</div><button class="paywall-btn" onclick="payStars(\'briefing_single\')">Pay <span class="paywall-stars">25 Stars</span> — Read Todays Briefing</button><button class="paywall-btn" style="background:rgba(255,184,77,.15);color:#FFB84D;border:1px solid #FFB84D" onclick="payStars(\'briefing\')">Pay <span class="paywall-stars">500 Stars</span> — Daily Macro Briefing (30 days)</button><div style="font-size:11px;color:var(--text2);margin-top:12px">Or type <b>daily news</b> in the chat to pay with USDC</div></div>';
+  }
+}
+
+function loadRealBriefing() {
+  var container = document.getElementById('briefingContent');
+  var fmpKey = 'FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL';
+  
+  Promise.all([
+    httpGet('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true'),
+    httpGet('https://api.alternative.me/fng/'),
+    httpGet('https://api.llama.fi/v2/chains'),
+    httpGet('https://api.llama.fi/v2/historicalChainTvl'),
+    httpGet('https://financialmodelingprep.com/stable/profile?symbol=SPY&apikey=' + fmpKey),
+    httpGet('https://financialmodelingprep.com/stable/profile?symbol=GOLD&apikey=' + fmpKey),
+    httpGet('https://financialmodelingprep.com/stable/profile?symbol=CL&apikey=' + fmpKey),
+    httpGet('https://financialmodelingprep.com/stable/profile?symbol=DXY&apikey=' + fmpKey)
+  ]).then(function(results) {
+    var crypto = results[0], fng = results[1], chains = results[2], hist = results[3];
+    var spy = results[4], gold = results[5], oil = results[6], dxy = results[7];
+    
+    var html = '';
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+    
+    html += '<div class="card briefing-card">';
+    html += '<h2>Macro Market Update</h2>';
+    html += '<div class="date">' + dateStr + '</div>';
+    
+    // Market overview grid
+    html += '<div class="briefing-grid">';
+    
+    if (crypto && crypto.bitcoin) {
+      html += briefingCard('BTC', '$' + formatBriefNum(crypto.bitcoin.usd), crypto.bitcoin.usd_24h_change, '#F7931A');
+    }
+    if (crypto && crypto.ethereum) {
+      html += briefingCard('ETH', '$' + formatBriefNum(crypto.ethereum.usd), crypto.ethereum.usd_24h_change, '#627EEA');
+    }
+    if (crypto && crypto.solana) {
+      html += briefingCard('SOL', '$' + formatBriefNum(crypto.solana.usd), crypto.solana.usd_24h_change, '#14F195');
+    }
+    if (spy && spy[0] && spy[0].price) {
+      html += briefingCard('S&P 500', '$' + formatBriefNum(spy[0].price), parseFloat(spy[0].changePercentage), '#6F00FF');
+    }
+    if (gold && gold[0] && gold[0].price) {
+      html += briefingCard('Gold', '$' + formatBriefNum(gold[0].price), parseFloat(gold[0].changePercentage), '#FFD700');
+    }
+    if (oil && oil[0] && oil[0].price) {
+      html += briefingCard('Crude Oil', '$' + formatBriefNum(oil[0].price), parseFloat(oil[0].changePercentage), '#E74C3C');
+    }
+    if (dxy && dxy[0] && dxy[0].price) {
+      html += briefingCard('Dollar (DXY)', formatBriefNum(dxy[0].price), parseFloat(dxy[0].changePercentage), '#2ECC71');
+    }
+    if (fng && fng.data && fng.data[0]) {
+      var fngVal = parseInt(fng.data[0].value);
+      var fngLabel = fng.data[0].value_classification;
+      var fngColor = fngVal >= 75 ? '#3FB950' : fngVal >= 55 ? '#FFD700' : fngVal >= 45 ? '#F0883E' : fngVal >= 25 ? '#F85149' : '#DA3633';
+      html += briefingCard('Fear & Greed', fngVal + '/100', null, fngColor, fngLabel);
+    }
+    html += '</div>';
+    
+    // DeFi liquidity
+    if (chains) {
+      var totalTvl = 0;
+      for (var ci = 0; ci < chains.length; ci++) { totalTvl += chains[ci].tvl || 0; }
+      var sorted = chains.slice().sort(function(a, b) { return (b.tvl || 0) - (a.tvl || 0); });
+      var tvlChange30d = '';
+      if (hist && hist.length >= 30) {
+        var pct = ((hist[hist.length-1].tvl - hist[hist.length-30].tvl) / hist[hist.length-30].tvl) * 100;
+        tvlChange30d = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+      }
+      html += '<div class="briefing-item"><div class="bi-label">DEFI LIQUIDITY</div>';
+      html += '<div class="bi-text">Total TVL: <b>$' + (totalTvl/1e9).toFixed(2) + 'B</b>';
+      if (tvlChange30d) {
+        html += ' <span style="color:' + (tvlChange30d.charAt(0)==='+'?'var(--green)':'var(--red)') + ';font-weight:700">(' + tvlChange30d + ' 30d)</span>';
+      }
+      html += '</div><div style="margin-top:8px;font-size:12px;color:var(--text2)">Top chains:</div>';
+      html += '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">';
+      for (var ti = 0; ti < Math.min(6, sorted.length); ti++) {
+        html += '<span style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:6px;padding:4px 8px;font-size:11px">' + sorted[ti].name + ': $' + (sorted[ti].tvl/1e9).toFixed(2) + 'B</span>';
+      }
+      html += '</div></div>';
+    }
+    
+    // Commentary
+    html += '<div class="briefing-item"><div class="bi-label">LIQUIDITY</div><div class="bi-text">';
+    var commentary = 'Fed policy remains the primary driver of all risk assets. ';
+    if (fng && fng.data && fng.data[0]) {
+      var fngV = parseInt(fng.data[0].value);
+      if (fngV < 30) commentary += 'Fear & Greed at ' + fngV + ' — extreme fear. Historically a contrarian buy signal. ';
+      else if (fngV > 70) commentary += 'Fear & Greed at ' + fngV + ' — extreme greed. Caution warranted. ';
+      else commentary += 'Fear & Greed at ' + fngV + ' — neutral sentiment. ';
+    }
+    if (dxy && dxy[0] && dxy[0].changePercentage) {
+      var dxyChg = parseFloat(dxy[0].changePercentage);
+      if (dxyChg < 0) commentary += 'Dollar weakening today — supportive for risk assets and commodities. ';
+      else commentary += 'Dollar strengthening today — headwind for risk assets. ';
+    }
+    html += commentary + '</div></div>';
+    
+    html += '<div class="briefing-item"><div class="bi-label">STRATEGY</div><div class="bi-text">Focus on the central banks and movement of liquidity. The obvious is obviously wrong. Visualize 18 months out, not the present. Position sizing is 70-80% of the equation — concentrate when conviction is high, stay flat when unclear.</div></div>';
+    
+    html += '</div>';
+    html += '<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data from CoinGecko, DefiLlama, Alternative.me, and FMP. For educational purposes. Not financial advice.</p>';
+    
+    container.innerHTML = html;
+  }).catch(function(e) {
+    container.innerHTML = '<div class="card briefing-card"><h2>Macro Market Update</h2><div class="date">Unable to load live data right now. Please try again.</div></div>';
+  });
+}
+
+function briefingCard(label, price, change, color, sublabel) {
+  var h = '<div class="briefing-mini-card">';
+  h += '<div class="bmc-label">' + label + '</div>';
+  h += '<div class="bmc-price" style="color:' + (color || 'var(--text)') + '">' + price + '</div>';
+  if (change !== null && change !== undefined) {
+    h += '<div class="bmc-change" style="color:' + (change >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (change >= 0 ? '+' : '') + change.toFixed(2) + '%</div>';
+  } else if (sublabel) {
+    h += '<div class="bmc-change" style="color:' + (color || 'var(--text2)') + ';font-size:10px">' + sublabel + '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function formatBriefNum(n) {
+  if (n >= 1000) return Math.round(n).toLocaleString('en-US');
+  return n.toFixed(2);
 }
 
 function showPaywall() {
