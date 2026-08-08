@@ -92,7 +92,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="Type ticker or company name..." autocomplete="off" spellcheck="false">
-    <button class="btn" id="searchBtn" onclick="doSearch()">Analyze</button>
+    <button type="button" class="btn" id="searchBtn" onclick="doSearch()">Analyze</button>
   </div>
 </div>
 
@@ -747,9 +747,16 @@ function payCashApp() {
   if (tg) { tg.openLink(url); } else { window.open(url, '_blank'); }
 }
 
-// ── Enter Key ──
+// ── Event Listeners (more reliable than inline onclick in some WebViews) ──
+document.getElementById('searchBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  doSearch();
+});
 document.getElementById('searchInput').addEventListener('keypress', function(e) {
   if (e.key === 'Enter') { doSearch(); }
+});
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.keyCode === 13) { doSearch(); }
 });
 
 // ── Set briefing date ──
