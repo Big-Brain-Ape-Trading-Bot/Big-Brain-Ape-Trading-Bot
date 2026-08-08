@@ -251,16 +251,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="quick-ticker" onclick="quickSearch('SOL')">SOL</div>
 </div>
 <div class="feature-grid">
-<div class="feature-card" onclick="switchView('briefing')"><div class="icon">\uD83D\uDCB0</div><div class="label">Daily Briefing</div><div class="desc">Macro market overview</div></div>
-<div class="feature-card" onclick="switchView('trading')"><div class="icon">\uD83D\uDCDD</div><div class="label">Trading</div><div class="desc">Live positions</div></div>
-<div class="feature-card" onclick="switchView('pricing')"><div class="icon">\u2B50</div><div class="label">Pricing</div><div class="desc">Plans and features</div></div>
-<div class="feature-card" onclick="switchView('pay')"><div class="icon">\uD83D\uDCB3</div><div class="label">Pay</div><div class="desc">All payment methods</div></div>
+<div class="feature-card" onclick="switchView('briefing')"><div class="icon">&#128176;</div><div class="label">Daily Briefing</div><div class="desc">Macro market overview</div></div>
+<div class="feature-card" onclick="switchView('trading')"><div class="icon">&#128221;</div><div class="label">Trading</div><div class="desc">Live positions</div></div>
+<div class="feature-card" onclick="switchView('pricing')"><div class="icon">&#11088;</div><div class="label">Pricing</div><div class="desc">Plans and features</div></div>
+<div class="feature-card" onclick="switchView('pay')"><div class="icon">&#128179;</div><div class="label">Pay</div><div class="desc">All payment methods</div></div>
 </div>
 </div>
 
 <!-- ANALYSIS VIEW -->
 <div id="view-analysis" class="view view-hidden">
-<div class="header"><h1>Analysis</h1><p><span onclick="switchView('home')" style="color:var(--accent);cursor:pointer">\u2190 Back</span></p></div>
+<div class="header"><h1>Analysis</h1><p><span onclick="switchView('home')" style="color:var(--accent);cursor:pointer">&#8592; Back</span></p></div>
 <div id="analysisOutput"></div>
 </div>
 
@@ -318,17 +318,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="pay-plan" id="plan-unlimitedplus" onclick="selectPlan('unlimitedplus')"><div class="pp-name">Unlimited +</div><div class="pp-price">$20/mo</div></div>
 <div class="pay-plan" id="plan-briefing" onclick="selectPlan('briefing')"><div class="pp-name">Daily Briefing</div><div class="pp-price">$4.99/mo</div></div>
 <div class="section-title">Payment Method</div>
-<div class="pay-method" onclick="payPayPal()"><div class="pm-icon">\uD83D\uDCB3</div><div class="pm-name">Credit / Debit Card</div></div>
+<div class="pay-method" onclick="payPayPal()"><div class="pm-icon">&#128179;</div><div class="pm-name">Credit / Debit Card</div></div>
 <div class="pay-method" onclick="payPayPal()"><div class="pm-icon">\uD83D\uDCDE</div><div class="pm-name">PayPal</div></div>
-<div class="pay-method" onclick="payVenmo()"><div class="pm-icon">\u270C</div><div class="pm-name">Venmo</div></div>
-<div class="pay-method" onclick="payCashApp()"><div class="pm-icon">\uD83D\uDCB5</div><div class="pm-name">Cash App</div></div>
-<div class="pay-method" onclick="payCrypto()"><div class="pm-icon">\u20B3</div><div class="pm-name">USDC on Base</div></div>
+<div class="pay-method" onclick="payVenmo()"><div class="pm-icon">&#9994;</div><div class="pm-name">Venmo</div></div>
+<div class="pay-method" onclick="payCashApp()"><div class="pm-icon">&#128181;</div><div class="pm-name">Cash App</div></div>
+<div class="pay-method" onclick="payCrypto()"><div class="pm-icon">&#8371;</div><div class="pm-name">USDC on Base</div></div>
 </div>
 </div>
 
 <!-- CRYPTO PAY VIEW -->
 <div id="view-crypto" class="view view-hidden">
-<div class="header"><h1>Pay with <span>USDC</span></h1><p><span onclick="switchView('pay')" style="color:var(--accent);cursor:pointer">\u2190 Back</span></p></div>
+<div class="header"><h1>Pay with <span>USDC</span></h1><p><span onclick="switchView('pay')" style="color:var(--accent);cursor:pointer">&#8592; Back</span></p></div>
 <div style="padding:20px 16px;text-align:center">
 <div class="card">
 <p style="font-size:14px;margin-bottom:16px">Send <strong id="crypto-amount">$0.25</strong> USDC on the Base network to:</p>
@@ -341,11 +341,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-<div class="nav-item active" id="nav-home" onclick="switchView('home')"><div class="nav-icon">\uD83D\uDD0D</div><div class="nav-label">Analyze</div></div>
-<div class="nav-item" id="nav-briefing" onclick="switchView('briefing')"><div class="nav-icon">\uD83D\uDCB0</div><div class="nav-label">Briefing</div></div>
-<div class="nav-item" id="nav-trading" onclick="switchView('trading')"><div class="nav-icon">\uD83D\uDCDD</div><div class="nav-label">Trading</div></div>
-<div class="nav-item" id="nav-pricing" onclick="switchView('pricing')"><div class="nav-icon">\u2B50</div><div class="nav-label">Pricing</div></div>
-<div class="nav-item" id="nav-pay" onclick="switchView('pay')"><div class="nav-icon">\uD83D\uDCB3</div><div class="nav-label">Pay</div></div>
+<div class="nav-item active" id="nav-home" onclick="switchView('home')"><div class="nav-icon">&#128269;</div><div class="nav-label">Analyze</div></div>
+<div class="nav-item" id="nav-briefing" onclick="switchView('briefing')"><div class="nav-icon">&#128176;</div><div class="nav-label">Briefing</div></div>
+<div class="nav-item" id="nav-trading" onclick="switchView('trading')"><div class="nav-icon">&#128221;</div><div class="nav-label">Trading</div></div>
+<div class="nav-item" id="nav-pricing" onclick="switchView('pricing')"><div class="nav-icon">&#11088;</div><div class="nav-label">Pricing</div></div>
+<div class="nav-item" id="nav-pay" onclick="switchView('pay')"><div class="nav-icon">&#128179;</div><div class="nav-label">Pay</div></div>
 </div>
 
 <script>
@@ -830,8 +830,8 @@ html+='<div class="thesis-box"><p>'+a.thesis+'</p></div>';
 var cr=generateCatalysts(data,a,analyst);
 html+='<div class="section-label">Key Catalysts / Risks</div>';
 html+='<div class="cr-card">';
-for(var ci=0;ci<cr.catalysts.length;ci++){html+='<div class="cr-row"><div class="cr-icon" style="color:var(--green)">\u2191</div><div class="cr-text">'+cr.catalysts[ci]+'</div></div>'}
-for(var ri=0;ri<cr.risks.length;ri++){html+='<div class="cr-row"><div class="cr-icon" style="color:var(--red)">\u2193</div><div class="cr-text">'+cr.risks[ri]+'</div></div>'}
+for(var ci=0;ci<cr.catalysts.length;ci++){html+='<div class="cr-row"><div class="cr-icon" style="color:var(--green)">&#8593;</div><div class="cr-text">'+cr.catalysts[ci]+'</div></div>'}
+for(var ri=0;ri<cr.risks.length;ri++){html+='<div class="cr-row"><div class="cr-icon" style="color:var(--red)">&#8595;</div><div class="cr-text">'+cr.risks[ri]+'</div></div>'}
 html+='</div>';
 
 // 8. Analyst Ratings
@@ -931,7 +931,7 @@ if(data.yearHigh)html+='<div class="tech-cell"><div class="tc-label">52W Range</
 html+='</div></div>';
 
 // 13. Support/Resistance + Fibonacci (collapsible)
-html+='<div class="collapsible-header" onclick="toggleCollapse(\'srfib\')"><span class="ch-title">Support / Resistance / Fibonacci</span><span class="ch-arrow">\u25BC</span></div>';
+html+='<div class="collapsible-header" onclick="toggleCollapse(\'srfib\')"><span class="ch-title">Support / Resistance / Fibonacci</span><span class="ch-arrow">&#9660;</span></div>';
 html+='<div class="collapsible-body" id="body-srfib">';
 html+='<div class="card">';
 html+='<div class="section-title" style="margin-top:0">Support and Resistance</div>';
