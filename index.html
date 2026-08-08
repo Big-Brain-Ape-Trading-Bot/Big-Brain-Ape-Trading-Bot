@@ -478,44 +478,59 @@ function getFearGreed() {
 }
 
 function getStockData(symbol) {
-  return fetch('https://financialmodelingprep.com/api/v3/historical-price-full/' + symbol + '?timeseries=250&apikey=' + FMP_KEY)
-    .then(function(histResp) { return histResp.json(); })
-    .then(function(histData) {
-      if (!histData.historical || histData.historical.length === 0) { throw new Error('No data for ' + symbol); }
-      var candles = histData.historical.slice().reverse();
-      var closes = candles.map(function(c) { return c.close; });
-      var lastC = candles[candles.length - 1];
-      var prevC = candles[candles.length - 2].close;
+  // Yahoo Finance for historical prices (free, no API key, 251 data points)
+  var yahooUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + symbol + '?interval=1d&range=1y';
+  // FMP stable profile for fundamentals (P/E, market cap, beta, sector)
+  var fmpUrl = 'https://financialmodelingprep.com/stable/profile?symbol=' + symbol + '&apikey=' + FMP_KEY;
 
-      return fetch('https://financialmodelingprep.com/api/v3/quote/' + symbol + '?apikey=' + FMP_KEY)
-        .then(function(quoteResp) { return quoteResp.json(); })
-        .then(function(quoteData) {
-          var quote = quoteData[0] || {};
-
-          return fetch('https://financialmodelingprep.com/api/v3/profile/' + symbol + '?apikey=' + FMP_KEY)
-            .then(function(profileResp) { return profileResp.json(); })
-            .then(function(profileData) {
-              var profile = profileData[0] || {};
-              return {
-                symbol: symbol,
-                name: profile.companyName || quote.name || symbol,
-                price: lastC.close,
-                prevClose: prevC,
-                change: lastC.close - prevC,
-                changePct: ((lastC.close - prevC) / prevC) * 100,
-                marketCap: quote.marketCap,
-                peRatio: quote.pe,
-                eps: quote.eps,
-                beta: quote.beta,
-                yearHigh: quote.yearHigh,
-                yearLow: quote.yearLow,
-                sector: profile.sector || '',
-                closes: closes,
-                isCrypto: false
-              };
-            });
-        });
+  var yahooPromise = fetch(yahooUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+    .then(function(resp) { return resp.json(); })
+    .then(function(data) {
+      if (!data.chart || !data.chart.result) { throw new Error('No data for ' + symbol); }
+      var result = data.chart.result[0];
+      var quote = result.indicators.quote[0];
+      var closes = [];
+      for (var i = 0; i < quote.close.length; i++) {
+        if (quote.close[i] !== null && quote.close[i] !== undefined) {
+          closes.push(quote.close[i]);
+        }
+      }
+      if (closes.length < 50) { throw new Error('Not enough data for ' + symbol); }
+      var meta = result.meta;
+      var prevClose = meta.chartPreviousClose || closes[closes.length - 2];
+      var price = meta.regularMarketPrice || closes[closes.length - 1];
+      return {
+        symbol: symbol,
+        name: meta.longName || meta.shortName || symbol,
+        price: price,
+        prevClose: prevClose,
+        change: price - prevClose,
+        changePct: ((price - prevClose) / prevClose) * 100,
+        yearHigh: meta.fiftyTwoWeekHigh,
+        yearLow: meta.fiftyTwoWeekLow,
+        closes: closes,
+        isCrypto: false
+      };
     });
+
+  var fmpPromise = fetch(fmpUrl)
+    .then(function(resp) { return resp.json(); })
+    .then(function(data) {
+      if (data && data.length > 0) { return data[0]; }
+      return {};
+    })
+    .catch(function(e) { return {}; });
+
+  return yahooPromise.then(function(yahooData) {
+    return fmpPromise.then(function(profile) {
+      yahooData.marketCap = profile.marketCap || null;
+      yahooData.peRatio = profile.pe || null;
+      yahooData.eps = profile.eps || null;
+      yahooData.beta = profile.beta || null;
+      yahooData.sector = profile.sector || profile.industry || '';
+      return yahooData;
+    });
+  });
 }
 
 function getCryptoData(symbol) {
