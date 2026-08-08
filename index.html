@@ -629,6 +629,170 @@ function fmtPrice(p) {
   return p.toFixed(2);
 }
 
+// ── Druckenmiller Framework Analysis ──
+function runAnalysis(data, fearGreed, funding) {
+  var closes = data.closes || [];
+  var price = data.price || (closes.length > 0 ? closes[closes.length - 1] : 0);
+  var isCrypto = data.isCrypto;
+
+  // Technical indicators
+  var rsi = closes.length > 15 ? Math.round(calcRSI(closes, 14) * 10) / 10 : 50;
+  var sma20 = closes.length > 20 ? calcSMA(closes, 20).pop() : price;
+  var sma50 = closes.length > 50 ? calcSMA(closes, 50).pop() : price;
+  var sma200 = closes.length > 200 ? calcSMA(closes, 200).pop() : null;
+  var macd = closes.length > 26 ? calcMACD(closes) : { macd: 0, signal: 0, histogram: 0, bullish: false };
+  var bb = closes.length > 20 ? calcBollinger(closes, 20) : { upper: price * 1.05, middle: price, lower: price * 0.95 };
+
+  // 52-week or available range for Fibonacci
+  var high = data.yearHigh || (closes.length > 0 ? Math.max.apply(null, closes) : price * 1.2);
+  var low = data.yearLow || (closes.length > 0 ? Math.min.apply(null, closes) : price * 0.8);
+  var fib = calcFib(high, low);
+
+  // Support and Resistance
+  var resistance1 = price + (high - price) * 0.382;
+  var resistance2 = price + (high - price) * 0.618;
+  var support1 = price - (price - low) * 0.382;
+  var support2 = price - (price - low) * 0.618;
+
+  // Position in 52-week range (0 = at low, 100 = at high)
+  var rangePosition = high > low ? ((price - low) / (high - low)) * 100 : 50;
+
+  // Build signal matrix
+  var signals = [];
+  var bullCount = 0, bearCount = 0;
+
+  // RSI
+  if (rsi < 30) { signals.push(['RSI (14)', rsi + ' — Oversold', 'bullish']); bullCount++; }
+  else if (rsi > 70) { signals.push(['RSI (14)', rsi + ' — Overbought', 'bearish']); bearCount++; }
+  else { signals.push(['RSI (14)', rsi + ' — Neutral', 'neutral']); }
+
+  // SMA 20
+  if (price > sma20) { signals.push(['Price vs SMA 20', 'Above ($' + sma20.toFixed(2) + ')', 'bullish']); bullCount++; }
+  else { signals.push(['Price vs SMA 20', 'Below ($' + sma20.toFixed(2) + ')', 'bearish']); bearCount++; }
+
+  // SMA 50
+  if (price > sma50) { signals.push(['Price vs SMA 50', 'Above ($' + sma50.toFixed(2) + ')', 'bullish']); bullCount++; }
+  else { signals.push(['Price vs SMA 50', 'Below ($' + sma50.toFixed(2) + ')', 'bearish']); bearCount++; }
+
+  // SMA 200
+  if (sma200) {
+    if (price > sma200) { signals.push(['Price vs SMA 200', 'Above ($' + sma200.toFixed(2) + ')', 'bullish']); bullCount++; }
+    else { signals.push(['Price vs SMA 200', 'Below ($' + sma200.toFixed(2) + ')', 'bearish']); bearCount++; }
+  }
+
+  // MACD
+  if (macd.bullish) { signals.push(['MACD', 'Bullish crossover', 'bullish']); bullCount++; }
+  else { signals.push(['MACD', 'Bearish crossover', 'bearish']); bearCount++; }
+
+  // Bollinger Bands
+  if (price < bb.lower) { signals.push(['Bollinger Bands', 'Below lower band', 'bullish']); bullCount++; }
+  else if (price > bb.upper) { signals.push(['Bollinger Bands', 'Above upper band', 'bearish']); bearCount++; }
+  else { signals.push(['Bollinger Bands', 'Within bands', 'neutral']); }
+
+  // 52-week position
+  if (rangePosition > 80) { signals.push(['52W Range Position', Math.round(rangePosition) + '% — Near highs', 'bullish']); bullCount++; }
+  else if (rangePosition < 20) { signals.push(['52W Range Position', Math.round(rangePosition) + '% — Near lows', 'bearish']); bearCount++; }
+  else { signals.push(['52W Range Position', Math.round(rangePosition) + '% — Mid-range', 'neutral']); }
+
+  // Daily momentum
+  if (data.changePct > 2) { signals.push(['Daily Momentum', '+' + data.changePct.toFixed(2) + '% — Strong', 'bullish']); bullCount++; }
+  else if (data.changePct < -2) { signals.push(['Daily Momentum', data.changePct.toFixed(2) + '% — Weak', 'bearish']); bearCount++; }
+  else { signals.push(['Daily Momentum', (data.changePct >= 0 ? '+' : '') + data.changePct.toFixed(2) + '%', 'neutral']); }
+
+  // Fear and Greed (contrarian)
+  if (fearGreed) {
+    if (fearGreed.value < 25) { signals.push(['Fear and Greed', fearGreed.value + '/100 — Extreme Fear', 'bullish']); bullCount++; }
+    else if (fearGreed.value > 75) { signals.push(['Fear and Greed', fearGreed.value + '/100 — Extreme Greed', 'bearish']); bearCount++; }
+    else { signals.push(['Fear and Greed', fearGreed.value + '/100 — ' + fearGreed.label, 'neutral']); }
+  }
+
+  // Funding rate (crypto only)
+  if (funding && isCrypto) {
+    if (funding.annualized < -5) { signals.push(['Funding Rate', funding.annualized.toFixed(1) + '% ann. — Negative', 'bullish']); bullCount++; }
+    else if (funding.annualized > 20) { signals.push(['Funding Rate', funding.annualized.toFixed(1) + '% ann. — High', 'bearish']); bearCount++; }
+    else { signals.push(['Funding Rate', funding.annualized.toFixed(1) + '% ann.', 'neutral']); }
+  }
+
+  // Volume analysis (stocks only)
+  if (!isCrypto && data.volume && data.avgVolume) {
+    var volRatio = data.volume / data.avgVolume;
+    if (volRatio > 1.5) { signals.push(['Volume', volRatio.toFixed(1) + 'x avg — High interest', 'bullish']); bullCount++; }
+    else if (volRatio < 0.5) { signals.push(['Volume', volRatio.toFixed(1) + 'x avg — Low interest', 'bearish']); bearCount++; }
+    else { signals.push(['Volume', volRatio.toFixed(1) + 'x avg', 'neutral']); }
+  }
+
+  // Rating
+  var rating, ratingClass;
+  if (bullCount >= 6) { rating = 'STRONG BUY'; ratingClass = 'strong-buy'; }
+  else if (bullCount >= 4) { rating = 'BUY'; ratingClass = 'buy'; }
+  else if (bearCount >= 6) { rating = 'STRONG SELL'; ratingClass = 'strong-sell'; }
+  else if (bearCount >= 4) { rating = 'SELL'; ratingClass = 'sell'; }
+  else { rating = 'HOLD'; ratingClass = 'hold'; }
+
+  // Trade plan
+  var entry = price;
+  var target, stop;
+  if (bullCount > bearCount) {
+    target = resistance1;
+    stop = support2;
+  } else {
+    target = support1;
+    stop = resistance2;
+  }
+  var risk = Math.abs(entry - stop);
+  var reward = Math.abs(target - entry);
+  var rr = risk > 0 ? Math.round((reward / risk) * 100) / 100 : 0;
+
+  // Thesis
+  var thesis = '';
+  var name = data.name || data.symbol;
+  if (rating === 'STRONG BUY' || rating === 'BUY') {
+    thesis = name + ' (' + data.symbol + ') shows ' + bullCount + ' bullish signals vs ' + bearCount + ' bearish. ';
+    thesis += 'Price is at ' + Math.round(rangePosition) + '% of its 52-week range. ';
+    thesis += 'RSI at ' + rsi + (rsi < 30 ? ' indicates oversold conditions — potential bounce. ' : rsi > 70 ? ' is overbought but momentum supports it. ' : ' is neutral. ');
+    thesis += 'MACD is ' + (macd.bullish ? 'bullish' : 'bearish') + '. ';
+    thesis += 'Trade plan: Entry at $' + entry.toFixed(2) + ', Target $' + target.toFixed(2) + ', Stop $' + stop.toFixed(2) + '. ';
+    thesis += 'Risk/Reward: ' + rr + ':1 ' + (rr >= 3 ? '— meets Druckenmiller 3:1 minimum.' : '— below 3:1 minimum, size accordingly.');
+  } else if (rating === 'STRONG SELL' || rating === 'SELL') {
+    thesis = name + ' (' + data.symbol + ') shows ' + bearCount + ' bearish signals vs ' + bullCount + ' bullish. ';
+    thesis += 'Price is at ' + Math.round(rangePosition) + '% of its 52-week range. ';
+    thesis += 'RSI at ' + rsi + (rsi > 70 ? ' confirms overbought conditions. ' : ' is neutral but trend is weak. ');
+    thesis += 'MACD is ' + (macd.bullish ? 'bullish' : 'bearish') + '. ';
+    thesis += 'Consider reducing position or waiting for better entry. ';
+    thesis += 'If entering: Entry $' + entry.toFixed(2) + ', Target $' + target.toFixed(2) + ', Stop $' + stop.toFixed(2) + '. ';
+    thesis += 'Risk/Reward: ' + rr + ':1.';
+  } else {
+    thesis = name + ' (' + data.symbol + ') shows mixed signals: ' + bullCount + ' bullish, ' + bearCount + ' bearish. ';
+    thesis += 'Price is at ' + Math.round(rangePosition) + '% of its 52-week range. ';
+    thesis += 'RSI at ' + rsi + ' is neutral. ';
+    thesis += 'MACD is ' + (macd.bullish ? 'bullish' : 'bearish') + '. ';
+    thesis += 'No clear edge — Druckenmiller says the worst thing you can do is force a trade when there is no edge. ';
+    thesis += 'Wait for signals to align before entering.';
+  }
+
+  return {
+    signals: signals,
+    rsi: rsi,
+    sma20: sma20.toFixed(2),
+    sma50: sma50.toFixed(2),
+    sma200: sma200 ? sma200.toFixed(2) : null,
+    macd: macd,
+    bb: { upper: bb.upper.toFixed(2), middle: bb.middle.toFixed(2), lower: bb.lower.toFixed(2) },
+    fib: fib,
+    resistance1: resistance1.toFixed(2),
+    resistance2: resistance2.toFixed(2),
+    support1: support1.toFixed(2),
+    support2: support2.toFixed(2),
+    rating: rating,
+    ratingClass: ratingClass,
+    entry: entry.toFixed(2),
+    target: target.toFixed(2),
+    stop: stop.toFixed(2),
+    rr: rr,
+    thesis: thesis
+  };
+}
+
 // ── Render Analysis ──
 function renderAnalysis(data, a, fearGreed, funding) {
   var out = document.getElementById('analysisOutput');
