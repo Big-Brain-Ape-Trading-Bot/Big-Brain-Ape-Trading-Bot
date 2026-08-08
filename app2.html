@@ -273,6 +273,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pie-legend-label{flex:1}
 .pie-legend-value{font-weight:700}
 
+
+/* === ANALYST DETAIL VISUALS === */
+.analyst-card-clickable{cursor:pointer;transition:border-color .2s}
+.analyst-card-clickable:active{border-color:var(--accent)}
+.analyst-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.analyst-detail.open{display:block}
+.analyst-detail-toggle{font-size:11px;color:var(--accent);text-align:center;padding:8px;margin-top:6px;cursor:pointer}
+
+/* Vertical bar chart */
+.vbar-chart{display:flex;align-items:flex-end;justify-content:space-around;gap:6px;height:100px;margin:12px 0}
+.vbar-col{display:flex;flex-direction:column;align-items:center;flex:1}
+.vbar-fill{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .3s}
+.vbar-label{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
+.vbar-count{font-size:14px;font-weight:800;margin-bottom:2px}
+
+/* Donut chart */
+.donut-container{display:flex;align-items:center;gap:16px;margin:12px 0}
+.donut{width:100px;height:100px;border-radius:50%;flex-shrink:0;position:relative}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.donut-center .dc-value{font-size:16px;font-weight:800}
+.donut-center .dc-label{font-size:8px;color:var(--text2)}
+.donut-legend{flex:1}
+.donut-legend-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px}
+.donut-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Price target visual */
+.pt-visual{margin:12px 0}
+.pt-bar{position:relative;height:24px;border-radius:12px;overflow:hidden;display:flex}
+.pt-current{background:var(--text2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.pt-gap{background:repeating-linear-gradient(45deg,var(--border),var(--border) 4px,transparent 4px,transparent 8px);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text2)}
+.pt-target{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.pt-labels{display:flex;justify-content:space-between;font-size:11px;margin-top:6px}
+
+/* Rating meter */
+.rating-meter{position:relative;width:100%;height:8px;background:linear-gradient(90deg,var(--red) 0%,var(--red) 20%,var(--orange) 20%,var(--orange) 50%,var(--blue) 50%,var(--blue) 80%,var(--green) 80%,var(--green) 100%);border-radius:4px;margin:8px 0}
+.rating-meter-marker{position:absolute;top:-4px;width:3px;height:16px;background:var(--text);border-radius:2px;transform:translateX(-50%)}
+
 </style>
 </head>
 <body>
@@ -1187,6 +1224,23 @@ script.innerHTML = JSON.stringify({
 });
 wd.appendChild(script);
 container.appendChild(wd);
+}
+
+// ==========================================
+// ANALYST DETAIL TOGGLE
+// ==========================================
+function toggleAnalystDetail() {
+var detail = document.getElementById('analystDetail');
+var toggle = document.getElementById('analystToggle');
+if (detail) {
+if (detail.classList.contains('open')) {
+detail.classList.remove('open');
+if (toggle) toggle.textContent = 'Tap for detailed charts';
+} else {
+detail.classList.add('open');
+if (toggle) toggle.textContent = 'Tap to collapse';
+}
+}
 }
 
 // ==========================================
