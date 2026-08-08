@@ -231,6 +231,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card{padding:14px 12px}
 .confidence-score{font-size:20px}
 }
+
+/* === SIGNAL BAR CHART === */
+.sig-bar-container{display:flex;gap:4px;margin:10px 0;border-radius:8px;overflow:hidden;height:32px}
+.sig-bar-bull{background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.sig-bar-neutral{background:var(--text2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.sig-bar-bear{background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.sig-bar-legend{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:4px}
+
+/* === CONFIDENCE GAUGE === */
+.conf-gauge{position:relative;width:120px;height:60px;margin:0 auto}
+.conf-gauge-bg{width:120px;height:60px;border-radius:60px 60px 0 0;background:conic-gradient(from 270deg,var(--red) 0deg,var(--orange) 90deg,var(--green) 180deg);overflow:hidden}
+.conf-gauge-mask{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:40px;border-radius:80px 80px 0 0;background:var(--card)}
+.conf-gauge-needle{position:absolute;bottom:0;left:50%;width:3px;height:48px;background:var(--text);transform-origin:bottom center;border-radius:2px}
+.conf-gauge-value{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:20px;font-weight:800;white-space:nowrap}
+
+/* === EARNINGS VISUAL === */
+.earn-visual{display:flex;align-items:center;gap:12px;margin:10px 0}
+.earn-bar{flex:1;height:8px;background:var(--border);border-radius:4px;position:relative}
+.earn-fill{height:100%;border-radius:4px;transition:width .3s}
+.earn-label{font-size:11px;color:var(--text2);white-space:nowrap}
+
+/* === TECHNICAL GAUGE (RSI) === */
+.rsi-gauge{position:relative;width:100%;height:6px;background:linear-gradient(90deg,var(--green) 0%,var(--green) 30%,var(--orange) 30%,var(--orange) 70%,var(--red) 70%,var(--red) 100%);border-radius:3px;margin:8px 0}
+.rsi-marker{position:absolute;top:-4px;width:2px;height:14px;background:var(--text);border-radius:1px}
+.rsi-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text2)}
+
+/* === POSITION MINI CHART === */
+.pos-mini-chart{width:100%;height:30px;margin-top:8px;border-radius:4px;overflow:hidden}
+
 </style>
 </head>
 <body>
@@ -290,6 +319,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div style="text-align:right"><div style="font-size:20px;font-weight:700;color:var(--green)">+$120.55</div><div style="font-size:12px;color:var(--text2)">Total P/L</div></div>
 </div>
 </div>
+<div class="section-label">Portfolio Chart</div>
+<div id="tradingChart" style="margin:0 -16px 12px;border-radius:12px;overflow:hidden"></div>
 <div class="pos-row"><div class="pos-header"><div class="pos-symbol">NVDA</div><div class="pos-side long">LONG 3x</div></div><div class="pos-detail"><span>Entry: $198.20</span><span>Current: $224.50</span></div><div class="pos-detail" style="margin-top:4px"><span style="color:var(--green)">+13.3%</span><span>Margin: $400</span></div></div>
 <div class="pos-row"><div class="pos-header"><div class="pos-symbol">GOLD</div><div class="pos-side long">LONG 3x</div></div><div class="pos-detail"><span>Entry: $2,380</span><span>Current: $2,592</span></div><div class="pos-detail" style="margin-top:4px"><span style="color:var(--green)">+8.9%</span><span>Margin: $500</span></div></div>
 <div class="pos-row"><div class="pos-header"><div class="pos-symbol">SP500</div><div class="pos-side long">LONG 3x</div></div><div class="pos-detail"><span>Entry: $5,180</span><span>Current: $5,414</span></div><div class="pos-detail" style="margin-top:4px"><span style="color:var(--green)">+4.5%</span><span>Margin: $200</span></div></div>
@@ -319,7 +350,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="pay-plan" id="plan-briefing" onclick="selectPlan('briefing')"><div class="pp-name">Daily Briefing</div><div class="pp-price">$4.99/mo</div></div>
 <div class="section-title">Payment Method</div>
 <div class="pay-method" onclick="payPayPal()"><div class="pm-icon">&#128179;</div><div class="pm-name">Credit / Debit Card</div></div>
-<div class="pay-method" onclick="payPayPal()"><div class="pm-icon">\uD83D\uDCDE</div><div class="pm-name">PayPal</div></div>
+<div class="pay-method" onclick="payPayPal()"><div class="pm-icon">&#128222;</div><div class="pm-name">PayPal</div></div>
 <div class="pay-method" onclick="payVenmo()"><div class="pm-icon">&#9994;</div><div class="pm-name">Venmo</div></div>
 <div class="pay-method" onclick="payCashApp()"><div class="pm-icon">&#128181;</div><div class="pm-name">Cash App</div></div>
 <div class="pay-method" onclick="payCrypto()"><div class="pm-icon">&#8371;</div><div class="pm-name">USDC on Base</div></div>
@@ -377,7 +408,7 @@ var CRYPTO_COIN_IDS={'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','XRP':'ripp
 // ==========================================
 function switchView(view){
 var views=['home','analysis','briefing','trading','pricing','pay','crypto'];
-for(var i=0;i<views.length;i++){var el=document.getElementById('view-'+views[i]);if(el){if(views[i]===view){el.classList.remove('view-hidden')}else{el.classList.add('view-hidden')}}}
+for(var i=0;i<views.length;i++){var el=document.getElementById('view-'+views[i]);if(el){if(views[i]===view){el.classList.remove('view-hidden');if(view==='trading'){setTimeout(loadTradingChart,100)}}else{el.classList.add('view-hidden')}}}
 var navs=['home','briefing','trading','pricing','pay'];
 for(var j=0;j<navs.length;j++){var navEl=document.getElementById('nav-'+navs[j]);if(navEl){if(navs[j]===view){navEl.classList.add('active')}else{navEl.classList.remove('active')}}}
 window.scrollTo(0,0)
@@ -920,7 +951,7 @@ html+='</div>'
 // 12. Technical Levels (compact grid)
 html+='<div class="section-label">Technical Levels</div>';
 html+='<div class="card"><div class="tech-grid">';
-html+='<div class="tech-cell"><div class="tc-label">RSI (14)</div><div class="tc-value">'+a.rsi+'</div></div>';
+html+='<div class="tech-cell"><div class="tc-label">RSI (14)</div><div class="tc-value">'+a.rsi+'</div><div class="rsi-gauge"><div class="rsi-marker" style="left:'+Math.min(100,Math.max(0,a.rsi))+'%"></div></div><div class="rsi-labels"><span>0</span><span>30</span><span>70</span><span>100</span></div></div>';
 html+='<div class="tech-cell"><div class="tc-label">MACD</div><div class="tc-value" style="color:'+(a.macd.bullish?'var(--green)':'var(--red)')+'">'+(a.macd.bullish?'Bullish':'Bearish')+'</div></div>';
 html+='<div class="tech-cell"><div class="tc-label">SMA 20</div><div class="tc-value">$'+a.sma20+'</div></div>';
 html+='<div class="tech-cell"><div class="tc-label">SMA 50</div><div class="tc-value">$'+a.sma50+'</div></div>';
@@ -1015,6 +1046,41 @@ function payPayPal(){var url='https://www.paypal.com/paypalme/bigbrainape/'+plan
 function payVenmo(){var url='https://venmo.com/code?txn=pay&recipients=big-brain-ape&amount='+planAmounts[selectedPlan]+'&note=Big+Brain+Ape';if(tg){tg.openLink(url)}else{window.open(url,'_blank')}}
 function payCashApp(){var url='https://cash.app/$bigbrainape/'+planAmounts[selectedPlan];if(tg){tg.openLink(url)}else{window.open(url,'_blank')}}
 function payCrypto(){var amountEl=document.getElementById('crypto-amount');if(amountEl){amountEl.textContent='$'+planAmounts[selectedPlan]}switchView('crypto')}
+
+// ==========================================
+// TRADING PAGE CHART
+// ==========================================
+function loadTradingChart() {
+var container = document.getElementById('tradingChart');
+if (!container) return;
+container.innerHTML = '';
+var wd = document.createElement('div');
+wd.className = 'tradingview-widget-container';
+wd.style.height = '300px';
+var inner = document.createElement('div');
+inner.className = 'tradingview-widget-container__widget';
+inner.style.height = '300px';
+wd.appendChild(inner);
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.async = true;
+script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+script.innerHTML = JSON.stringify({
+"symbol": "NASDAQ:NVDA",
+"interval": "D",
+"theme": "dark",
+"style": "1",
+"locale": "en",
+"width": "100%",
+"height": "300",
+"hide_side_toolbar": true,
+"allow_symbol_change": true,
+"studies": ["STD;EMA"],
+"support_host": "https://www.tradingview.com"
+});
+wd.appendChild(script);
+container.appendChild(wd);
+}
 
 // ==========================================
 // EVENT LISTENERS
