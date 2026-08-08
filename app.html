@@ -721,8 +721,11 @@ function getFearGreed() {
 }
 
 function getStockData(symbol) {
-  var url = 'https://financialmodelingprep.com/stable/profile?symbol=' + symbol + '&apikey=' + FMP_KEY;
-  return httpGet(url)
+  var profileUrl = 'https://financialmodelingprep.com/stable/profile?symbol=' + symbol + '&apikey=' + FMP_KEY;
+  var ratiosUrl = 'https://financialmodelingprep.com/stable/ratios?symbol=' + symbol + '&apikey=' + FMP_KEY;
+  var incomeUrl = 'https://financialmodelingprep.com/stable/income-statement?symbol=' + symbol + '&apikey=' + FMP_KEY;
+
+  return httpGet(profileUrl)
     .then(function(data) {
       if (!data || data.length === 0) {
         throw new Error('No data for ' + symbol + '. Check the ticker symbol.');
@@ -734,7 +737,7 @@ function getStockData(symbol) {
       var price = p.price || 0;
       var prevClose = price - (p.change || 0);
 
-      // Build approximate closes for technical calculations
+      // Build approximate closes for technical calculations and chart
       var closes = [];
       if (yearHigh > yearLow && price > 0) {
         var range = yearHigh - yearLow;
@@ -748,7 +751,7 @@ function getStockData(symbol) {
         closes[closes.length - 1] = price;
       }
 
-      return {
+      var result = {
         symbol: symbol,
         name: p.companyName || symbol,
         price: price,
@@ -756,8 +759,8 @@ function getStockData(symbol) {
         change: p.change || 0,
         changePct: p.changePercentage || 0,
         marketCap: p.marketCap || null,
-        peRatio: p.pe || null,
-        eps: p.eps || null,
+        peRatio: null,
+        eps: null,
         beta: p.beta || null,
         yearHigh: yearHigh,
         yearLow: yearLow,
@@ -773,6 +776,27 @@ function getStockData(symbol) {
         closes: closes,
         isCrypto: false
       };
+
+      // Fetch PE ratio and EPS in parallel (these are on different endpoints)
+      var ratiosPromise = httpGet(ratiosUrl)
+        .then(function(ratiosData) {
+          if (ratiosData && ratiosData.length > 0) {
+            result.peRatio = ratiosData[0].priceToEarningsRatio || null;
+          }
+        })
+        .catch(function(e) { /* premium-only stocks will have null PE */ });
+
+      var incomePromise = httpGet(incomeUrl)
+        .then(function(incomeData) {
+          if (incomeData && incomeData.length > 0) {
+            result.eps = incomeData[0].eps || null;
+          }
+        })
+        .catch(function(e) { /* premium-only stocks will have null EPS */ });
+
+      return Promise.all([ratiosPromise, incomePromise]).then(function() {
+        return result;
+      });
     });
 }
 
@@ -1060,6 +1084,15 @@ function renderAnalysis(data, a, fearGreed, funding) {
   html += '</div>';
   html += '<div class="rating-badge ' + a.ratingClass + '">' + a.rating + '</div>';
 
+  html += '<div class="section-title">Price Chart</div>';
+  html += '<canvas id="priceChart" width="320" height="180" style="width:100%;height:auto;border-radius:10px;background:#0d1117;margin-bottom:8px"></canvas>';
+  html += '<div style="display:flex;gap:12px;font-size:10px;color:var(--text2);margin-bottom:12px;flex-wrap:wrap">';
+  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:2px;background:#8b5cf6"></div>Price</div>';
+  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;background:rgba(63,185,80,0.25);border:1px solid #3fb950"></div>Buy Zone</div>';
+  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:1px;background:#f85149;border-top:1px dashed #f85149"></div>Stop</div>';
+  html += '<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:1px;background:#3fb950;border-top:1px dashed #3fb950"></div>Target</div>';
+  html += '</div>';
+
   html += '<div class="section-title">Signal Matrix</div>';
   html += signalsHtml;
 
@@ -1102,6 +1135,120 @@ function renderAnalysis(data, a, fearGreed, funding) {
   html += '<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data via FMP + CoinGecko + Binance. Druckenmiller Framework. Not financial advice.</p>';
 
   out.innerHTML = html;
+
+  // Draw the price chart with buy zone
+  drawChart(data, a);
+}
+
+// ==========================================
+// CHART DRAWING (Canvas, no external library)
+// ==========================================
+function drawChart(data, a) {
+  var canvas = document.getElementById('priceChart');
+  if (!canvas) { return; }
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width;
+  var h = canvas.height;
+  var closes = data.closes || [];
+  if (closes.length < 2) { return; }
+
+  // Use last 90 data points for readability
+  var displayCloses = closes.slice(-90);
+
+  // Calculate Y range — include stop and target for full visibility
+  var minPrice = Math.min.apply(null, displayCloses);
+  var maxPrice = Math.max.apply(null, displayCloses);
+  var stop = parseFloat(a.stop);
+  var target = parseFloat(a.target);
+  var entry = parseFloat(a.entry);
+  minPrice = Math.min(minPrice, stop);
+  maxPrice = Math.max(maxPrice, target);
+  var padding = (maxPrice - minPrice) * 0.1;
+  minPrice -= padding;
+  maxPrice += padding;
+  var range = maxPrice - minPrice;
+  if (range === 0) { range = 1; }
+
+  // Clear
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, w, h);
+
+  // Draw buy zone (shaded area between entry and stop)
+  var buyZoneTop = h - ((Math.max(entry, stop) - minPrice) / range) * h;
+  var buyZoneBottom = h - ((Math.min(entry, stop) - minPrice) / range) * h;
+  ctx.fillStyle = 'rgba(63, 185, 80, 0.18)';
+  ctx.fillRect(0, buyZoneBottom, w, buyZoneTop - buyZoneBottom);
+  ctx.strokeStyle = 'rgba(63, 185, 80, 0.4)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0, buyZoneBottom, w, buyZoneTop - buyZoneBottom);
+
+  // Draw stop loss line (dashed red)
+  var stopY = h - ((stop - minPrice) / range) * h;
+  ctx.strokeStyle = '#f85149';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(0, stopY);
+  ctx.lineTo(w, stopY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#f85149';
+  ctx.font = '9px sans-serif';
+  ctx.fillText('Stop $' + stop.toFixed(0), 4, stopY - 3);
+
+  // Draw target line (dashed green)
+  var targetY = h - ((target - minPrice) / range) * h;
+  ctx.strokeStyle = '#3fb950';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(0, targetY);
+  ctx.lineTo(w, targetY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#3fb950';
+  ctx.fillText('Target $' + target.toFixed(0), 4, targetY - 3);
+
+  // Draw entry line (dashed purple)
+  var entryY = h - ((entry - minPrice) / range) * h;
+  ctx.strokeStyle = '#8b5cf6';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 2]);
+  ctx.beginPath();
+  ctx.moveTo(0, entryY);
+  ctx.lineTo(w, entryY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Draw price line
+  ctx.strokeStyle = '#8b5cf6';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (var i = 0; i < displayCloses.length; i++) {
+    var x = (i / (displayCloses.length - 1)) * w;
+    var y = h - ((displayCloses[i] - minPrice) / range) * h;
+    if (i === 0) { ctx.moveTo(x, y); }
+    else { ctx.lineTo(x, y); }
+  }
+  ctx.stroke();
+
+  // Fill area below price line with gradient
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  var grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, 'rgba(139, 92, 246, 0.15)');
+  grad.addColorStop(1, 'rgba(139, 92, 246, 0)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Draw current price dot
+  var lastX = w;
+  var lastY = h - ((displayCloses[displayCloses.length - 1] - minPrice) / range) * h;
+  ctx.fillStyle = '#8b5cf6';
+  ctx.beginPath();
+  ctx.arc(lastX - 4, lastY, 3, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 // ==========================================
