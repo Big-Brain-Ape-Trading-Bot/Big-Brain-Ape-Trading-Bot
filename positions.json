@@ -1,12 +1,12 @@
 {
-  "timestamp": 1786306524,
-  "generatedAt": "2026-08-09 20:15 UTC",
-  "accountValue": 1395.7,
-  "withdrawable": 36.64,
-  "portfolioValue": 1395.7,
-  "totalUnrealizedPnl": 199.46,
-  "totalMarginUsed": 1159.61,
-  "availableCash": 36.64,
+  "timestamp": 1786306825,
+  "generatedAt": "2026-08-09 20:20 UTC",
+  "accountValue": 1395.15,
+  "withdrawable": 36.45,
+  "portfolioValue": 1395.15,
+  "totalUnrealizedPnl": 199.18,
+  "totalMarginUsed": 1159.51,
+  "availableCash": 36.45,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 6.7,
       "entryPrice": 209.16,
-      "currentPrice": 225.57,
-      "unrealizedPnl": 109.95,
+      "currentPrice": 225.56,
+      "unrealizedPnl": 109.89,
       "pnlPercent": 23.5,
-      "marginUsed": 503.77,
+      "marginUsed": 503.75,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1511.31,
+      "positionValue": 1511.25,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.3,
       "entryPrice": 4109.52,
-      "currentPrice": 4357.89,
-      "unrealizedPnl": 74.51,
+      "currentPrice": 4357.19,
+      "unrealizedPnl": 74.3,
       "pnlPercent": 18.1,
-      "marginUsed": 435.79,
+      "marginUsed": 435.72,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1307.37,
+      "positionValue": 1307.16,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -72,11 +72,11 @@
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1511.31
+      "value": 1511.25
     },
     {
       "label": "GOLD",
-      "value": 1307.37
+      "value": 1307.16
     },
     {
       "label": "JPY",
@@ -88,17 +88,17 @@
     },
     {
       "label": "Cash",
-      "value": 36.64
+      "value": 36.45
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 503.77
+      "value": 503.75
     },
     {
       "label": "GOLD",
-      "value": 435.79
+      "value": 435.72
     },
     {
       "label": "JPY",
@@ -110,7 +110,7 @@
     },
     {
       "label": "Available",
-      "value": 36.64
+      "value": 36.45
     }
   ]
 }
