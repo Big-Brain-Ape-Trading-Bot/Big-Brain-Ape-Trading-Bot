@@ -1,6 +1,6 @@
 {
-  "timestamp": 1786344328,
-  "generatedAt": "2026-08-10 06:45 UTC",
+  "timestamp": 1786344629,
+  "generatedAt": "2026-08-10 06:50 UTC",
   "xyzPerps": [
     {
       "symbol": "NVDA",
@@ -45,8 +45,8 @@
     {
       "symbol": "AMZN",
       "rawSymbol": "AMZN",
-      "price": 274.48,
-      "change24h": 0.82,
+      "price": 1381.5,
+      "change24h": 0,
       "tvSymbol": "NASDAQ:AMZN",
       "type": "perp"
     },
@@ -67,14 +67,6 @@
       "type": "perp"
     },
     {
-      "symbol": "PLTR",
-      "rawSymbol": "PLTR",
-      "price": 172.01,
-      "change24h": 10.32,
-      "tvSymbol": "NYSE:PLTR",
-      "type": "perp"
-    },
-    {
       "symbol": "NFLX",
       "rawSymbol": "NFLX",
       "price": 74.14,
@@ -85,8 +77,8 @@
     {
       "symbol": "ORCL",
       "rawSymbol": "ORCL",
-      "price": 146.94,
-      "change24h": 2.42,
+      "price": 135.735,
+      "change24h": 0,
       "tvSymbol": "NYSE:ORCL",
       "type": "perp"
     },
@@ -96,14 +88,6 @@
       "price": 420.04,
       "change24h": 0.44,
       "tvSymbol": "NYSE:TSM",
-      "type": "perp"
-    },
-    {
-      "symbol": "COIN",
-      "rawSymbol": "COIN",
-      "price": 153.6,
-      "change24h": 5.63,
-      "tvSymbol": "NASDAQ:COIN",
       "type": "perp"
     },
     {
@@ -139,27 +123,11 @@
       "type": "perp"
     },
     {
-      "symbol": "BABA",
-      "rawSymbol": "BABA",
-      "price": 128.41,
-      "change24h": 1.26,
-      "tvSymbol": "NYSE:BABA",
-      "type": "perp"
-    },
-    {
       "symbol": "GME",
       "rawSymbol": "GME",
       "price": 19.16,
       "change24h": -0.36,
       "tvSymbol": "NYSE:GME",
-      "type": "perp"
-    },
-    {
-      "symbol": "COST",
-      "rawSymbol": "COST",
-      "price": 947.82,
-      "change24h": -0.14,
-      "tvSymbol": "NASDAQ:COST",
       "type": "perp"
     },
     {
@@ -189,17 +157,9 @@
     {
       "symbol": "CRCL",
       "rawSymbol": "CRCL",
-      "price": 66.67,
-      "change24h": 5.36,
+      "price": 67.943,
+      "change24h": 0,
       "tvSymbol": "NASDAQ:CRCL",
-      "type": "perp"
-    },
-    {
-      "symbol": "CRWV",
-      "rawSymbol": "CRWV",
-      "price": 90.67,
-      "change24h": 6.26,
-      "tvSymbol": "NASDAQ:CRWV",
       "type": "perp"
     },
     {
@@ -248,10 +208,11 @@
     {
       "symbol": "CRUDE OIL",
       "rawSymbol": "CL",
-      "price": 93.27,
-      "change24h": 0.29,
+      "price": 117.98,
+      "change24h": -0.75,
       "tvSymbol": "TVC:USOIL",
-      "type": "perp"
+      "type": "perp",
+      "note": "Price via USO ETF"
     },
     {
       "symbol": "NAT GAS",
@@ -279,15 +240,6 @@
       "tvSymbol": "TVC:URANIUM",
       "type": "perp",
       "note": "Price via URA ETF"
-    },
-    {
-      "symbol": "SP 500",
-      "rawSymbol": "SP500",
-      "price": 773.26,
-      "change24h": 0.61,
-      "tvSymbol": "SP:SPX",
-      "type": "perp",
-      "note": "Price via SPY ETF"
     },
     {
       "symbol": "NIKKEI 225",
@@ -333,15 +285,6 @@
       "tvSymbol": "FX:USDJPY",
       "type": "perp",
       "note": "Price via EWJ ETF"
-    },
-    {
-      "symbol": "DOLLAR INDEX",
-      "rawSymbol": "DXY",
-      "price": 773.26,
-      "change24h": 0.61,
-      "tvSymbol": "TVC:DXY",
-      "type": "perp",
-      "note": "Price via SPY ETF"
     }
   ],
   "stocksETFs": [
@@ -386,35 +329,11 @@
       "type": "stock"
     },
     {
-      "symbol": "PLTR",
-      "price": 172.01,
-      "change24h": 10.32,
-      "name": "Palantir Technologies Inc.",
-      "tvSymbol": "NYSE:PLTR",
-      "type": "stock"
-    },
-    {
-      "symbol": "SPY",
-      "price": 773.26,
-      "change24h": 0.61,
-      "name": "State Street SPDR S&P 500 ETF",
-      "tvSymbol": "AMEX:SPY",
-      "type": "stock"
-    },
-    {
       "symbol": "QQQ",
       "price": 723.03,
       "change24h": 1.17,
       "name": "Invesco QQQ Trust, Series 1",
       "tvSymbol": "NASDAQ:QQQ",
-      "type": "stock"
-    },
-    {
-      "symbol": "AMZN",
-      "price": 274.48,
-      "change24h": 0.82,
-      "name": "Amazon.com, Inc.",
-      "tvSymbol": "NASDAQ:AMZN",
       "type": "stock"
     },
     {
@@ -450,35 +369,11 @@
       "type": "stock"
     },
     {
-      "symbol": "COIN",
-      "price": 153.6,
-      "change24h": 5.63,
-      "name": "Coinbase Global, Inc.",
-      "tvSymbol": "NASDAQ:COIN",
-      "type": "stock"
-    },
-    {
       "symbol": "MSTR",
       "price": 100.01,
       "change24h": 3.26,
       "name": "Strategy Inc",
       "tvSymbol": "NASDAQ:MSTR",
-      "type": "stock"
-    },
-    {
-      "symbol": "AVGO",
-      "price": 427.76,
-      "change24h": 1.71,
-      "name": "Broadcom Inc.",
-      "tvSymbol": "NASDAQ:AVGO",
-      "type": "stock"
-    },
-    {
-      "symbol": "ORCL",
-      "price": 146.94,
-      "change24h": 2.42,
-      "name": "Oracle Corporation",
-      "tvSymbol": "NYSE:ORCL",
       "type": "stock"
     },
     {
@@ -495,22 +390,6 @@
       "change24h": 4.03,
       "name": "Rivian Automotive, Inc.",
       "tvSymbol": "NASDAQ:RIVN",
-      "type": "stock"
-    },
-    {
-      "symbol": "BABA",
-      "price": 128.41,
-      "change24h": 1.26,
-      "name": "Alibaba Group Holding Limited",
-      "tvSymbol": "NYSE:BABA",
-      "type": "stock"
-    },
-    {
-      "symbol": "COST",
-      "price": 947.82,
-      "change24h": -0.14,
-      "name": "Costco Wholesale Corporation",
-      "tvSymbol": "NASDAQ:COST",
       "type": "stock"
     },
     {
