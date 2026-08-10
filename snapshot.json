@@ -1,0 +1,99 @@
+{
+  "date": "August 10, 2026 18:48 UTC",
+  "assets": {
+    "S&P 500": {
+      "price": 7752.53,
+      "change_pct": -0.07,
+      "support": 7313.92,
+      "resistance": 7793.68
+    },
+    "NASDAQ": {
+      "price": 26595.74,
+      "change_pct": -0.36,
+      "support": 24425.34,
+      "resistance": 26739.0
+    },
+    "Dow Jones": {
+      "price": 53894.94,
+      "change_pct": -0.26,
+      "support": 51542.06,
+      "resistance": 54744.33
+    },
+    "BTC": {
+      "price": 63868.9,
+      "change_pct": -2.03,
+      "support": 61806.0,
+      "resistance": 66924.1
+    },
+    "ETH": {
+      "price": 1870.31,
+      "change_pct": -2.62,
+      "support": 1748.0,
+      "resistance": 1982.0
+    },
+    "SOL": {
+      "price": 75.78,
+      "change_pct": -1.83,
+      "support": 70.51,
+      "resistance": 79.01
+    }
+  },
+  "risk_score": 40,
+  "risk_bias": "RISK-OFF",
+  "fear_greed": {
+    "value": 30,
+    "classification": "Fear"
+  },
+  "sector_tech": "COOL",
+  "sector_color": "blue",
+  "put_call": "0.85",
+  "options_bias": "NEUTRAL",
+  "whale_flow": "DISTRIBUTING",
+  "metrics": {
+    "vix": {
+      "value": "15.4",
+      "label": "VIX",
+      "color": "green"
+    },
+    "yield_10y": {
+      "value": "4.70%",
+      "label": "10Y YIELD",
+      "color": "blue"
+    },
+    "dxy": {
+      "value": "99.8",
+      "label": "DXY",
+      "color": "red"
+    },
+    "oil": {
+      "value": "$82.16",
+      "label": "WTI OIL",
+      "color": "yellow"
+    },
+    "gold": {
+      "value": "$4440",
+      "label": "GOLD",
+      "color": "yellow"
+    }
+  },
+  "signals": [
+    {
+      "label": "CAUTION",
+      "text": "BTC down -2.0% \u2014 watch support",
+      "type": "caution"
+    },
+    {
+      "label": "CAUTION",
+      "text": "Yields rising \u2014 risk off",
+      "type": "caution"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Gold up 2.3% \u2014 safe haven bid",
+      "type": "bullish"
+    }
+  ],
+  "btc_funding": 0.0001,
+  "btc_oi": 0,
+  "btc_long_short": 0
+}
