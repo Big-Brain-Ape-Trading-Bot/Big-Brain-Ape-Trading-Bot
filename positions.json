@@ -1,11 +1,11 @@
 {
-  "timestamp": 1786361123,
-  "generatedAt": "2026-08-10 11:25 UTC",
-  "accountValue": 1469.5,
+  "timestamp": 1786361423,
+  "generatedAt": "2026-08-10 11:30 UTC",
+  "accountValue": 1474.36,
   "withdrawable": 0.0,
-  "portfolioValue": 1469.5,
-  "totalUnrealizedPnl": 181.82,
-  "totalMarginUsed": 1290.41,
+  "portfolioValue": 1474.36,
+  "totalUnrealizedPnl": 184.25,
+  "totalMarginUsed": 1291.23,
   "availableCash": 0.0,
   "positions": [
     {
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 7.7,
       "entryPrice": 211.19,
-      "currentPrice": 224.46,
-      "unrealizedPnl": 102.17,
-      "pnlPercent": 18.8,
-      "marginUsed": 576.11,
+      "currentPrice": 224.63,
+      "unrealizedPnl": 103.48,
+      "pnlPercent": 19.1,
+      "marginUsed": 576.55,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1728.34,
+      "positionValue": 1729.65,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.33,
       "entryPrice": 4130.63,
-      "currentPrice": 4332.5,
-      "unrealizedPnl": 66.62,
-      "pnlPercent": 14.7,
-      "marginUsed": 476.57,
+      "currentPrice": 4335.0,
+      "unrealizedPnl": 67.44,
+      "pnlPercent": 14.8,
+      "marginUsed": 476.85,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1429.72,
+      "positionValue": 1430.55,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -44,13 +44,13 @@
       "side": "SHORT",
       "size": 1.0,
       "entryPrice": 158.06,
-      "currentPrice": 158.83,
-      "unrealizedPnl": -0.77,
+      "currentPrice": 158.82,
+      "unrealizedPnl": -0.76,
       "pnlPercent": -2.4,
-      "marginUsed": 30.84,
+      "marginUsed": 30.85,
       "leverage": 5,
       "marginType": "isolated",
-      "positionValue": 158.83,
+      "positionValue": 158.82,
       "tvSymbol": "FX:USDJPY"
     },
     {
@@ -59,50 +59,50 @@
       "side": "LONG",
       "size": 0.08,
       "entryPrice": 7585.45,
-      "currentPrice": 7758.0,
-      "unrealizedPnl": 13.8,
-      "pnlPercent": 6.8,
-      "marginUsed": 206.88,
+      "currentPrice": 7761.6,
+      "unrealizedPnl": 14.09,
+      "pnlPercent": 7.0,
+      "marginUsed": 206.98,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 620.64,
+      "positionValue": 620.93,
       "tvSymbol": "SP:SPX"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1728.34
+      "value": 1729.65
     },
     {
       "label": "GOLD",
-      "value": 1429.72
+      "value": 1430.55
     },
     {
       "label": "JPY",
-      "value": 158.83
+      "value": 158.82
     },
     {
       "label": "SP500",
-      "value": 620.64
+      "value": 620.93
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 576.11
+      "value": 576.55
     },
     {
       "label": "GOLD",
-      "value": 476.57
+      "value": 476.85
     },
     {
       "label": "JPY",
-      "value": 30.84
+      "value": 30.85
     },
     {
       "label": "SP500",
-      "value": 206.88
+      "value": 206.98
     }
   ]
 }
