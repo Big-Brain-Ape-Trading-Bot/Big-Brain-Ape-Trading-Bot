@@ -1,6 +1,6 @@
 {
-  "timestamp": 1786338329,
-  "generatedAt": "2026-08-10 05:05 UTC",
+  "timestamp": 1786338626,
+  "generatedAt": "2026-08-10 05:10 UTC",
   "xyzPerps": [
     {
       "symbol": "NVDA",
@@ -281,6 +281,15 @@
       "note": "Price via URA ETF"
     },
     {
+      "symbol": "SP 500",
+      "rawSymbol": "SP500",
+      "price": 773.26,
+      "change24h": 0.61,
+      "tvSymbol": "SP:SPX",
+      "type": "perp",
+      "note": "Price via SPY ETF"
+    },
+    {
       "symbol": "NIKKEI 225",
       "rawSymbol": "JP225",
       "price": 96.9,
@@ -324,6 +333,15 @@
       "tvSymbol": "FX:USDJPY",
       "type": "perp",
       "note": "Price via EWJ ETF"
+    },
+    {
+      "symbol": "DOLLAR INDEX",
+      "rawSymbol": "DXY",
+      "price": 773.26,
+      "change24h": 0.61,
+      "tvSymbol": "TVC:DXY",
+      "type": "perp",
+      "note": "Price via SPY ETF"
     }
   ],
   "stocksETFs": [
@@ -373,6 +391,14 @@
       "change24h": 10.32,
       "name": "Palantir Technologies Inc.",
       "tvSymbol": "NYSE:PLTR",
+      "type": "stock"
+    },
+    {
+      "symbol": "SPY",
+      "price": 773.26,
+      "change24h": 0.61,
+      "name": "State Street SPDR S&P 500 ETF",
+      "tvSymbol": "AMEX:SPY",
       "type": "stock"
     },
     {
