@@ -1,5 +1,5 @@
 {
-  "date": "August 10, 2026 22:10 UTC",
+  "date": "August 10, 2026 22:15 UTC",
   "assets": {
     "S&P 500": {
       "price": 7753.11,
@@ -20,25 +20,25 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63990.8,
-      "change_pct": -1.94,
+      "price": 64010.5,
+      "change_pct": -2.1,
       "support": 61806.0,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1874.64,
-      "change_pct": -2.67,
+      "price": 1876.1,
+      "change_pct": -2.93,
       "support": 1748.0,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.24,
-      "change_pct": -1.59,
+      "price": 76.27,
+      "change_pct": -1.81,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 37,
+  "risk_score": 32,
   "risk_bias": "RISK-OFF",
   "fear_greed": {
     "value": 30,
@@ -66,12 +66,12 @@
       "color": "red"
     },
     "oil": {
-      "value": "$82.15",
+      "value": "$82.21",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4451",
+      "value": "$4450",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -80,6 +80,11 @@
     {
       "label": "CAUTION",
       "text": "Dollar strengthening \u2014 headwind",
+      "type": "caution"
+    },
+    {
+      "label": "CAUTION",
+      "text": "BTC down -2.1% \u2014 watch support",
       "type": "caution"
     },
     {
@@ -93,7 +98,7 @@
       "type": "bullish"
     }
   ],
-  "btc_funding": 5.204e-05,
+  "btc_funding": 5.177e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
