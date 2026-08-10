@@ -1,12 +1,12 @@
 {
-  "timestamp": 1786356022,
-  "generatedAt": "2026-08-10 10:00 UTC",
-  "accountValue": 1482.87,
-  "withdrawable": 1.77,
-  "portfolioValue": 1482.87,
-  "totalUnrealizedPnl": 188.49,
-  "totalMarginUsed": 1292.61,
-  "availableCash": 1.77,
+  "timestamp": 1786356322,
+  "generatedAt": "2026-08-10 10:05 UTC",
+  "accountValue": 1484.05,
+  "withdrawable": 2.18,
+  "portfolioValue": 1484.05,
+  "totalUnrealizedPnl": 189.08,
+  "totalMarginUsed": 1292.78,
+  "availableCash": 2.18,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 7.7,
       "entryPrice": 211.19,
-      "currentPrice": 224.93,
-      "unrealizedPnl": 105.79,
-      "pnlPercent": 19.5,
-      "marginUsed": 577.32,
+      "currentPrice": 225.01,
+      "unrealizedPnl": 106.4,
+      "pnlPercent": 19.6,
+      "marginUsed": 577.53,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1731.96,
+      "positionValue": 1732.57,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -44,13 +44,13 @@
       "side": "SHORT",
       "size": 1.0,
       "entryPrice": 158.06,
-      "currentPrice": 158.87,
-      "unrealizedPnl": -0.81,
-      "pnlPercent": -2.6,
-      "marginUsed": 30.8,
+      "currentPrice": 158.9,
+      "unrealizedPnl": -0.84,
+      "pnlPercent": -2.7,
+      "marginUsed": 30.77,
       "leverage": 5,
       "marginType": "isolated",
-      "positionValue": 158.87,
+      "positionValue": 158.9,
       "tvSymbol": "FX:USDJPY"
     },
     {
@@ -72,7 +72,7 @@
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1731.96
+      "value": 1732.57
     },
     {
       "label": "GOLD",
@@ -80,7 +80,7 @@
     },
     {
       "label": "JPY",
-      "value": 158.87
+      "value": 158.9
     },
     {
       "label": "SP500",
@@ -88,13 +88,13 @@
     },
     {
       "label": "Cash",
-      "value": 1.77
+      "value": 2.18
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 577.32
+      "value": 577.53
     },
     {
       "label": "GOLD",
@@ -102,7 +102,7 @@
     },
     {
       "label": "JPY",
-      "value": 30.8
+      "value": 30.77
     },
     {
       "label": "SP500",
@@ -110,7 +110,7 @@
     },
     {
       "label": "Available",
-      "value": 1.77
+      "value": 2.18
     }
   ]
 }
