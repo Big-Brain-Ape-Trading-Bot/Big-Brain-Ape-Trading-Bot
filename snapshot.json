@@ -1,5 +1,5 @@
 {
-  "date": "August 10, 2026 23:55 UTC",
+  "date": "August 11, 2026 00:00 UTC",
   "assets": {
     "S&P 500": {
       "price": 7753.11,
@@ -20,28 +20,28 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63929.5,
-      "change_pct": -1.42,
+      "price": 63917.0,
+      "change_pct": -1.47,
       "support": 61806.0,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1872.59,
-      "change_pct": -1.92,
+      "price": 1871.88,
+      "change_pct": -1.97,
       "support": 1748.0,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 75.98,
-      "change_pct": -0.35,
+      "price": 75.95,
+      "change_pct": -0.37,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 45,
+  "risk_score": 50,
   "risk_bias": "NEUTRAL",
   "fear_greed": {
-    "value": 30,
+    "value": 29,
     "classification": "Fear"
   },
   "sector_tech": "COOL",
@@ -66,17 +66,22 @@
       "color": "red"
     },
     "oil": {
-      "value": "$82.13",
+      "value": "$82.12",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4458",
+      "value": "$4456",
       "label": "GOLD",
       "color": "yellow"
     }
   },
   "signals": [
+    {
+      "label": "BULLISH",
+      "text": "Extreme fear (29) \u2014 contrarian buy",
+      "type": "bullish"
+    },
     {
       "label": "CAUTION",
       "text": "Yields rising \u2014 risk off",
@@ -88,7 +93,7 @@
       "type": "bullish"
     }
   ],
-  "btc_funding": 2.316e-05,
+  "btc_funding": 2.301e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
