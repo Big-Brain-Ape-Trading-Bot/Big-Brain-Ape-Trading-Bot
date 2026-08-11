@@ -1,5 +1,5 @@
 {
-  "date": "August 11, 2026 03:05 UTC",
+  "date": "August 11, 2026 03:10 UTC",
   "assets": {
     "S&P 500": {
       "price": 7753.11,
@@ -20,26 +20,26 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 64035.5,
+      "price": 64048.8,
       "change_pct": -1.54,
       "support": 61806.0,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1878.88,
-      "change_pct": -2.26,
+      "price": 1879.19,
+      "change_pct": -2.22,
       "support": 1748.0,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.13,
-      "change_pct": -0.77,
+      "price": 76.15,
+      "change_pct": -0.78,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 42,
-  "risk_bias": "RISK-OFF",
+  "risk_score": 50,
+  "risk_bias": "NEUTRAL",
   "fear_greed": {
     "value": 29,
     "classification": "Fear"
@@ -66,12 +66,12 @@
       "color": "red"
     },
     "oil": {
-      "value": "$82.44",
+      "value": "$82.36",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4470",
+      "value": "$4473",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -84,21 +84,16 @@
     },
     {
       "label": "CAUTION",
-      "text": "Dollar strengthening \u2014 headwind",
-      "type": "caution"
-    },
-    {
-      "label": "CAUTION",
       "text": "Yields rising \u2014 risk off",
       "type": "caution"
     },
     {
       "label": "BULLISH",
-      "text": "Gold up 3.0% \u2014 safe haven bid",
+      "text": "Gold up 2.5% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
-  "btc_funding": 1.642e-05,
+  "btc_funding": 1.664e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
