@@ -1,45 +1,45 @@
 {
-  "date": "August 11, 2026 17:15 UTC",
+  "date": "August 11, 2026 17:20 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7726.69,
-      "change_pct": -0.34,
+      "price": 7730.73,
+      "change_pct": -0.29,
       "support": 7313.92,
       "resistance": 7793.68
     },
     "NASDAQ": {
-      "price": 26426.84,
-      "change_pct": -0.67,
+      "price": 26442.62,
+      "change_pct": -0.61,
       "support": 24425.34,
       "resistance": 26739.0
     },
     "Dow Jones": {
-      "price": 53866.4,
-      "change_pct": -0.2,
+      "price": 53882.64,
+      "change_pct": -0.17,
       "support": 51542.06,
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63484.1,
-      "change_pct": -0.77,
+      "price": 63489.2,
+      "change_pct": -0.66,
       "support": 61806.0,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1863.31,
-      "change_pct": -0.56,
+      "price": 1862.77,
+      "change_pct": -0.52,
       "support": 1748.0,
       "resistance": 1982.0
     },
     "SOL": {
       "price": 74.93,
-      "change_pct": -1.37,
+      "change_pct": -1.3,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 47,
-  "risk_bias": "NEUTRAL",
+  "risk_score": 55,
+  "risk_bias": "RISK-ON",
   "fear_greed": {
     "value": 29,
     "classification": "Fear"
@@ -61,17 +61,17 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "99.8",
+      "value": "99.9",
       "label": "DXY",
       "color": "red"
     },
     "oil": {
-      "value": "$83.13",
+      "value": "$83.16",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4443",
+      "value": "$4444",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -83,17 +83,12 @@
       "type": "bullish"
     },
     {
-      "label": "CAUTION",
-      "text": "S&P 500 down -0.3%",
-      "type": "caution"
-    },
-    {
       "label": "BULLISH",
       "text": "Gold up 1.9% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
-  "btc_funding": 9.732e-05,
+  "btc_funding": 9.781e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
