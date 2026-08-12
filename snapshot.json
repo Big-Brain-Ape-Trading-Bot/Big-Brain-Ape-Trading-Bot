@@ -1,5 +1,5 @@
 {
-  "date": "August 12, 2026 02:10 UTC",
+  "date": "August 12, 2026 02:15 UTC",
   "assets": {
     "S&P 500": {
       "price": 7728.2,
@@ -20,20 +20,20 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63829.5,
-      "change_pct": -0.34,
+      "price": 63822.8,
+      "change_pct": -0.29,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1886.04,
+      "price": 1885.43,
       "change_pct": 0.43,
       "support": 1772.52,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.51,
-      "change_pct": 0.54,
+      "price": 76.48,
+      "change_pct": 0.56,
       "support": 70.51,
       "resistance": 79.01
     }
@@ -61,17 +61,17 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "99.8",
+      "value": "99.9",
       "label": "DXY",
       "color": "red"
     },
     "oil": {
-      "value": "$83.84",
+      "value": "$83.89",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4454",
+      "value": "$4456",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -86,6 +86,11 @@
       "label": "CAUTION",
       "text": "S&P 500 down -0.3%",
       "type": "caution"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Gold up 2.2% \u2014 safe haven bid",
+      "type": "bullish"
     }
   ],
   "btc_funding": 0.0001,
