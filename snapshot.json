@@ -1,45 +1,45 @@
 {
-  "date": "August 12, 2026 14:40 UTC",
+  "date": "August 12, 2026 14:45 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7750.2,
-      "change_pct": 0.28,
+      "price": 7753.23,
+      "change_pct": 0.32,
       "support": 7313.92,
       "resistance": 7793.68
     },
     "NASDAQ": {
-      "price": 26621.6,
+      "price": 26623.11,
       "change_pct": 0.67,
       "support": 24425.34,
       "resistance": 26739.0
     },
     "Dow Jones": {
-      "price": 53817.78,
-      "change_pct": 0.05,
+      "price": 53834.8,
+      "change_pct": 0.08,
       "support": 51542.06,
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63550.3,
-      "change_pct": -0.57,
+      "price": 63562.0,
+      "change_pct": -0.59,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1890.05,
-      "change_pct": 0.78,
+      "price": 1891.13,
+      "change_pct": 0.77,
       "support": 1772.52,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 75.51,
-      "change_pct": 0.16,
+      "price": 75.54,
+      "change_pct": 0.12,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 65,
-  "risk_bias": "RISK-ON",
+  "risk_score": 78,
+  "risk_bias": "STRONG RISK-ON",
   "fear_greed": {
     "value": 27,
     "classification": "Fear"
@@ -61,17 +61,17 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "99.7",
+      "value": "99.8",
       "label": "DXY",
       "color": "green"
     },
     "oil": {
-      "value": "$82.69",
+      "value": "$82.90",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4492",
+      "value": "$4478",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -89,11 +89,21 @@
     },
     {
       "label": "BULLISH",
-      "text": "Gold up 2.5% \u2014 safe haven bid",
+      "text": "S&P 500 up 0.3%",
+      "type": "bullish"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Yields falling \u2014 risk on",
+      "type": "bullish"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Gold up 2.2% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
-  "btc_funding": 5.572e-05,
+  "btc_funding": 5.664e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
