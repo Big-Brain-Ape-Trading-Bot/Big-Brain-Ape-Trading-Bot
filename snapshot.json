@@ -1,45 +1,45 @@
 {
-  "date": "August 12, 2026 19:20 UTC",
+  "date": "August 12, 2026 19:25 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7752.72,
-      "change_pct": 0.32,
+      "price": 7751.56,
+      "change_pct": 0.3,
       "support": 7313.92,
       "resistance": 7793.68
     },
     "NASDAQ": {
-      "price": 26612.63,
-      "change_pct": 0.63,
+      "price": 26605.56,
+      "change_pct": 0.61,
       "support": 24425.34,
       "resistance": 26739.0
     },
     "Dow Jones": {
-      "price": 53811.27,
-      "change_pct": 0.04,
+      "price": 53807.38,
+      "change_pct": 0.03,
       "support": 51542.06,
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63399.3,
-      "change_pct": 0.14,
+      "price": 63321.7,
+      "change_pct": 0.0,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1883.71,
-      "change_pct": 1.0,
+      "price": 1882.47,
+      "change_pct": 0.84,
       "support": 1772.52,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 75.81,
-      "change_pct": 0.84,
+      "price": 75.74,
+      "change_pct": 0.7,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 73,
-  "risk_bias": "STRONG RISK-ON",
+  "risk_score": 65,
+  "risk_bias": "RISK-ON",
   "fear_greed": {
     "value": 27,
     "classification": "Fear"
@@ -48,7 +48,7 @@
   "sector_color": "red",
   "put_call": "0.85",
   "options_bias": "NEUTRAL",
-  "whale_flow": "ACCUMULATING",
+  "whale_flow": "NEUTRAL",
   "metrics": {
     "vix": {
       "value": "14.5",
@@ -66,7 +66,7 @@
       "color": "red"
     },
     "oil": {
-      "value": "$83.09",
+      "value": "$83.11",
       "label": "WTI OIL",
       "color": "yellow"
     },
@@ -85,11 +85,6 @@
     {
       "label": "BULLISH",
       "text": "Extreme fear (27) \u2014 contrarian buy",
-      "type": "bullish"
-    },
-    {
-      "label": "BULLISH",
-      "text": "S&P 500 up 0.3%",
       "type": "bullish"
     },
     {
