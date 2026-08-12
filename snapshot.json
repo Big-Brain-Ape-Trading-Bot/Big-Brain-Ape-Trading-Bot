@@ -1,5 +1,5 @@
 {
-  "date": "August 12, 2026 12:30 UTC",
+  "date": "August 12, 2026 12:35 UTC",
   "assets": {
     "S&P 500": {
       "price": 7728.2,
@@ -20,25 +20,25 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 64144.0,
-      "change_pct": -0.23,
+      "price": 64242.5,
+      "change_pct": -0.14,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1910.76,
-      "change_pct": 1.14,
+      "price": 1914.53,
+      "change_pct": 1.26,
       "support": 1772.52,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.76,
-      "change_pct": 1.21,
+      "price": 76.97,
+      "change_pct": 1.45,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 47,
+  "risk_score": 52,
   "risk_bias": "NEUTRAL",
   "fear_greed": {
     "value": 27,
@@ -56,7 +56,7 @@
       "color": "green"
     },
     "yield_10y": {
-      "value": "4.68%",
+      "value": "4.66%",
       "label": "10Y YIELD",
       "color": "blue"
     },
@@ -66,12 +66,12 @@
       "color": "green"
     },
     "oil": {
-      "value": "$83.70",
+      "value": "$83.73",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4468",
+      "value": "$4465",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -89,11 +89,16 @@
     },
     {
       "label": "BULLISH",
+      "text": "Yields falling \u2014 risk on",
+      "type": "bullish"
+    },
+    {
+      "label": "BULLISH",
       "text": "Gold up 1.9% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
-  "btc_funding": 6.897e-05,
+  "btc_funding": 6.883e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
