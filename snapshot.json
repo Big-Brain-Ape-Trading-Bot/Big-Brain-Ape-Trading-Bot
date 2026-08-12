@@ -1,45 +1,45 @@
 {
-  "date": "August 12, 2026 17:30 UTC",
+  "date": "August 12, 2026 17:35 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7751.32,
-      "change_pct": 0.3,
+      "price": 7752.17,
+      "change_pct": 0.31,
       "support": 7313.92,
       "resistance": 7793.68
     },
     "NASDAQ": {
-      "price": 26615.44,
-      "change_pct": 0.64,
+      "price": 26618.63,
+      "change_pct": 0.65,
       "support": 24425.34,
       "resistance": 26739.0
     },
     "Dow Jones": {
-      "price": 53805.39,
-      "change_pct": 0.03,
+      "price": 53812.22,
+      "change_pct": 0.04,
       "support": 51542.06,
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63414.1,
-      "change_pct": -0.21,
+      "price": 63452.0,
+      "change_pct": -0.11,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1885.6,
-      "change_pct": 1.12,
+      "price": 1888.07,
+      "change_pct": 1.32,
       "support": 1772.52,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 75.76,
-      "change_pct": 0.97,
+      "price": 75.94,
+      "change_pct": 1.25,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 65,
-  "risk_bias": "RISK-ON",
+  "risk_score": 73,
+  "risk_bias": "STRONG RISK-ON",
   "fear_greed": {
     "value": 27,
     "classification": "Fear"
@@ -66,12 +66,12 @@
       "color": "red"
     },
     "oil": {
-      "value": "$83.17",
+      "value": "$82.86",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4464",
+      "value": "$4467",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -89,11 +89,16 @@
     },
     {
       "label": "BULLISH",
-      "text": "Gold up 1.8% \u2014 safe haven bid",
+      "text": "S&P 500 up 0.3%",
+      "type": "bullish"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Gold up 1.9% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
-  "btc_funding": 7.601e-05,
+  "btc_funding": 7.758e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
