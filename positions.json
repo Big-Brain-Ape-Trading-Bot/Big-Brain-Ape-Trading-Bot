@@ -1,11 +1,11 @@
 {
-  "timestamp": 1786499763,
-  "generatedAt": "2026-08-12 01:56 UTC",
-  "accountValue": 1403.3,
+  "timestamp": 1786500064,
+  "generatedAt": "2026-08-12 02:01 UTC",
+  "accountValue": 1403.59,
   "withdrawable": 0.0,
-  "portfolioValue": 1403.3,
-  "totalUnrealizedPnl": 149.44,
-  "totalMarginUsed": 1279.29,
+  "portfolioValue": 1403.59,
+  "totalUnrealizedPnl": 149.61,
+  "totalMarginUsed": 1279.33,
   "availableCash": 0.0,
   "positions": [
     {
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.33,
       "entryPrice": 4130.63,
-      "currentPrice": 4394.4,
-      "unrealizedPnl": 87.04,
+      "currentPrice": 4394.8,
+      "unrealizedPnl": 87.17,
       "pnlPercent": 19.2,
-      "marginUsed": 483.38,
+      "marginUsed": 483.43,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1450.15,
+      "positionValue": 1450.28,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -44,13 +44,13 @@
       "side": "SHORT",
       "size": 1.0,
       "entryPrice": 158.06,
-      "currentPrice": 159.33,
-      "unrealizedPnl": -1.27,
-      "pnlPercent": -4.0,
-      "marginUsed": 30.34,
+      "currentPrice": 159.35,
+      "unrealizedPnl": -1.29,
+      "pnlPercent": -4.1,
+      "marginUsed": 30.32,
       "leverage": 5,
       "marginType": "isolated",
-      "positionValue": 159.33,
+      "positionValue": 159.35,
       "tvSymbol": "FX:USDJPY"
     },
     {
@@ -59,13 +59,13 @@
       "side": "LONG",
       "size": 0.08,
       "entryPrice": 7585.45,
-      "currentPrice": 7726.0,
-      "unrealizedPnl": 11.24,
+      "currentPrice": 7726.7,
+      "unrealizedPnl": 11.3,
       "pnlPercent": 5.6,
-      "marginUsed": 206.03,
+      "marginUsed": 206.05,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 618.08,
+      "positionValue": 618.14,
       "tvSymbol": "SP:SPX"
     }
   ],
@@ -76,15 +76,15 @@
     },
     {
       "label": "GOLD",
-      "value": 1450.15
+      "value": 1450.28
     },
     {
       "label": "JPY",
-      "value": 159.33
+      "value": 159.35
     },
     {
       "label": "SP500",
-      "value": 618.08
+      "value": 618.14
     }
   ],
   "pieMarginSlices": [
@@ -94,15 +94,15 @@
     },
     {
       "label": "GOLD",
-      "value": 483.38
+      "value": 483.43
     },
     {
       "label": "JPY",
-      "value": 30.34
+      "value": 30.32
     },
     {
       "label": "SP500",
-      "value": 206.03
+      "value": 206.05
     }
   ]
 }
