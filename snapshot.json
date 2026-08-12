@@ -1,51 +1,51 @@
 {
-  "date": "August 12, 2026 13:25 UTC",
+  "date": "August 12, 2026 13:30 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7728.2,
-      "change_pct": -0.32,
+      "price": 7764.18,
+      "change_pct": 0.47,
       "support": 7313.92,
       "resistance": 7793.68
     },
     "NASDAQ": {
-      "price": 26445.45,
-      "change_pct": -0.6,
+      "price": 26687.9,
+      "change_pct": 0.92,
       "support": 24425.34,
       "resistance": 26739.0
     },
     "Dow Jones": {
-      "price": 53791.85,
-      "change_pct": -0.34,
+      "price": 53935.45,
+      "change_pct": 0.27,
       "support": 51542.06,
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63909.8,
-      "change_pct": -0.46,
+      "price": 63958.4,
+      "change_pct": -0.34,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1905.71,
-      "change_pct": 1.04,
+      "price": 1907.3,
+      "change_pct": 1.12,
       "support": 1772.52,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.37,
-      "change_pct": 0.79,
+      "price": 76.43,
+      "change_pct": 0.78,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 62,
-  "risk_bias": "RISK-ON",
+  "risk_score": 73,
+  "risk_bias": "STRONG RISK-ON",
   "fear_greed": {
     "value": 27,
     "classification": "Fear"
   },
-  "sector_tech": "COOL",
-  "sector_color": "blue",
+  "sector_tech": "HOT",
+  "sector_color": "red",
   "put_call": "0.85",
   "options_bias": "NEUTRAL",
   "whale_flow": "DISTRIBUTING",
@@ -66,12 +66,12 @@
       "color": "green"
     },
     "oil": {
-      "value": "$82.95",
+      "value": "$82.62",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4482",
+      "value": "$4485",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -88,13 +88,8 @@
       "type": "bullish"
     },
     {
-      "label": "CAUTION",
-      "text": "S&P 500 down -0.3%",
-      "type": "caution"
-    },
-    {
       "label": "BULLISH",
-      "text": "Yields falling \u2014 risk on",
+      "text": "S&P 500 up 0.5%",
       "type": "bullish"
     },
     {
@@ -103,7 +98,7 @@
       "type": "bullish"
     }
   ],
-  "btc_funding": 5.503e-05,
+  "btc_funding": 5.394e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
