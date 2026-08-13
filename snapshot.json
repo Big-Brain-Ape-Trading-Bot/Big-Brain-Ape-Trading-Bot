@@ -1,5 +1,5 @@
 {
-  "date": "August 13, 2026 13:15 UTC",
+  "date": "August 13, 2026 13:20 UTC",
   "assets": {
     "S&P 500": {
       "price": 7748.5,
@@ -20,26 +20,26 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63691.3,
-      "change_pct": -0.41,
+      "price": 63674.7,
+      "change_pct": -0.48,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1890.49,
-      "change_pct": -0.91,
+      "price": 1889.17,
+      "change_pct": -0.98,
       "support": 1802.46,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.07,
-      "change_pct": -0.47,
+      "price": 76.1,
+      "change_pct": -0.5,
       "support": 70.51,
       "resistance": 79.01
     }
   },
-  "risk_score": 65,
-  "risk_bias": "RISK-ON",
+  "risk_score": 70,
+  "risk_bias": "STRONG RISK-ON",
   "fear_greed": {
     "value": 29,
     "classification": "Fear"
@@ -56,7 +56,7 @@
       "color": "green"
     },
     "yield_10y": {
-      "value": "4.66%",
+      "value": "4.65%",
       "label": "10Y YIELD",
       "color": "blue"
     },
@@ -66,12 +66,12 @@
       "color": "green"
     },
     "oil": {
-      "value": "$81.32",
+      "value": "$80.81",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4452",
+      "value": "$4450",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -86,9 +86,14 @@
       "label": "BULLISH",
       "text": "Extreme fear (29) \u2014 contrarian buy",
       "type": "bullish"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Yields falling \u2014 risk on",
+      "type": "bullish"
     }
   ],
-  "btc_funding": 5.418e-05,
+  "btc_funding": 5.373e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
