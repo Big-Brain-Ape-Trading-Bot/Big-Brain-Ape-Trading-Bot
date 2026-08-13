@@ -1,39 +1,39 @@
 {
-  "date": "August 13, 2026 13:25 UTC",
+  "date": "August 13, 2026 13:30 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7748.5,
-      "change_pct": 0.26,
+      "price": 7764.67,
+      "change_pct": 0.21,
       "support": 7313.92,
       "resistance": 7793.68
     },
     "NASDAQ": {
-      "price": 26588.49,
-      "change_pct": 0.54,
+      "price": 26618.04,
+      "change_pct": 0.11,
       "support": 24425.34,
       "resistance": 26739.0
     },
     "Dow Jones": {
-      "price": 53770.27,
-      "change_pct": -0.04,
+      "price": 53928.2,
+      "change_pct": 0.29,
       "support": 51542.06,
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63585.4,
-      "change_pct": -0.54,
+      "price": 63563.9,
+      "change_pct": -0.57,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1887.3,
-      "change_pct": -1.05,
+      "price": 1887.46,
+      "change_pct": -1.0,
       "support": 1802.46,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.04,
-      "change_pct": -0.5,
+      "price": 76.05,
+      "change_pct": -0.47,
       "support": 70.51,
       "resistance": 79.01
     }
@@ -44,19 +44,19 @@
     "value": 29,
     "classification": "Fear"
   },
-  "sector_tech": "HOT",
-  "sector_color": "red",
+  "sector_tech": "NEUTRAL",
+  "sector_color": "gray",
   "put_call": "0.85",
   "options_bias": "NEUTRAL",
   "whale_flow": "DISTRIBUTING",
   "metrics": {
     "vix": {
-      "value": "14.4",
+      "value": "14.6",
       "label": "VIX",
       "color": "green"
     },
     "yield_10y": {
-      "value": "4.65%",
+      "value": "4.64%",
       "label": "10Y YIELD",
       "color": "blue"
     },
@@ -66,12 +66,12 @@
       "color": "green"
     },
     "oil": {
-      "value": "$80.98",
+      "value": "$80.96",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4449",
+      "value": "$4451",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -93,7 +93,7 @@
       "type": "bullish"
     }
   ],
-  "btc_funding": 5.182e-05,
+  "btc_funding": 5.223e-05,
   "btc_oi": 0,
   "btc_long_short": 0
 }
