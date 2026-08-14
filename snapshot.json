@@ -1,5 +1,5 @@
 {
-  "date": "August 14, 2026 20:50 UTC",
+  "date": "August 14, 2026 21:38 UTC",
   "assets": {
     "S&P 500": {
       "price": 7785.76,
@@ -20,20 +20,20 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 62901.0,
-      "change_pct": -0.74,
+      "price": 62851.2,
+      "change_pct": -0.93,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1879.31,
-      "change_pct": -0.31,
+      "price": 1878.02,
+      "change_pct": -0.52,
       "support": 1802.46,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 75.15,
-      "change_pct": -1.33,
+      "price": 75.12,
+      "change_pct": -1.31,
       "support": 70.51,
       "resistance": 78.87
     }
@@ -48,7 +48,7 @@
   "sector_color": "gray",
   "put_call": "0.85",
   "options_bias": "NEUTRAL",
-  "whale_flow": "DISTRIBUTING",
+  "whale_flow": "NEUTRAL",
   "metrics": {
     "vix": {
       "value": "14.2",
@@ -61,7 +61,7 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "99.7",
+      "value": "99.6",
       "label": "DXY",
       "color": "green"
     },
@@ -103,7 +103,19 @@
       "type": "bullish"
     }
   ],
-  "btc_funding": 3.462e-05,
+  "btc_funding": 4.003e-05,
   "btc_oi": 0,
-  "btc_long_short": 0
+  "btc_long_short": 0,
+  "whale_data": {
+    "daily_inflow": 20.29,
+    "daily_avg": 18.18,
+    "daily_pct": 11.6,
+    "weekly_inflow": 127.27,
+    "weekly_avg": 155.4,
+    "weekly_pct": -18.1,
+    "monthly_inflow": 665.99,
+    "monthly_avg": 819.6,
+    "monthly_pct": -18.7,
+    "large_tx_count": 659847
+  }
 }
