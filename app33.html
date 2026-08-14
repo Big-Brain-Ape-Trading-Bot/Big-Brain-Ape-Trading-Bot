@@ -1450,18 +1450,19 @@ else{signals.push(['Volume',vr.toFixed(1)+'x avg','neutral'])}
 }
 
 var rating,ratingClass;
-// Druckenmiller rules: RR must be >= 1:1 for any BUY, >= 3:1 for STRONG BUY
-// Extreme overbought (RSI > 80) caps rating at HOLD
-// Extreme overbought (RSI > 85) forces at least SELL
-if(bearCount>=6){rating='STRONG SELL';ratingClass='strong-sell'}
-else if(bearCount>=4){rating='SELL';ratingClass='sell'}
-else if(bullCount>=6 && rr>=3 && rsi<70){rating='STRONG BUY';ratingClass='strong-buy'}
-else if(bullCount>=4 && rr>=1 && rsi<80){rating='BUY';ratingClass='buy'}
-else if(rsi>=85){rating='SELL';ratingClass='sell'}
-else if(rsi>=80){rating='HOLD';ratingClass='hold'}
-else if(bullCount>=4 && rr<1){rating='HOLD';ratingClass='hold'}
-else if(bullCount>=6 && rr<2){rating='BUY';ratingClass='buy'}
-else if(bullCount>=4){rating='HOLD';ratingClass='hold'}
+var netBull=bullCount-bearCount;
+// Rating based on NET bullish vs bearish signals, not raw bear count alone
+// This prevents everything from being SELL in a slightly down market
+if(netBull<=-5){rating='STRONG SELL';ratingClass='strong-sell'}
+else if(netBull<=-3){rating='SELL';ratingClass='sell'}
+else if(netBull>=5 && rr>=3 && rsi<70){rating='STRONG BUY';ratingClass='strong-buy'}
+else if(netBull>=3 && rr>=1 && rsi<80){rating='BUY';ratingClass='buy'}
+else if(rsi>=88){rating='SELL';ratingClass='sell'}
+else if(rsi>=82){rating='HOLD';ratingClass='hold'}
+else if(netBull>=3 && rr<1){rating='HOLD';ratingClass='hold'}
+else if(netBull>=5 && rr<2){rating='BUY';ratingClass='buy'}
+else if(netBull>=1){rating='HOLD';ratingClass='hold'}
+else if(netBull<=-1){rating='HOLD';ratingClass='hold'}
 else{rating='HOLD';ratingClass='hold'}
 
 var entry=price;var target,stop;
