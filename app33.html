@@ -2564,10 +2564,31 @@ if (toggle) toggle.textContent = 'Tap to collapse';
 var MARKETS_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/markets.json';
 var marketsTimer=null;
 
+function renderScroller(containerId,items){
+var container=document.getElementById(containerId);
+if(!container)return;
+if(!items||items.length===0){
+container.innerHTML='<div class="market-chip" style="opacity:.5"><div class="chip-symbol">No data</div></div>';
+return;
+}
+var html='';
+for(var i=0;i<items.length;i++){
+var item=items[i];
+var sym=item.symbol||item.rawSymbol||'—';
+var price=item.price||0;
+var chg=item.change24h||0;
+var up=chg>=0;
+var priceStr=price>=1000?'$'+price.toFixed(0):price>=1?'$'+price.toFixed(2):'$'+price.toFixed(4);
+var chgStr=(up?'+':'')+chg.toFixed(2)+'%';
+var chgClass=up?'green':'red';
+html+='<div class="market-chip" onclick="confirmTickerAnalysis(\''+sym+'\')">'+ '<div class="chip-symbol">'+sym+'</div>'+ '<div class="chip-price">'+priceStr+'</div>'+ '<div class="chip-change '+chgClass+'">'+chgStr+'</div>'+ '</div>';
+}
+container.innerHTML=html;
+}
+
 function loadMarketScrollers(){
 var url=MARKETS_URL+'?t='+Date.now();
 
-// Fallback data — shows even if fetch fails
 var fallbackCrypto=[
 {symbol:'BTC',price:64000,change24h:-1.8,tvSymbol:'BINANCE:BTCUSDT'},
 {symbol:'ETH',price:1870,change24h:-2.6,tvSymbol:'BINANCE:ETHUSDT'},
@@ -2581,7 +2602,6 @@ var fallbackCrypto=[
 {symbol:'DOT',price:4.2,tvSymbol:'BINANCE:DOTUSDT',change24h:-1.2}
 ];
 
-// Render fallback immediately so user sees something
 renderScroller('cryptoScroller',fallbackCrypto);
 updateTickerTapes(fallbackCrypto,[],[]);
 
@@ -2591,7 +2611,6 @@ renderScroller('cryptoScroller',data.crypto||fallbackCrypto);
 renderScroller('stockScroller',data.stocksETFs||[]);
 updateTickerTapes(data.crypto||fallbackCrypto,data.xyzPerps||[],data.stocksETFs||[]);
 }).catch(function(e){
-// Fetch failed — render what we can from fallback
 var fallbackXYZ=[
 {symbol:'NVDA',price:217,change24h:-2.9,tvSymbol:'NASDAQ:NVDA'},
 {symbol:'TSLA',price:250,change24h:-1.5,tvSymbol:'NASDAQ:TSLA'},
@@ -2609,7 +2628,7 @@ var fallbackStocks=[
 renderScroller('xyzScroller',fallbackXYZ);
 renderScroller('stockScroller',fallbackStocks);
 updateTickerTapes(fallbackCrypto,fallbackXYZ,fallbackStocks);
-})
+});
 }
 
 // Ticker tape animation state
@@ -2617,13 +2636,12 @@ var ttAnimState={stocks:{offset:0,el:null,speed:0.8},crypto:{offset:0,el:null,sp
 var ttRAF=null;
 
 function startTickerAnimation(){
-if(ttRAF)return; // already running
+if(ttRAF)return;
 function tick(){
 for(var key in ttAnimState){
 var s=ttAnimState[key];
 if(!s.el||!s.el.parentNode)continue;
 s.offset-=s.speed;
-// Get the width of one set of items (half the total since we duplicate)
 var halfW=s.el.scrollWidth/2;
 if(halfW>0&&s.offset<=-halfW){
 s.offset+=halfW;
@@ -2641,7 +2659,6 @@ var stockTrack=document.getElementById('tickerTrackStocks');
 if(stockTrack){
 var stockItems=[];
 var stockLists=[xyz,stocks];
-// Always include DIA in stocks for the Dow Jones box
 var hasDIA=false;
 for(var li=0;li<stockLists.length;li++){
 var list=stockLists[li];
@@ -2658,7 +2675,6 @@ var chgStr=(up?'+':'')+chg.toFixed(2)+'%';
 stockItems.push('<span class="tt-item"><span class="tt-sym">'+sym+'</span> <span class="tt-price">'+priceStr+'</span> <span class="'+(up?'tt-up':'tt-down')+'">'+chgStr+'</span></span>');
 }
 }
-// Add DIA if not present
 if(!hasDIA){
 stockItems.push('<span class="tt-item"><span class="tt-sym">DIA</span> <span class="tt-price">$537.91</span> <span class="tt-up">+0.14%</span></span>');
 }
