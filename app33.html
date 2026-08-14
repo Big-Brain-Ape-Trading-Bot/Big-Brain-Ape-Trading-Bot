@@ -1383,7 +1383,7 @@ return httpGet('https://financialmodelingprep.com/stable/profile?symbol=SPY&apik
 // ==========================================
 // DRUCKENMILLER FRAMEWORK
 // ==========================================
-function runAnalysis(data,fearGreed,funding){
+function runAnalysis(data,fearGreed,funding,analyst){
 var closes=data.closes||[];
 var price=data.price||(closes.length>0?closes[closes.length-1]:0);
 var isCrypto=data.isCrypto;
@@ -1451,19 +1451,40 @@ else{signals.push(['Volume',vr.toFixed(1)+'x avg','neutral'])}
 
 var rating,ratingClass;
 var netBull=bullCount-bearCount;
-// Rating based on NET bullish vs bearish signals, not raw bear count alone
-// This prevents everything from being SELL in a slightly down market
+
+// PRIMARY: Analyst consensus — whatever the most analysts say
+// SECONDARY: Technical signals adjust the rating up or down
+if(analyst&&analyst.consensus){
+var ac=analyst.consensus.toLowerCase();
+var aBuy=(analyst.strongBuy||0)+(analyst.buy||0);
+var aHold=analyst.hold||0;
+var aSell=(analyst.sell||0)+(analyst.strongSell||0);
+
+if(ac.indexOf('strong buy')>=0||ac.indexOf('strong-buy')>=0){rating='STRONG BUY';ratingClass='strong-buy'}
+else if(ac.indexOf('buy')>=0){rating='BUY';ratingClass='buy'}
+else if(ac.indexOf('hold')>=0){rating='HOLD';ratingClass='hold'}
+else if(ac.indexOf('sell')>=0&&ac.indexOf('strong')<0){rating='SELL';ratingClass='sell'}
+else if(ac.indexOf('strong sell')>=0||ac.indexOf('strong-sell')>=0){rating='STRONG SELL';ratingClass='strong-sell'}
+else{rating='HOLD';ratingClass='hold'}
+
+// Adjust based on technicals (our opinion):
+// If analysts say BUY but technicals are very bearish, downgrade to HOLD
+if((rating==='STRONG BUY'||rating==='BUY')&&netBull<=-4){rating='HOLD';ratingClass='hold'}
+// If analysts say SELL but technicals are very bullish, upgrade to HOLD
+if((rating==='SELL'||rating==='STRONG SELL')&&netBull>=4){rating='HOLD';ratingClass='hold'}
+// If analysts say HOLD but technicals strongly confirm one direction, nudge
+if(rating==='HOLD'&&netBull>=5&&rr>=2){rating='BUY';ratingClass='buy'}
+if(rating==='HOLD'&&netBull<=-5){rating='SELL';ratingClass='sell'}
+}
+else{
+// No analyst data — fall back to technical signals only
 if(netBull<=-5){rating='STRONG SELL';ratingClass='strong-sell'}
 else if(netBull<=-3){rating='SELL';ratingClass='sell'}
-else if(netBull>=5 && rr>=3 && rsi<70){rating='STRONG BUY';ratingClass='strong-buy'}
-else if(netBull>=3 && rr>=1 && rsi<80){rating='BUY';ratingClass='buy'}
-else if(rsi>=88){rating='SELL';ratingClass='sell'}
-else if(rsi>=82){rating='HOLD';ratingClass='hold'}
-else if(netBull>=3 && rr<1){rating='HOLD';ratingClass='hold'}
-else if(netBull>=5 && rr<2){rating='BUY';ratingClass='buy'}
+else if(netBull>=5&&rr>=3&&rsi<70){rating='STRONG BUY';ratingClass='strong-buy'}
+else if(netBull>=3&&rr>=1&&rsi<80){rating='BUY';ratingClass='buy'}
 else if(netBull>=1){rating='HOLD';ratingClass='hold'}
-else if(netBull<=-1){rating='HOLD';ratingClass='hold'}
 else{rating='HOLD';ratingClass='hold'}
+}
 
 var entry=price;var target,stop;
 if(bullCount>bearCount){target=r1;stop=s2}
@@ -2284,7 +2305,7 @@ if(!data || !data.price || data.price === 0){
 out.innerHTML='<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Data Unavailable For '+resolved.symbol+'</p><p>Could not fetch live price data. This may be due to API rate limits or network restrictions in Telegram.</p><p style="font-size:12px;margin-top:12px">Try again in a few minutes, or type the ticker in the chat for analysis.</p><button class="btn" onclick="goHome()">Back</button></div>';
 return;
 }
-var analysis=runAnalysis(data,fearGreed,funding);
+var analysis=runAnalysis(data,fearGreed,funding,analyst);
 consumeAnalysisAccess();
 renderAnalysis(data,analysis,fearGreed,funding,analyst,spyData)
 })
