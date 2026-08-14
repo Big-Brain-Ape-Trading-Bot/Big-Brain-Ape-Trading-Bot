@@ -595,6 +595,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="quick-ticker" onclick="quickSearch('SOL')">SOL</div>
 </div>
 
+<!-- STOCKS SCROLLER -->
+<div class="scroller-section">
+<div class="scroller-label">📊 Stocks <span class="scroller-slide-hint">← slide left</span></div>
+<div class="scroller-row" id="stockScroller">
+<div class="market-chip" style="opacity:.5"><div class="chip-symbol">Loading...</div></div>
+</div>
+</div>
+
 <!-- CRYPTO SCROLLER -->
 <div class="scroller-section">
 <div class="scroller-label"><span style="color:#f7931a;font-weight:800">₿</span> Crypto <span class="scroller-slide-hint">← slide left</span></div>
@@ -1658,17 +1666,14 @@ function fetchMarketContext(){
 var now=Date.now();
 if(mcCache&&(now-mcCacheTime)<120000){return Promise.resolve(mcCache);}
 var promises=[];
-// Fetch REAL index prices (^GSPC, ^IXIC, ^DJI) in one call
-promises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EGSPC,%5EIXIC,%5EDJI&apikey='+FMP_KEY).then(function(d){
-if(!d||d.length===0)return null;
-var result={};
-for(var i=0;i<d.length;i++){
-var sym=d[i].symbol||'';
-if(sym==='^GSPC')result.spy={sym:'SPX',price:d[i].price,chg:d[i].changePercentage||0};
-if(sym==='^IXIC')result.qqq={sym:'IXIC',price:d[i].price,chg:d[i].changePercentage||0};
-if(sym==='^DJI')result.dia={sym:'DJI',price:d[i].price,chg:d[i].changePercentage||0};
-}
-return result;
+// Fetch REAL index prices separately (FMP doesn't allow comma-separated indices)
+var idxPromises=[];
+idxPromises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EGSPC&apikey='+FMP_KEY).then(function(d){return d&&d[0]?{sym:'SPX',price:d[0].price,chg:d[0].changePercentage||0}:null;}).catch(function(){return null;}));
+idxPromises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EIXIC&apikey='+FMP_KEY).then(function(d){return d&&d[0]?{sym:'IXIC',price:d[0].price,chg:d[0].changePercentage||0}:null;}).catch(function(){return null;}));
+idxPromises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EDJI&apikey='+FMP_KEY).then(function(d){return d&&d[0]?{sym:'DJI',price:d[0].price,chg:d[0].changePercentage||0}:null;}).catch(function(){return null;}));
+promises.push(Promise.all(idxPromises).then(function(r){
+if(!r[0]&&!r[1]&&!r[2])return null;
+return{spy:r[0],qqq:r[1],dia:r[2]};
 }).catch(function(){return null;}));
 // Fetch BTC and ETH from CoinGecko
 promises.push(httpGet('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true').then(function(d){
@@ -2720,29 +2725,25 @@ ttAnimState.crypto.offset=0;
 startTickerAnimation();
 
 // Update index price boxes — fetch REAL index values from FMP (^GSPC, ^IXIC, ^DJI)
-// Fetch all 3 real indices in ONE call to avoid race conditions
-httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EGSPC,%5EIXIC,%5EDJI&apikey='+FMP_KEY)
+// Fetch each index separately (FMP doesn't allow comma-separated indices on this plan)
+var idxList=[['%5EGSPC','idxGSPC','idxGSPCchg'],['%5EIXIC','idxIXIC','idxIXICchg'],['%5EDJI','idxDJI','idxDJIchg']];
+for(var t=0;t<idxList.length;t++){
+(function(sym,priceId,chgId){
+httpGet('https://financialmodelingprep.com/stable/quote?symbol='+sym+'&apikey='+FMP_KEY)
 .then(function(data){
-if(!data||data.length===0)return;
-var idxMap={'^GSPC':'idxGSPC','^IXIC':'idxIXIC','^DJI':'idxDJI'};
-var chgMap={'^GSPC':'idxGSPCchg','^IXIC':'idxIXICchg','^DJI':'idxDJIchg'};
-for(var i=0;i<data.length;i++){
-var d=data[i];
-var sym=d.symbol||'';
+if(data&&data.length>0&&data[0].price){
+var d=data[0];
 var fp=d.price||0;
 var fc=d.changePercentage||0;
-var priceEl=document.getElementById(idxMap[sym]);
-var chgEl=document.getElementById(chgMap[sym]);
-if(priceEl){
-priceEl.textContent=fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);
-}
-if(chgEl){
-chgEl.textContent=(fc>=0?'+':'')+fc.toFixed(2)+'%';
-chgEl.className='index-change '+(fc>=0?'green':'red');
-}
+var priceEl=document.getElementById(priceId);
+var chgEl=document.getElementById(chgId);
+if(priceEl){priceEl.textContent=fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);}
+if(chgEl){chgEl.textContent=(fc>=0?'+':'')+fc.toFixed(2)+'%';chgEl.className='index-change '+(fc>=0?'green':'red');}
 }
 })
 .catch(function(){});
+})(idxList[t][0],idxList[t][1],idxList[t][2]);
+}
 }
 
 function renderTradingPosts(posts){
