@@ -2986,17 +2986,19 @@ html+='</div>';
 
 // Whale + Signals
 html+='<div class="snap-footer-row">';
-html+='<div class="snap-whale"><div class="snap-section-title">WHALE ACTIVITY</div>';
-var whale=data.whale_flow||'NEUTRAL';
-var whaleColor=whale==='ACCUMULATING'?'#00e676':whale==='DISTRIBUTING'?'#ff5252':'#00c6ff';
-html+='<div style="font-size:13px;line-height:1.5">';
-html+='<div style="color:'+whaleColor+';font-weight:700;font-size:14px;margin-bottom:6px">'+whale+'</div>';
-if(data.btc_funding!==undefined){
-html+='BTC Funding: '+(data.btc_funding*100).toFixed(4)+'%<br>';
-}
-if(data.btc_long_short){
-html+='Long/Short: '+data.btc_long_short.toFixed(2);
-}
+html+='<div class="snap-whale"><div class="snap-section-title">Whale Activity 🐳</div>';
+var wd=data.whale_data||{};
+var pctColor=function(p){return p>0?'#00e676':p<0?'#ff5252':'#00c6ff'};
+var pctArrow=function(p){return p>0?'▲':p<0?'▼':'—'};
+html+='<div style="font-size:12px;line-height:1.6">';
+// 1. Daily inflow vs avg
+html+='<div style="margin-bottom:5px"><span style="color:#888">BTC Daily Volume</span><br><span style="color:#fff;font-weight:600">$'+(wd.daily_inflow||0)+'B</span> vs avg $'+(wd.daily_avg||0)+'B <span style="color:'+pctColor(wd.daily_pct||0)+';font-weight:700">'+pctArrow(wd.daily_pct||0)+(wd.daily_pct||0).toFixed(1)+'%</span></div>';
+// 2. Weekly inflow vs avg
+html+='<div style="margin-bottom:5px"><span style="color:#888">BTC Weekly Volume</span><br><span style="color:#fff;font-weight:600">$'+(wd.weekly_inflow||0)+'B</span> vs avg $'+(wd.weekly_avg||0)+'B <span style="color:'+pctColor(wd.weekly_pct||0)+';font-weight:700">'+pctArrow(wd.weekly_pct||0)+(wd.weekly_pct||0).toFixed(1)+'%</span></div>';
+// 3. Monthly inflow vs avg
+html+='<div style="margin-bottom:5px"><span style="color:#888">BTC Monthly Volume</span><br><span style="color:#fff;font-weight:600">$'+(wd.monthly_inflow||0)+'B</span> vs avg $'+(wd.monthly_avg||0)+'B <span style="color:'+pctColor(wd.monthly_pct||0)+';font-weight:700">'+pctArrow(wd.monthly_pct||0)+(wd.monthly_pct||0).toFixed(1)+'%</span></div>';
+// 4. Large Tx Count
+html+='<div><span style="color:#888">24h Transactions</span><br><span style="color:#fff;font-weight:600">'+((wd.large_tx_count||0)/1000).toFixed(0)+'K</span> transactions in last 24h</div>';
 html+='</div></div>';
 
 html+='<div class="snap-signals"><div class="snap-section-title">KEY SIGNALS</div>';
