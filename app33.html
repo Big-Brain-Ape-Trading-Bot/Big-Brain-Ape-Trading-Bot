@@ -2666,6 +2666,7 @@ stockTrack.innerHTML=stockItems.join('')+stockItems.join('');
 ttAnimState.stocks.el=stockTrack;
 ttAnimState.stocks.offset=0;
 }
+
 // Crypto ticker tape
 var cryptoTrack=document.getElementById('tickerTrackCrypto');
 if(cryptoTrack){
@@ -2684,6 +2685,7 @@ cryptoTrack.innerHTML=cryptoItems.join('')+cryptoItems.join('');
 ttAnimState.crypto.el=cryptoTrack;
 ttAnimState.crypto.offset=0;
 }
+
 // Start animation
 startTickerAnimation();
 
@@ -2699,7 +2701,9 @@ var fp=d.price||0;
 var fc=d.changePercentage||0;
 var priceEl=document.getElementById(priceId);
 var chgEl=document.getElementById(chgId);
-if(priceEl){priceEl.textContent=fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);}
+if(priceEl){
+priceEl.textContent=fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);
+}
 if(chgEl){
 chgEl.textContent=(fc>=0?'+':'')+fc.toFixed(2)+'%';
 chgEl.className='index-change '+(fc>=0?'green':'red');
@@ -2708,18 +2712,6 @@ chgEl.className='index-change '+(fc>=0?'green':'red');
 })
 .catch(function(){});
 })(idxTargets[t][0],idxTargets[t][1],idxTargets[t][2]);
-}
-if(found){
-var fp=found.price||0;
-var fc=found.change24h||0;
-var priceEl=document.getElementById(priceId);
-var chgEl=document.getElementById(chgId);
-if(priceEl){
-priceEl.textContent=fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);
-}
-if(chgEl){
-chgEl.textContent=(fc>=0?'+':'')+fc.toFixed(2)+'%';
-chgEl.className='index-change '+(fc>=0?'green':'red');
 }
 }
 
