@@ -2560,6 +2560,7 @@ if (toggle) toggle.textContent = 'Tap to collapse';
 // MARKET SCROLLERS (XYZ Perps + Stocks/ETFs)
 // ==========================================
 var MARKETS_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/markets.json';
+var SNAPSHOT_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/snapshot.json';
 var marketsTimer=null;
 
 function renderScroller(containerId,items){
@@ -2869,7 +2870,6 @@ if(modal)modal.style.display='none';
 // ==========================================
 // MARKET SNAPSHOT (live data from snapshot.json)
 // ==========================================
-var SNAPSHOT_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/snapshot.json';
 var snapRefreshTimer=null;
 
 function loadSnapshot(){
