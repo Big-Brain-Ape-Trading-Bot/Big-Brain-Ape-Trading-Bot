@@ -916,108 +916,68 @@ function renderBriefingView() {
 
 function loadRealBriefing() {
   var container = document.getElementById('briefingContent');
-  var fmpKey = 'FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL';
   
   Promise.all([
-    httpGet('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true'),
-    httpGet('https://api.alternative.me/fng/'),
-    httpGet('https://api.llama.fi/v2/chains'),
-    httpGet('https://api.llama.fi/v2/historicalChainTvl'),
-    httpGet('https://financialmodelingprep.com/stable/profile?symbol=SPY&apikey=' + fmpKey),
-    httpGet('https://financialmodelingprep.com/stable/profile?symbol=GOLD&apikey=' + fmpKey),
-    httpGet('https://financialmodelingprep.com/stable/profile?symbol=CL&apikey=' + fmpKey),
-    httpGet('https://financialmodelingprep.com/stable/profile?symbol=DXY&apikey=' + fmpKey)
+    fetch(SNAPSHOT_URL + '?t=' + Date.now()).then(function(r){return r.json()}),
+    fetch(MARKETS_URL + '?t=' + Date.now()).then(function(r){return r.json()}),
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true').then(function(r){return r.json()})
   ]).then(function(results) {
-    var crypto = results[0], fng = results[1], chains = results[2], hist = results[3];
-    var spy = results[4], gold = results[5], oil = results[6], dxy = results[7];
+    var snap = results[0];
+    var mkt = results[1];
+    var cg = results[2];
+    
+    var fearGreed = snap.fear_greed || {value: 0, classification: 'N/A'};
+    var indices = mkt.indices || [];
+    var whale = snap.whale_data || {};
+    var signals = snap.signals || [];
+    
+    var btcPrice = cg.bitcoin ? cg.bitcoin.usd : 0;
+    var btcChg = cg.bitcoin ? cg.bitcoin.usd_24h_change : 0;
+    var ethPrice = cg.ethereum ? cg.ethereum.usd : 0;
+    var ethChg = cg.ethereum ? cg.ethereum.usd_24h_change : 0;
+    var solPrice = cg.solana ? cg.solana.usd : 0;
+    var solChg = cg.solana ? cg.solana.usd_24h_change : 0;
     
     var html = '';
-    var now = new Date();
-    var dateStr = now.toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+    html += '<div style="margin-bottom:20px">';
+    html += '<div style="font-size:16px;font-weight:700;color:var(--text1);margin-bottom:12px">Market Overview</div>';
     
-    html += '<div class="card briefing-card">';
-    html += '<h2>Macro Market Update</h2>';
-    html += '<div class="date">' + dateStr + '</div>';
-    
-    // Market overview grid
-    html += '<div class="briefing-grid">';
-    
-    if (crypto && crypto.bitcoin) {
-      html += briefingCard('BTC', '$' + formatBriefNum(crypto.bitcoin.usd), crypto.bitcoin.usd_24h_change, '#F7931A', null, 'BTC');
-    }
-    if (crypto && crypto.ethereum) {
-      html += briefingCard('ETH', '$' + formatBriefNum(crypto.ethereum.usd), crypto.ethereum.usd_24h_change, '#627EEA', null, 'ETH');
-    }
-    if (crypto && crypto.solana) {
-      html += briefingCard('SOL', '$' + formatBriefNum(crypto.solana.usd), crypto.solana.usd_24h_change, '#14F195', null, 'SOL');
-    }
-    if (spy && spy[0] && spy[0].price) {
-      html += briefingCard('S&P 500', '$' + formatBriefNum(spy[0].price), parseFloat(spy[0].changePercentage), '#6F00FF', null, 'SPY');
-    }
-    if (gold && gold[0] && gold[0].price) {
-      html += briefingCard('Gold', '$' + formatBriefNum(gold[0].price), parseFloat(gold[0].changePercentage), '#FFD700', null, 'GOLD');
-    }
-    if (oil && oil[0] && oil[0].price) {
-      html += briefingCard('Crude Oil', '$' + formatBriefNum(oil[0].price), parseFloat(oil[0].changePercentage), '#E74C3C', null, 'CL');
-    }
-    if (dxy && dxy[0] && dxy[0].price) {
-      html += briefingCard('Dollar (DXY)', formatBriefNum(dxy[0].price), parseFloat(dxy[0].changePercentage), '#2ECC71', null, 'DXY');
-    }
-    if (fng && fng.data && fng.data[0]) {
-      var fngVal = parseInt(fng.data[0].value);
-      var fngLabel = fng.data[0].value_classification;
-      var fngColor = fngVal >= 75 ? '#3FB950' : fngVal >= 55 ? '#FFD700' : fngVal >= 45 ? '#F0883E' : fngVal >= 25 ? '#F85149' : '#DA3633';
-      html += briefingCard('Fear & Greed', fngVal + '/100', null, fngColor, fngLabel);
-    }
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
+    html += '<div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--text2)">BTC</div><div style="font-size:16px;font-weight:700;color:'+(btcChg>=0?'#00d68f':'#ff3b30')+'">$'+(btcPrice>=1000?btcPrice.toFixed(0):btcPrice.toFixed(2))+'</div><div style="font-size:11px;color:'+(btcChg>=0?'#00d68f':'#ff3b30')+'">'+(btcChg>=0?'+':'')+btcChg.toFixed(1)+'%</div></div>';
+    html += '<div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--text2)">ETH</div><div style="font-size:16px;font-weight:700;color:'+(ethChg>=0?'#00d68f':'#ff3b30')+'">$'+(ethPrice>=1000?ethPrice.toFixed(0):ethPrice.toFixed(2))+'</div><div style="font-size:11px;color:'+(ethChg>=0?'#00d68f':'#ff3b30')+'">'+(ethChg>=0?'+':'')+ethChg.toFixed(1)+'%</div></div>';
+    html += '<div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--text2)">SOL</div><div style="font-size:16px;font-weight:700;color:'+(solChg>=0?'#00d68f':'#ff3b30')+'">$'+solPrice.toFixed(2)+'</div><div style="font-size:11px;color:'+(solChg>=0?'#00d68f':'#ff3b30')+'">'+(solChg>=0?'+':'')+solChg.toFixed(1)+'%</div></div>';
     html += '</div>';
     
-    // DeFi liquidity
-    if (chains) {
-      var totalTvl = 0;
-      for (var ci = 0; ci < chains.length; ci++) { totalTvl += chains[ci].tvl || 0; }
-      var sorted = chains.slice().sort(function(a, b) { return (b.tvl || 0) - (a.tvl || 0); });
-      var tvlChange30d = '';
-      if (hist && hist.length >= 30) {
-        var pct = ((hist[hist.length-1].tvl - hist[hist.length-30].tvl) / hist[hist.length-30].tvl) * 100;
-        tvlChange30d = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+    if (indices.length > 0) {
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
+      for (var i = 0; i < indices.length; i++) {
+        var idx = indices[i];
+        var fc = idx.changePercentage || 0;
+        html += '<div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--text2)">'+idx.name+'</div><div style="font-size:14px;font-weight:700;color:'+(fc>=0?'#00d68f':'#ff3b30')+'">$'+(idx.price>=10000?idx.price.toFixed(0):idx.price.toFixed(2))+'</div><div style="font-size:11px;color:'+(fc>=0?'#00d68f':'#ff3b30')+'">'+(fc>=0?'+':'')+fc.toFixed(2)+'%</div></div>';
       }
-      html += '<div class="briefing-item"><div class="bi-label">DEFI LIQUIDITY</div>';
-      html += '<div class="bi-text">Total TVL: <b>$' + (totalTvl/1e9).toFixed(2) + 'B</b>';
-      if (tvlChange30d) {
-        html += ' <span style="color:' + (tvlChange30d.charAt(0)==='+'?'var(--green)':'var(--red)') + ';font-weight:700">(' + tvlChange30d + ' 30d)</span>';
-      }
-      html += '</div><div style="margin-top:8px;font-size:12px;color:var(--text2)">Top chains:</div>';
-      html += '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">';
-      for (var ti = 0; ti < Math.min(6, sorted.length); ti++) {
-        html += '<span style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:6px;padding:4px 8px;font-size:11px">' + sorted[ti].name + ': $' + (sorted[ti].tvl/1e9).toFixed(2) + 'B</span>';
-      }
+      html += '</div>';
+    }
+    
+    var fgVal = fearGreed.value || 0;
+    var fgLabel = fgVal < 25 ? 'Extreme Fear' : fgVal < 45 ? 'Fear' : fgVal < 55 ? 'Neutral' : fgVal < 75 ? 'Greed' : 'Extreme Greed';
+    var fgColor = fgVal < 25 ? '#ff3b30' : fgVal < 45 ? '#ff9500' : fgVal < 55 ? '#8e8e93' : fgVal < 75 ? '#34c759' : '#00d68f';
+    html += '<div style="background:var(--card2);border-radius:10px;padding:14px;margin-bottom:16px"><div style="font-size:13px;color:var(--text2);margin-bottom:6px">Fear & Greed Index</div><div style="display:flex;align-items:center;gap:12px"><div style="font-size:32px;font-weight:800;color:'+fgColor+'">'+fgVal+'</div><div style="font-size:14px;color:'+fgColor+';font-weight:600">'+fgLabel+'</div></div></div>';
+    
+    if (whale && whale.daily_inflow) {
+      html += '<div style="background:var(--card2);border-radius:10px;padding:14px;margin-bottom:16px"><div style="font-size:13px;color:var(--text2);margin-bottom:10px">Whale Activity</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+      html += '<div><div style="font-size:11px;color:var(--text2)">Daily Vol</div><div style="font-size:14px;font-weight:600">$'+whale.daily_inflow+'B</div><div style="font-size:11px;color:'+(whale.daily_pct>=0?'#00d68f':'#ff3b30')+'">'+(whale.daily_pct>=0?'+':'')+whale.daily_pct+'% vs avg</div></div>';
+      html += '<div><div style="font-size:11px;color:var(--text2)">Weekly Vol</div><div style="font-size:14px;font-weight:600">$'+whale.weekly_inflow+'B</div><div style="font-size:11px;color:'+(whale.weekly_pct>=0?'#00d68f':'#ff3b30')+'">'+(whale.weekly_pct>=0?'+':'')+whale.weekly_pct+'% vs avg</div></div>';
+      html += '<div><div style="font-size:11px;color:var(--text2)">Monthly Vol</div><div style="font-size:14px;font-weight:600">$'+whale.monthly_inflow+'B</div><div style="font-size:11px;color:'+(whale.monthly_pct>=0?'#00d68f':'#ff3b30')+'">'+(whale.monthly_pct>=0?'+':'')+whale.monthly_pct+'% vs avg</div></div>';
+      html += '<div><div style="font-size:11px;color:var(--text2)">24h Tx Count</div><div style="font-size:14px;font-weight:600">'+(whale.large_tx_count/1000).toFixed(0)+'K</div></div>';
       html += '</div></div>';
     }
     
-    // Commentary
-    html += '<div class="briefing-item"><div class="bi-label">LIQUIDITY</div><div class="bi-text">';
-    var commentary = 'Fed policy remains the primary driver of all risk assets. ';
-    if (fng && fng.data && fng.data[0]) {
-      var fngV = parseInt(fng.data[0].value);
-      if (fngV < 30) commentary += 'Fear & Greed at ' + fngV + ' — extreme fear. Historically a contrarian buy signal. ';
-      else if (fngV > 70) commentary += 'Fear & Greed at ' + fngV + ' — extreme greed. Caution warranted. ';
-      else commentary += 'Fear & Greed at ' + fngV + ' — neutral sentiment. ';
-    }
-    if (dxy && dxy[0] && dxy[0].changePercentage) {
-      var dxyChg = parseFloat(dxy[0].changePercentage);
-      if (dxyChg < 0) commentary += 'Dollar weakening today — supportive for risk assets and commodities. ';
-      else commentary += 'Dollar strengthening today — headwind for risk assets. ';
-    }
-    html += commentary + '</div></div>';
-    
-    html += '<div class="briefing-item"><div class="bi-label">STRATEGY</div><div class="bi-text">Focus on the central banks and movement of liquidity. The obvious is obviously wrong. Visualize 18 months out, not the present. Position sizing is 70-80% of the equation — concentrate when conviction is high, stay flat when unclear.</div></div>';
-    
+    html += '<div style="text-align:center;padding:10px;color:var(--text2);font-size:11px">Data updated every 5 minutes. Generated by Big Brain Ape.</div>';
     html += '</div>';
-    html += '<p style="text-align:center;color:var(--text2);font-size:11px;padding:8px">Live data from CoinGecko, DefiLlama, Alternative.me, and FMP. For educational purposes. Not financial advice.</p>';
     
     container.innerHTML = html;
-  }).catch(function(e) {
-    container.innerHTML = '<div class="card briefing-card"><h2>Macro Market Update</h2><div class="date">Unable to load live data right now. Please try again.</div></div>';
+  }).catch(function(err) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text2);font-size:14px">Could not load market data. Pull down to refresh.</div>';
   });
 }
 
@@ -1123,7 +1083,7 @@ for(var j=0;j<navs.length;j++){var navEl=document.getElementById('nav-'+navs[j])
 window.scrollTo(0,0)
 }
 function goHome(){switchView('home')}
-function quickSearch(symbol){document.getElementById('searchInput').value=symbol;doSearch()}
+function quickSearch(symbol){confirmTickerAnalysis(symbol)}
 
 // ==========================================
 // TICKER RESOLUTION
@@ -1232,34 +1192,46 @@ return httpGet('https://api.alternative.me/fng/?limit=1')
 }
 
 function getStockData(symbol){
-var profileUrl='https://financialmodelingprep.com/stable/profile?symbol='+symbol+'&apikey='+FMP_KEY;
-var ratiosUrl='https://financialmodelingprep.com/stable/ratios?symbol='+symbol+'&apikey='+FMP_KEY;
-var incomeUrl='https://financialmodelingprep.com/stable/income-statement?symbol='+symbol+'&apikey='+FMP_KEY;
-return httpGet(profileUrl)
+// Use Yahoo Finance chart API (no API key, works in browser)
+var yahooUrl='https://query2.finance.yahoo.com/v8/finance/chart/'+symbol+'?interval=1d&range=1y';
+return httpGet(yahooUrl)
 .then(function(data){
-if(!data||data.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
-var p=data[0];
-var rp=(p.range||'0-0').split('-');
-var yearLow=parseFloat(rp[0])||0;
-var yearHigh=parseFloat(rp[1])||0;
-var price=p.price||0;
-var prevClose=price-(p.change||0);
+if(!data||!data.chart||!data.chart.result||data.chart.result.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
+var result=data.chart.result[0];
+var meta=result.meta||{};
 var closes=[];
-if(yearHigh>yearLow&&price>0){
-var range=yearHigh-yearLow;
-for(var i=0;i<250;i++){
-var progress=i/249;
-var ac=yearLow+(progress*(price-yearLow));
-ac+=Math.sin(i*0.1)*range*0.05;
-ac+=Math.sin(i*0.05)*range*0.03;
-closes.push(Math.max(yearLow,Math.min(yearHigh*1.1,ac)))
+var timestamps=result.timestamp||[];
+var quotes=result.indicators&&result.indicators.quote?result.indicators.quote[0]:{};
+var closesArr=quotes.close||[];
+for(var i=0;i<closesArr.length;i++){
+if(closesArr[i]!=null){closes.push(closesArr[i])}
 }
-closes[closes.length-1]=price
+if(closes.length<10){throw new Error('Not enough historical data for '+symbol)}
+var price=meta.regularMarketPrice||closes[closes.length-1];
+var prevClose=meta.chartPreviousClose||meta.previousClose||closes[closes.length-2]||price;
+var change=price-prevClose;
+var changePct=(change/prevClose)*100;
+var yearHigh=meta.regularMarketDayHigh||Math.max.apply(null,closes);
+var yearLow=meta.regularMarketDayLow||Math.min.apply(null,closes);
+var fiftyHigh=closes.slice(-50).length>0?Math.max.apply(null,closes.slice(-50)):price;
+var twoHigh=closes.slice(-200).length>0?Math.max.apply(null,closes.slice(-200)):price;
+var companyName=meta.longName||meta.shortName||symbol;
+var sector='N/A';
+var industry='N/A';
+var marketCap=meta.marketCap||0;
+var volumeArr=quotes.volume||[];
+var avgVolume=0;
+if(volumeArr.length>0){var sum=0;for(var v=0;v<volumeArr.length;v++){if(volumeArr[v]!=null)sum+=volumeArr[v]}avgVolume=sum/volumeArr.length}
+return{
+symbol:symbol,name:companyName,price:price,change:change,changePct:changePct,
+closes:closes,yearHigh:yearHigh,yearLow:yearLow,fiftyHigh:fiftyHigh,twoHigh:twoHigh,
+marketCap:marketCap,sector:sector,industry:industry,range:(yearLow+'-'+yearHigh),
+beta:0,dividendYield:0,peRatio:0,volume:avgVolume,avgVolume:avgVolume,
+isCrypto:false
 }
-var result={symbol:symbol,name:p.companyName||symbol,price:price,prevClose:prevClose,change:p.change||0,changePct:p.changePercentage||0,marketCap:p.marketCap||null,peRatio:null,eps:null,beta:p.beta||null,yearHigh:yearHigh,yearLow:yearLow,sector:p.sector||'',industry:p.industry||'',exchange:p.exchange||'',volume:p.volume||null,avgVolume:p.averageVolume||null,ceo:p.ceo||'',description:p.description||'',employees:p.fullTimeEmployees||null,closes:closes,isCrypto:false};
-var rp2=httpGet(ratiosUrl).then(function(rd){if(rd&&rd.length>0){result.peRatio=rd[0].priceToEarningsRatio||null}}).catch(function(e){});
-var ip=httpGet(incomeUrl).then(function(id){if(id&&id.length>0){result.eps=id[0].eps||null}}).catch(function(e){});
-return Promise.all([rp2,ip]).then(function(){return result})
+})
+.catch(function(err){
+throw new Error('Could not fetch data for '+symbol+'. '+err.message)
 })
 }
 
@@ -1286,9 +1258,8 @@ return httpGet('https://fapi.binance.com/fapi/v1/premiumIndex?symbol='+symbol+'U
 }
 
 function getAnalystConsensus(symbol){
-return httpGet('https://financialmodelingprep.com/stable/grades-consensus?symbol='+symbol+'&apikey='+FMP_KEY)
-.then(function(data){if(!data||data.length===0){return null}var d=data[0];return{consensus:d.consensus||'N/A',strongBuy:d.strongBuy||0,buy:d.buy||0,hold:d.hold||0,sell:d.sell||0,strongSell:d.strongSell||0}})
-.catch(function(e){return null})
+// FMP API may be rate limited — return null gracefully, technicals will handle rating
+return Promise.resolve(null)
 }
 
 function getPriceTarget(symbol){
@@ -1366,8 +1337,15 @@ return Promise.all([getAnalystConsensus(symbol),getPriceTarget(symbol),getEarnin
 }
 
 function getSPYData(){
-return httpGet('https://financialmodelingprep.com/stable/profile?symbol=SPY&apikey='+FMP_KEY)
-.then(function(data){if(!data||data.length===0){return null}return{changePct:data[0].changePercentage||0,price:data[0].price||0}})
+return httpGet('https://query2.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=2d')
+.then(function(data){
+if(!data||!data.chart||!data.chart.result)return null;
+var meta=data.chart.result[0].meta;
+var price=meta.regularMarketPrice||0;
+var prev=meta.chartPreviousClose||meta.previousClose||price;
+var chg=prev>0?((price-prev)/prev)*100:0;
+return{changePct:chg,price:price}
+})
 .catch(function(e){return null})
 }
 
@@ -2725,26 +2703,30 @@ ttAnimState.crypto.offset=0;
 // Start animation
 startTickerAnimation();
 
-// Update index price boxes — fetch REAL index values from FMP (^GSPC, ^IXIC, ^DJI)
-// Fetch each index separately (FMP doesn't allow comma-separated indices on this plan)
-var idxList=[['%5EGSPC','idxGSPC','idxGSPCchg'],['%5EIXIC','idxIXIC','idxIXICchg'],['%5EDJI','idxDJI','idxDJIchg']];
-for(var t=0;t<idxList.length;t++){
-(function(sym,priceId,chgId){
-httpGet('https://financialmodelingprep.com/stable/quote?symbol='+sym+'&apikey='+FMP_KEY)
+// Update index price boxes — read from markets.json (server-generated, no CORS issues)
+var idxMap={'GSPC':'idxGSPC','IXIC':'idxIXIC','DJI':'idxDJI'};
+var idxChgMap={'GSPC':'idxGSPCchg','IXIC':'idxIXICchg','DJI':'idxDJIchg'};
+fetch(MARKETS_URL+'?t='+Date.now())
+.then(function(r){return r.json()})
 .then(function(data){
-if(data&&data.length>0&&data[0].price){
-var d=data[0];
-var fp=d.price||0;
-var fc=d.changePercentage||0;
-var priceEl=document.getElementById(priceId);
-var chgEl=document.getElementById(chgId);
-if(priceEl){priceEl.textContent=fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);}
-if(chgEl){chgEl.textContent=(fc>=0?'+':'')+fc.toFixed(2)+'%';chgEl.className='index-change '+(fc>=0?'green':'red');}
+if(data&&data.indices){
+for(var i=0;i<data.indices.length;i++){
+var idx=data.indices[i];
+var priceEl=document.getElementById(idxMap[idx.symbol]);
+var chgEl=document.getElementById(idxChgMap[idx.symbol]);
+if(priceEl){
+var fp=idx.price||0;
+priceEl.textContent=fp>=10000?'$'+fp.toFixed(0):fp>=1000?'$'+fp.toFixed(0):'$'+fp.toFixed(2);
+}
+if(chgEl){
+var fc=idx.changePercentage||0;
+chgEl.textContent=(fc>=0?'+':'')+fc.toFixed(2)+'%';
+chgEl.className='index-change '+(fc>=0?'green':'red');
+}
+}
 }
 })
 .catch(function(){});
-})(idxList[t][0],idxList[t][1],idxList[t][2]);
-}
 }
 
 // Fetch and display trading posts from JSON
