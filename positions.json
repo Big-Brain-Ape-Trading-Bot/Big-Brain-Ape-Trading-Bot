@@ -1,12 +1,12 @@
 {
-  "timestamp": 1786819559,
-  "generatedAt": "2026-08-15 18:45 UTC",
-  "accountValue": 1787.46,
-  "withdrawable": 268.3,
-  "portfolioValue": 1787.46,
-  "totalUnrealizedPnl": 205.56,
-  "totalMarginUsed": 1313.6,
-  "availableCash": 268.3,
+  "timestamp": 1786819859,
+  "generatedAt": "2026-08-15 18:50 UTC",
+  "accountValue": 1787.12,
+  "withdrawable": 268.16,
+  "portfolioValue": 1787.12,
+  "totalUnrealizedPnl": 205.39,
+  "totalMarginUsed": 1313.58,
+  "availableCash": 268.16,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 225.06,
-      "unrealizedPnl": 107.82,
+      "currentPrice": 225.07,
+      "unrealizedPnl": 107.9,
       "pnlPercent": 17.5,
-      "marginUsed": 652.67,
+      "marginUsed": 652.7,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1958.02,
+      "positionValue": 1958.11,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -44,20 +44,20 @@
       "side": "LONG",
       "size": 0.115,
       "entryPrice": 7650.33,
-      "currentPrice": 7779.5,
-      "unrealizedPnl": 14.85,
-      "pnlPercent": 8.4,
-      "marginUsed": 178.93,
+      "currentPrice": 7777.3,
+      "unrealizedPnl": 14.6,
+      "pnlPercent": 8.3,
+      "marginUsed": 178.88,
       "leverage": 5,
       "marginType": "cross",
-      "positionValue": 894.64,
+      "positionValue": 894.39,
       "tvSymbol": "SP:SPX"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1958.02
+      "value": 1958.11
     },
     {
       "label": "GOLD",
@@ -65,17 +65,17 @@
     },
     {
       "label": "SP500",
-      "value": 894.64
+      "value": 894.39
     },
     {
       "label": "Cash",
-      "value": 268.3
+      "value": 268.16
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 652.67
+      "value": 652.7
     },
     {
       "label": "GOLD",
@@ -83,11 +83,11 @@
     },
     {
       "label": "SP500",
-      "value": 178.93
+      "value": 178.88
     },
     {
       "label": "Available",
-      "value": 268.3
+      "value": 268.16
     }
   ]
 }
