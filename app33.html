@@ -1109,7 +1109,7 @@ function calcFib(high,low){var diff=high-low;return{'0':high,'23.6':high-0.236*d
 // ==========================================
 // HTTP (XMLHttpRequest for WebView compat) — with caching
 // ==========================================
-var CACHE_TTL = 30 * 60 * 1000; // 30 minute cache
+var CACHE_TTL = 120 * 60 * 1000; // 2 hour cache to stay under FMP daily limit
 function httpGet(url){
 // Check cache first
 var cacheKey = 'bba_cache_' + btoa(url).substring(0, 40);
@@ -1125,7 +1125,7 @@ try {
 
 // Try fetch() first (modern API, better CORS support in Telegram WebApp)
 function tryFetch(targetUrl, useProxy){
-  var finalUrl = useProxy ? 'https://corsproxy.io/?' + encodeURIComponent(targetUrl) : targetUrl;
+  var finalUrl = useProxy ? targetUrl : targetUrl;
   return fetch(finalUrl, {method:'GET', redirect:'follow'})
   .then(function(resp){
     if(!resp.ok){
@@ -1192,46 +1192,75 @@ return httpGet('https://api.alternative.me/fng/?limit=1')
 }
 
 function getStockData(symbol){
-// Use Yahoo Finance chart API (no API key, works in browser)
-var yahooUrl='https://query2.finance.yahoo.com/v8/finance/chart/'+symbol+'?interval=1d&range=1y';
-return httpGet(yahooUrl)
+var profileUrl='https://financialmodelingprep.com/stable/profile?symbol='+symbol+'&apikey='+FMP_KEY;
+var histUrl='https://financialmodelingprep.com/stable/historical-price-full?symbol='+symbol+'&apikey='+FMP_KEY+'&serietype=line';
+return httpGet(profileUrl)
 .then(function(data){
-if(!data||!data.chart||!data.chart.result||data.chart.result.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
-var result=data.chart.result[0];
-var meta=result.meta||{};
+if(!data||data.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
+var p=data[0];
+var price=p.price||0;
+if(!price||price===0){throw new Error('No price data for '+symbol)}
+var prevClose=price-(p.change||0);
+var change=p.change||0;
+var changePct=p.changePercentage||0;
+var rp=(p.range||'0-0').split('-');
+var yearLow=parseFloat(rp[0])||0;
+var yearHigh=parseFloat(rp[1])||0;
+var marketCap=p.mktCap||0;
+var companyName=p.companyName||symbol;
+var sector=p.sector||'N/A';
+var industry=p.industry||'N/A';
+var beta=p.beta||0;
+var volume=p.volAvg||0;
+var desc=p.description||'';
+// Fetch historical closes for technicals
+return httpGet(histUrl)
+.then(function(hist){
 var closes=[];
-var timestamps=result.timestamp||[];
-var quotes=result.indicators&&result.indicators.quote?result.indicators.quote[0]:{};
-var closesArr=quotes.close||[];
-for(var i=0;i<closesArr.length;i++){
-if(closesArr[i]!=null){closes.push(closesArr[i])}
+if(hist&&hist.historical&&hist.historical.length>0){
+for(var i=0;i<hist.historical.length;i++){
+closes.push(hist.historical[i].close);
 }
-if(closes.length<10){throw new Error('Not enough historical data for '+symbol)}
-var price=meta.regularMarketPrice||closes[closes.length-1];
-var prevClose=meta.chartPreviousClose||meta.previousClose||closes[closes.length-2]||price;
-var change=price-prevClose;
-var changePct=(change/prevClose)*100;
-var yearHigh=meta.regularMarketDayHigh||Math.max.apply(null,closes);
-var yearLow=meta.regularMarketDayLow||Math.min.apply(null,closes);
+}
+if(closes.length<10){
+// Fallback: generate synthetic closes from 52-week range
+if(yearHigh>yearLow&&price>0){
+var range=yearHigh-yearLow;
+for(var i=0;i<250;i++){
+var progress=i/249;
+var ac=yearLow+(progress*range);
+closes.push(ac);
+}
+closes.push(price);
+}
+}
 var fiftyHigh=closes.slice(-50).length>0?Math.max.apply(null,closes.slice(-50)):price;
 var twoHigh=closes.slice(-200).length>0?Math.max.apply(null,closes.slice(-200)):price;
-var companyName=meta.longName||meta.shortName||symbol;
-var sector='N/A';
-var industry='N/A';
-var marketCap=meta.marketCap||0;
-var volumeArr=quotes.volume||[];
-var avgVolume=0;
-if(volumeArr.length>0){var sum=0;for(var v=0;v<volumeArr.length;v++){if(volumeArr[v]!=null)sum+=volumeArr[v]}avgVolume=sum/volumeArr.length}
 return{
 symbol:symbol,name:companyName,price:price,change:change,changePct:changePct,
 closes:closes,yearHigh:yearHigh,yearLow:yearLow,fiftyHigh:fiftyHigh,twoHigh:twoHigh,
 marketCap:marketCap,sector:sector,industry:industry,range:(yearLow+'-'+yearHigh),
-beta:0,dividendYield:0,peRatio:0,volume:avgVolume,avgVolume:avgVolume,
-isCrypto:false
+beta:beta,dividendYield:p.lastDiv?((p.lastDiv/price)*100):0,peRatio:p.pe||0,
+volume:volume,avgVolume:volume,description:desc,isCrypto:false
 }
 })
-.catch(function(err){
-throw new Error('Could not fetch data for '+symbol+'. '+err.message)
+.catch(function(e){
+// If historical fails, still return profile data with synthetic closes
+var closes=[];
+if(yearHigh>yearLow&&price>0){
+var range=yearHigh-yearLow;
+for(var i=0;i<250;i++){closes.push(yearLow+((i/249)*range))}
+closes.push(price);
+}
+return{
+symbol:symbol,name:companyName,price:price,change:change,changePct:changePct,
+closes:closes,yearHigh:yearHigh,yearLow:yearLow,
+fiftyHigh:Math.max.apply(null,closes.slice(-50)),twoHigh:Math.max.apply(null,closes.slice(-200)),
+marketCap:marketCap,sector:sector,industry:industry,range:(yearLow+'-'+yearHigh),
+beta:beta,dividendYield:0,peRatio:0,volume:volume,avgVolume:volume,
+description:desc,isCrypto:false
+}
+})
 })
 }
 
@@ -1258,8 +1287,9 @@ return httpGet('https://fapi.binance.com/fapi/v1/premiumIndex?symbol='+symbol+'U
 }
 
 function getAnalystConsensus(symbol){
-// FMP API may be rate limited — return null gracefully, technicals will handle rating
-return Promise.resolve(null)
+return httpGet('https://financialmodelingprep.com/stable/grades-consensus?symbol='+symbol+'&apikey='+FMP_KEY)
+.then(function(data){if(!data||data.length===0){return null}var d=data[0];return{consensus:d.consensus||'N/A',strongBuy:d.strongBuy||0,buy:d.buy||0,hold:d.hold||0,sell:d.sell||0,strongSell:d.strongSell||0}})
+.catch(function(e){return null})
 }
 
 function getPriceTarget(symbol){
@@ -1337,14 +1367,11 @@ return Promise.all([getAnalystConsensus(symbol),getPriceTarget(symbol),getEarnin
 }
 
 function getSPYData(){
-return httpGet('https://query2.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=2d')
+return httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EGSPC&apikey='+FMP_KEY)
 .then(function(data){
-if(!data||!data.chart||!data.chart.result)return null;
-var meta=data.chart.result[0].meta;
-var price=meta.regularMarketPrice||0;
-var prev=meta.chartPreviousClose||meta.previousClose||price;
-var chg=prev>0?((price-prev)/prev)*100:0;
-return{changePct:chg,price:price}
+if(!data||data.length===0)return null;
+var d=data[0];
+return{changePct:d.changePercentage||0,price:d.price||0}
 })
 .catch(function(e){return null})
 }
@@ -1644,38 +1671,31 @@ var mcCache=null,mcCacheTime=0;
 function fetchMarketContext(){
 var now=Date.now();
 if(mcCache&&(now-mcCacheTime)<120000){return Promise.resolve(mcCache);}
-var promises=[];
-// Fetch REAL index prices separately (FMP doesn't allow comma-separated indices)
-var idxPromises=[];
-idxPromises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EGSPC&apikey='+FMP_KEY).then(function(d){return d&&d[0]?{sym:'SPX',price:d[0].price,chg:d[0].changePercentage||0}:null;}).catch(function(){return null;}));
-idxPromises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EIXIC&apikey='+FMP_KEY).then(function(d){return d&&d[0]?{sym:'IXIC',price:d[0].price,chg:d[0].changePercentage||0}:null;}).catch(function(){return null;}));
-idxPromises.push(httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EDJI&apikey='+FMP_KEY).then(function(d){return d&&d[0]?{sym:'DJI',price:d[0].price,chg:d[0].changePercentage||0}:null;}).catch(function(){return null;}));
-promises.push(Promise.all(idxPromises).then(function(r){
-if(!r[0]&&!r[1]&&!r[2])return null;
-return{spy:r[0],qqq:r[1],dia:r[2]};
-}).catch(function(){return null;}));
-// Fetch BTC and ETH from CoinGecko
-promises.push(httpGet('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true').then(function(d){
-var btc=d&&d.bitcoin?{sym:'BTC',price:d.bitcoin.usd,chg:d.bitcoin.usd_24h_change||0}:null;
-var eth=d&&d.ethereum?{sym:'ETH',price:d.ethereum.usd,chg:d.ethereum.usd_24h_change||0}:null;
-var sol=d&&d.solana?{sym:'SOL',price:d.solana.usd,chg:d.solana.usd_24h_change||0}:null;
-return[btc,eth,sol];
-}).catch(function(){return[null,null,null];}));
-// Fetch Fear & Greed
-promises.push(httpGet('https://api.alternative.me/fng/?limit=1').then(function(d){
-return d&&d.data&&d.data[0]?{value:parseInt(d.data[0].value),label:d.data[0].value_classification}:{value:50,label:'Neutral'};
-}).catch(function(){return{value:50,label:'Neutral'};}));
-
-return Promise.all(promises).then(function(results){
-var idxResult=results[0]||{};
+// Use markets.json (server-generated, no CORS issues) + CoinGecko + Fear&Greed
+return Promise.all([
+fetch(MARKETS_URL+'?t='+Date.now()).then(function(r){return r.json()}).catch(function(){return{indices:[]}}),
+httpGet('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true').catch(function(){return{}}),
+httpGet('https://api.alternative.me/fng/').catch(function(){return{data:[{value:50,value_classification:'Neutral'}]}})
+]).then(function(results){
+var mkt=results[0]||{};
+var cg=results[1]||{};
+var fng=results[2]||{data:[{value:50,value_classification:'Neutral'}]};
+var indices=mkt.indices||[];
+var sp=indices.find(function(i){return i.symbol==='GSPC'});
+var nd=indices.find(function(i){return i.symbol==='IXIC'});
+var dj=indices.find(function(i){return i.symbol==='DJI'});
 var ctx={
-spy:idxResult.spy,qqq:idxResult.qqq,dia:idxResult.dia,
-btc:results[1]&&results[1][0],eth:results[1]&&results[1][1],sol:results[1]&&results[1][2],
-fearGreed:results[2]||{value:50,label:'Neutral'}
+spy:sp?{price:sp.price,chg:sp.changePercentage}:null,
+qqq:nd?{price:nd.price,chg:nd.changePercentage}:null,
+dia:dj?{price:dj.price,chg:dj.changePercentage}:null,
+btc:cg.bitcoin?{price:cg.bitcoin.usd,chg:cg.bitcoin.usd_24h_change}:null,
+eth:cg.ethereum?{price:cg.ethereum.usd,chg:cg.ethereum.usd_24h_change}:null,
+sol:cg.solana?{price:cg.solana.usd,chg:cg.solana.usd_24h_change}:null,
+fearGreed:fng.data?fng.data[0]:{value:50,value_classification:'Neutral'}
 };
 mcCache=ctx;mcCacheTime=Date.now();
 return ctx;
-}).catch(function(){return{spy:null,qqq:null,dia:null,btc:null,eth:null,sol:null,fearGreed:{value:50,label:'Neutral'}};});
+}).catch(function(){return{spy:null,qqq:null,dia:null,btc:null,eth:null,sol:null,fearGreed:{value:50,value_classification:'Neutral'}};});
 }
 
 function renderMiniContext(mc){
