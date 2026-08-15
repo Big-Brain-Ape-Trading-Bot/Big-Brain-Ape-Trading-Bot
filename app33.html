@@ -1445,11 +1445,12 @@ var netBull=bullCount-bearCount;
 
 // PRIMARY: Analyst consensus — whatever the most analysts say
 // SECONDARY: Technical signals adjust the rating up or down
-if(analyst&&analyst.consensus){
-var ac=analyst.consensus.toLowerCase();
-var aBuy=(analyst.strongBuy||0)+(analyst.buy||0);
-var aHold=analyst.hold||0;
-var aSell=(analyst.sell||0)+(analyst.strongSell||0);
+// analyst.consensus is an object: {consensus: "Buy", strongBuy: 5, buy: 10, hold: 3, sell: 1, strongSell: 0}
+if(analyst&&analyst.consensus&&analyst.consensus.consensus){
+var ac=analyst.consensus.consensus.toLowerCase();
+var aBuy=(analyst.consensus.strongBuy||0)+(analyst.consensus.buy||0);
+var aHold=analyst.consensus.hold||0;
+var aSell=(analyst.consensus.sell||0)+(analyst.consensus.strongSell||0);
 
 if(ac.indexOf('strong buy')>=0||ac.indexOf('strong-buy')>=0){rating='STRONG BUY';ratingClass='strong-buy'}
 else if(ac.indexOf('buy')>=0){rating='BUY';ratingClass='buy'}
