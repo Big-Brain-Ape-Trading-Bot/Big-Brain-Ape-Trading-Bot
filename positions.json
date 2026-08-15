@@ -1,23 +1,75 @@
 {
-  "timestamp": 1786819371,
-  "generatedAt": "2026-08-15 18:42 UTC",
-  "accountValue": 0.0,
-  "portfolioValue": 0.0,
-  "availableCash": 0.0,
-  "withdrawable": 0.0,
-  "totalUnrealizedPnl": 0,
-  "totalMarginUsed": 0,
-  "positions": [],
+  "timestamp": 1786819471,
+  "generatedAt": "2026-08-15 18:44 UTC",
+  "accountValue": 2895.86,
+  "portfolioValue": 2895.86,
+  "availableCash": 1582.18,
+  "withdrawable": 1582.18,
+  "totalUnrealizedPnl": 205.83,
+  "totalMarginUsed": 1313.68,
+  "positions": [
+    {
+      "token": "xyz:NVDA",
+      "size": 8.7,
+      "entryPx": 212.667,
+      "unrealizedPnl": 107.99,
+      "marginUsed": 652.73,
+      "leverage": 3,
+      "leverageType": "cross"
+    },
+    {
+      "token": "xyz:GOLD",
+      "size": 0.33,
+      "entryPx": 4130.63,
+      "unrealizedPnl": 82.85,
+      "marginUsed": 481.99,
+      "leverage": 3,
+      "leverageType": "cross"
+    },
+    {
+      "token": "xyz:SP500",
+      "size": 0.115,
+      "entryPx": 7650.33,
+      "unrealizedPnl": 14.99,
+      "marginUsed": 178.96,
+      "leverage": 5,
+      "leverageType": "cross"
+    }
+  ],
   "pieValueSlices": [
     {
+      "label": "NVDA",
+      "value": 1958.19
+    },
+    {
+      "label": "GOLD",
+      "value": 1445.96
+    },
+    {
+      "label": "SP500",
+      "value": 894.78
+    },
+    {
       "label": "USDC",
-      "value": 0.0
+      "value": 1582.18
     }
   ],
   "pieMarginSlices": [
     {
+      "label": "NVDA",
+      "value": 652.73
+    },
+    {
+      "label": "GOLD",
+      "value": 481.99
+    },
+    {
+      "label": "SP500",
+      "value": 178.96
+    },
+    {
       "label": "Free",
-      "value": 0
+      "value": 1582.18
     }
   ]
 }
