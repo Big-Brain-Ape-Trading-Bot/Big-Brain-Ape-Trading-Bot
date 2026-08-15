@@ -1,5 +1,5 @@
 {
-  "timestamp": 1786819103,
+  "timestamp": 1786819139,
   "generatedAt": "2026-08-15 18:38 UTC",
   "crypto": [
     {
@@ -53,7 +53,171 @@
       "change24h": 1.21
     }
   ],
-  "stocksETFs": [],
-  "xyzPerps": [],
-  "indices": []
+  "stocksETFs": [
+    {
+      "symbol": "AAPL",
+      "price": 305.93,
+      "change24h": 1.22,
+      "name": "AAPL",
+      "tvSymbol": "NASDAQ:AAPL",
+      "type": "stock"
+    },
+    {
+      "symbol": "MSFT",
+      "price": 495.4,
+      "change24h": 0.6,
+      "name": "MSFT",
+      "tvSymbol": "NASDAQ:MSFT",
+      "type": "stock"
+    },
+    {
+      "symbol": "NVDA",
+      "price": 225.16,
+      "change24h": 0.48,
+      "name": "NVDA",
+      "tvSymbol": "NASDAQ:NVDA",
+      "type": "stock"
+    },
+    {
+      "symbol": "GOOGL",
+      "price": 345.9,
+      "change24h": 0.69,
+      "name": "GOOGL",
+      "tvSymbol": "NASDAQ:GOOGL",
+      "type": "stock"
+    },
+    {
+      "symbol": "AMZN",
+      "price": 262.65,
+      "change24h": -1.73,
+      "name": "AMZN",
+      "tvSymbol": "NASDAQ:AMZN",
+      "type": "stock"
+    },
+    {
+      "symbol": "META",
+      "price": 589.85,
+      "change24h": 1.9,
+      "name": "META",
+      "tvSymbol": "NASDAQ:META",
+      "type": "stock"
+    },
+    {
+      "symbol": "TSLA",
+      "price": 342.27,
+      "change24h": 4.51,
+      "name": "TSLA",
+      "tvSymbol": "NASDAQ:TSLA",
+      "type": "stock"
+    },
+    {
+      "symbol": "AMD",
+      "price": 514.39,
+      "change24h": 6.51,
+      "name": "AMD",
+      "tvSymbol": "NASDAQ:AMD",
+      "type": "stock"
+    },
+    {
+      "symbol": "NFLX",
+      "price": 78.16,
+      "change24h": 5.32,
+      "name": "NFLX",
+      "tvSymbol": "NASDAQ:NFLX",
+      "type": "stock"
+    },
+    {
+      "symbol": "JPM",
+      "price": 362.84,
+      "change24h": -0.64,
+      "name": "JPM",
+      "tvSymbol": "NYSE:JPM",
+      "type": "stock"
+    }
+  ],
+  "xyzPerps": [
+    {
+      "symbol": "GOLD",
+      "price": 4437.3,
+      "change24h": 1.69,
+      "tvSymbol": "TVC:GOLD",
+      "type": "perp"
+    },
+    {
+      "symbol": "SILVER",
+      "price": 65.108,
+      "change24h": 0.36,
+      "tvSymbol": "TVC:SILVER",
+      "type": "perp"
+    },
+    {
+      "symbol": "CL",
+      "price": 82.4,
+      "change24h": 1.42,
+      "tvSymbol": "TVC:USOIL",
+      "type": "perp"
+    },
+    {
+      "symbol": "BRENTOIL",
+      "price": 88.52,
+      "change24h": 1.67,
+      "tvSymbol": "TVC:BRENT",
+      "type": "perp"
+    },
+    {
+      "symbol": "NATGAS",
+      "price": 2.733,
+      "change24h": 0.22,
+      "tvSymbol": "TVC:NATGAS",
+      "type": "perp"
+    },
+    {
+      "symbol": "COPPER",
+      "price": 6.613,
+      "change24h": 0.3,
+      "tvSymbol": "TVC:COPPER",
+      "type": "perp"
+    },
+    {
+      "symbol": "PLTR",
+      "price": 174.04,
+      "change24h": 1.75,
+      "tvSymbol": "NASDAQ:PLTR",
+      "type": "perp"
+    },
+    {
+      "symbol": "COIN",
+      "price": 148.47,
+      "change24h": -0.38,
+      "tvSymbol": "NASDAQ:COIN",
+      "type": "perp"
+    },
+    {
+      "symbol": "MSTR",
+      "price": 93.04,
+      "change24h": -1.89,
+      "tvSymbol": "NASDAQ:MSTR",
+      "type": "perp"
+    }
+  ],
+  "indices": [
+    {
+      "symbol": "GSPC",
+      "name": "S&P 500",
+      "price": 7785.76,
+      "changePercentage": 0.48
+    },
+    {
+      "symbol": "IXIC",
+      "name": "NASDAQ",
+      "price": 26729.164,
+      "changePercentage": 0.53
+    },
+    {
+      "symbol": "DJI",
+      "name": "Dow Jones",
+      "price": 53732.41,
+      "changePercentage": -0.07
+    }
+  ]
 }
