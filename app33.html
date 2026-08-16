@@ -1111,73 +1111,53 @@ function calcFib(high,low){var diff=high-low;return{'0':high,'23.6':high-0.236*d
 // ==========================================
 var CACHE_TTL = 120 * 60 * 1000; // 2 hour cache to stay under FMP daily limit
 function httpGet(url){
-// Check cache first
-var cacheKey = 'bba_cache_' + btoa(url).substring(0, 40);
-try {
-  var cached = localStorage.getItem(cacheKey);
-  if (cached) {
-    var parsed = JSON.parse(cached);
-    if (Date.now() - parsed.ts < CACHE_TTL) {
-      return Promise.resolve(parsed.data);
-    }
-  }
-} catch(e) {}
-
-// Try fetch() first (modern API, better CORS support in Telegram WebApp)
-function tryFetch(targetUrl, useProxy){
-  var finalUrl = useProxy ? targetUrl : targetUrl;
-  return fetch(finalUrl, {method:'GET', redirect:'follow'})
-  .then(function(resp){
-    if(!resp.ok){
-      if(resp.status === 429) throw new Error('API rate limit reached. Try again later or search a different ticker.');
-      throw new Error('HTTP ' + resp.status);
-    }
-    return resp.text();
-  })
-  .then(function(text){
-    try {
-      var data = JSON.parse(text);
-      // Only cache non-empty successful responses
-      if(data && (Array.isArray(data) ? data.length > 0 : Object.keys(data).length > 0)){
-        try { localStorage.setItem(cacheKey, JSON.stringify({ts: Date.now(), data: data})); } catch(e) {}
-      }
-      return data;
-    } catch(e) {
-      throw new Error('JSON parse failed: ' + e.message);
-    }
-  });
+var cacheKey='bba_cache_'+btoa(url).substring(0,40);
+try{var cached=localStorage.getItem(cacheKey);if(cached){var parsed=JSON.parse(cached);if(Date.now()-parsed.ts<CACHE_TTL){return Promise.resolve(parsed.data)}}}catch(e){}
+return fetch(url,{method:'GET',redirect:'follow'})
+.then(function(resp){
+if(!resp.ok){
+if(resp.status===429)throw new Error('API rate limit reached. Try again later.');
+throw new Error('HTTP '+resp.status);
 }
-
-return tryFetch(url, false)
-  .catch(function(err){
-    // If direct request fails, try with CORS proxy
-    return tryFetch(url, true)
-      .catch(function(err2){
-        // Both failed — try XHR as last resort
-        return new Promise(function(resolve,reject){
-          var xhr=new XMLHttpRequest();
-          xhr.open('GET',url,true);
-          xhr.onreadystatechange=function(){
-            if(xhr.readyState===4){
-              if(xhr.status===200){
-                try{
-                  var data=JSON.parse(xhr.responseText);
-                  if(data && (Array.isArray(data) ? data.length > 0 : true)){
-                    try { localStorage.setItem(cacheKey, JSON.stringify({ts: Date.now(), data: data})); } catch(e) {}
-                  }
-                  resolve(data);
-                } catch(e){reject(new Error('JSON parse failed: '+e.message))}
-              } else if(xhr.status===429){
-                reject(new Error('API rate limit reached. The free data plan allows ~250 lookups per day. Please try again later or search a different ticker.'))
-              } else {reject(new Error('HTTP '+xhr.status))}
-            }
-          };
-          xhr.onerror=function(){reject(new Error('Network error. Could not reach data provider.'))};
-          xhr.ontimeout=function(){reject(new Error('Request timeout'))};
-          xhr.timeout=15000;xhr.send();
-        });
-      });
-  });
+return resp.text();
+})
+.then(function(text){
+try{
+var data=JSON.parse(text);
+if(data&&(Array.isArray(data)?data.length>0:Object.keys(data).length>0)){
+try{localStorage.setItem(cacheKey,JSON.stringify({ts:Date.now(),data:data}))}catch(e){}
+}
+return data;
+}catch(e){throw new Error('JSON parse failed: '+e.message)}
+})
+.catch(function(err){
+return new Promise(function(resolve,reject){
+var xhr=new XMLHttpRequest();
+xhr.open('GET',url,true);
+xhr.timeout=10000;
+xhr.ontimeout=function(){reject(new Error('Request timed out'))};
+xhr.onreadystatechange=function(){
+if(xhr.readyState===4){
+if(xhr.status===200){
+try{
+var data=JSON.parse(xhr.responseText);
+if(data&&(Array.isArray(data)?data.length>0:true)){
+try{localStorage.setItem(cacheKey,JSON.stringify({ts:Date.now(),data:data}))}catch(e){}
+}
+resolve(data);
+}catch(e){reject(new Error('JSON parse failed: '+e.message))}
+}else if(xhr.status===429){
+reject(new Error('API rate limit reached. The free data plan allows ~250 lookups per day.'));
+}else if(xhr.status===0){
+reject(new Error('Network blocked. Telegram may be blocking this request.'));
+}else{
+reject(new Error('HTTP '+xhr.status));
+}
+}
+};
+xhr.send();
+});
+});
 }
 // Clear cache function for manual refresh
 function clearCache(){ try { var keys=[]; for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('bba_cache_')===0){keys.push(k)}} for(var j=0;j<keys.length;j++){localStorage.removeItem(keys[j])} } catch(e){} }
@@ -1192,77 +1172,59 @@ return httpGet('https://api.alternative.me/fng/?limit=1')
 }
 
 function getStockData(symbol){
-if(typeof dbgLog!=='undefined')dbgLog('getStockData: symbol='+symbol);
+if(typeof dbgLog!=='undefined')dbgLog('getStockData: '+symbol);
+var quoteUrl='https://financialmodelingprep.com/stable/quote?symbol='+symbol+'&apikey='+FMP_KEY;
 var profileUrl='https://financialmodelingprep.com/stable/profile?symbol='+symbol+'&apikey='+FMP_KEY;
-var histUrl='https://financialmodelingprep.com/stable/historical-price-full?symbol='+symbol+'&apikey='+FMP_KEY+'&serietype=line';
-if(typeof dbgLog!=='undefined')dbgLog('fetching profile: '+profileUrl.substring(0,60)+'...');
+return httpGet(quoteUrl)
+.then(function(qdata){
+if(!qdata||qdata.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
+var q=qdata[0];
+var price=q.price||0;
+if(!price||price===0){throw new Error('No price for '+symbol)}
+var change=q.change||0;
+var changePct=q.changePercentage||0;
+var yearLow=q.yearLow||0;
+var yearHigh=q.yearHigh||0;
+var marketCap=q.marketCap||0;
+var volume=q.volume||0;
+var avgVolume=q.volume||0;
+var fiftyHigh=q.priceAvg50||price;
+var twoHigh=q.priceAvg200||price;
+var name=q.name||symbol;
 return httpGet(profileUrl)
-.then(function(data){
-if(!data||data.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
-var p=data[0];
-var price=p.price||0;
-if(!price||price===0){throw new Error('No price data for '+symbol)}
-var prevClose=price-(p.change||0);
-var change=p.change||0;
-var changePct=p.changePercentage||0;
-var rp=(p.range||'0-0').split('-');
-var yearLow=parseFloat(rp[0])||0;
-var yearHigh=parseFloat(rp[1])||0;
-var marketCap=p.mktCap||0;
-var companyName=p.companyName||symbol;
-var sector=p.sector||'N/A';
-var industry=p.industry||'N/A';
-var beta=p.beta||0;
-var volume=p.volAvg||0;
-var desc=p.description||'';
-// Fetch historical closes for technicals
-return httpGet(histUrl)
-.then(function(hist){
+.then(function(pdata){
+var p=(pdata&&pdata.length>0)?pdata[0]:{};
 var closes=[];
-if(hist&&hist.historical&&hist.historical.length>0){
-for(var i=0;i<hist.historical.length;i++){
-closes.push(hist.historical[i].close);
-}
-}
-if(closes.length<10){
-// Fallback: generate synthetic closes from 52-week range
 if(yearHigh>yearLow&&price>0){
 var range=yearHigh-yearLow;
-for(var i=0;i<250;i++){
-var progress=i/249;
-var ac=yearLow+(progress*range);
-closes.push(ac);
-}
+for(var i=0;i<249;i++){closes.push(yearLow+((i/249)*range))}
 closes.push(price);
 }
-}
-var fiftyHigh=closes.slice(-50).length>0?Math.max.apply(null,closes.slice(-50)):price;
-var twoHigh=closes.slice(-200).length>0?Math.max.apply(null,closes.slice(-200)):price;
 return{
-symbol:symbol,name:companyName,price:price,change:change,changePct:changePct,
+symbol:symbol,name:p.companyName||name,price:price,change:change,changePct:changePct,
 closes:closes,yearHigh:yearHigh,yearLow:yearLow,fiftyHigh:fiftyHigh,twoHigh:twoHigh,
-marketCap:marketCap,sector:sector,industry:industry,range:(yearLow+'-'+yearHigh),
-beta:beta,dividendYield:p.lastDiv?((p.lastDiv/price)*100):0,peRatio:p.pe||0,
-volume:volume,avgVolume:volume,description:desc,isCrypto:false
+marketCap:marketCap,sector:p.sector||'N/A',industry:p.industry||'N/A',
+range:(yearLow+'-'+yearHigh),beta:p.beta||0,
+dividendYield:p.lastDividend?((p.lastDividend/price)*100):0,
+peRatio:p.pe||0,volume:volume,avgVolume:avgVolume,
+description:p.description||'',isCrypto:false
 }
 })
 .catch(function(e){
-// If historical fails, still return profile data with synthetic closes
 var closes=[];
 if(yearHigh>yearLow&&price>0){
 var range=yearHigh-yearLow;
-for(var i=0;i<250;i++){closes.push(yearLow+((i/249)*range))}
+for(var i=0;i<249;i++){closes.push(yearLow+((i/249)*range))}
 closes.push(price);
 }
 return{
-symbol:symbol,name:companyName,price:price,change:change,changePct:changePct,
-closes:closes,yearHigh:yearHigh,yearLow:yearLow,
-fiftyHigh:Math.max.apply(null,closes.slice(-50)),twoHigh:Math.max.apply(null,closes.slice(-200)),
-marketCap:marketCap,sector:sector,industry:industry,range:(yearLow+'-'+yearHigh),
-beta:beta,dividendYield:0,peRatio:0,volume:volume,avgVolume:volume,
-description:desc,isCrypto:false
+symbol:symbol,name:name,price:price,change:change,changePct:changePct,
+closes:closes,yearHigh:yearHigh,yearLow:yearLow,fiftyHigh:fiftyHigh,twoHigh:twoHigh,
+marketCap:marketCap,sector:'N/A',industry:'N/A',
+range:(yearLow+'-'+yearHigh),beta:0,dividendYield:0,peRatio:0,
+volume:volume,avgVolume:avgVolume,description:'',isCrypto:false
 }
-})
+});
 })
 }
 
