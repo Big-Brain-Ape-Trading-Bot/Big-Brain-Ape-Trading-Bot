@@ -1,12 +1,12 @@
 {
-  "timestamp": 1786863645,
-  "generatedAt": "2026-08-16 07:00 UTC",
-  "accountValue": 1792.56,
-  "withdrawable": 269.81,
-  "portfolioValue": 1792.56,
-  "totalUnrealizedPnl": 208.27,
-  "totalMarginUsed": 1314.47,
-  "availableCash": 269.81,
+  "timestamp": 1786863943,
+  "generatedAt": "2026-08-16 07:05 UTC",
+  "accountValue": 1792.32,
+  "withdrawable": 269.73,
+  "portfolioValue": 1792.32,
+  "totalUnrealizedPnl": 208.15,
+  "totalMarginUsed": 1314.43,
+  "availableCash": 269.73,
   "positions": [
     {
       "symbol": "NVDA",
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.33,
       "entryPrice": 4130.63,
-      "currentPrice": 4383.7,
-      "unrealizedPnl": 83.51,
+      "currentPrice": 4383.3,
+      "unrealizedPnl": 83.38,
       "pnlPercent": 18.4,
-      "marginUsed": 482.21,
+      "marginUsed": 482.16,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1446.62,
+      "positionValue": 1446.49,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -44,13 +44,13 @@
       "side": "LONG",
       "size": 0.115,
       "entryPrice": 7650.33,
-      "currentPrice": 7781.8,
-      "unrealizedPnl": 15.12,
+      "currentPrice": 7781.9,
+      "unrealizedPnl": 15.13,
       "pnlPercent": 8.6,
       "marginUsed": 178.98,
       "leverage": 5,
       "marginType": "cross",
-      "positionValue": 894.91,
+      "positionValue": 894.92,
       "tvSymbol": "SP:SPX"
     }
   ],
@@ -61,15 +61,15 @@
     },
     {
       "label": "GOLD",
-      "value": 1446.62
+      "value": 1446.49
     },
     {
       "label": "SP500",
-      "value": 894.91
+      "value": 894.92
     },
     {
       "label": "Cash",
-      "value": 269.81
+      "value": 269.73
     }
   ],
   "pieMarginSlices": [
@@ -79,7 +79,7 @@
     },
     {
       "label": "GOLD",
-      "value": 482.21
+      "value": 482.16
     },
     {
       "label": "SP500",
@@ -87,7 +87,7 @@
     },
     {
       "label": "Available",
-      "value": 269.81
+      "value": 269.73
     }
   ]
 }
