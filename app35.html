@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Big Brain Ape</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--orange:#f0883e;--yellow:#d29922}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.app{max-width:500px;margin:0 auto;padding-bottom:60px}
+.header{text-align:center;padding:16px 20px 10px}
+.header h1{font-size:28px;font-weight:700}
+.header h1 span{color:var(--blue)}
+.header p{color:var(--text2);font-size:12px;margin-top:4px}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0;z-index:100}
+.nav-btn{flex:1;background:none;border:none;color:var(--text2);font-size:10px;padding:4px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav-btn.active{color:var(--blue)}
+.nav-btn svg{width:20px;height:20px}
+
+/* VIEWS */
+.view{display:none;padding:12px 16px}
+.view.active{display:block}
+
+/* SEARCH */
+.search-bar{display:flex;gap:8px;margin-bottom:12px}
+.search-bar input{flex:1;padding:12px 14px;font-size:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none}
+.search-bar input:focus{border-color:var(--blue)}
+.search-bar button{padding:12px 20px;font-size:14px;font-weight:600;background:var(--blue);color:#fff;border:none;border-radius:10px;cursor:pointer}
+.search-bar button:disabled{opacity:.5}
+
+/* QUICK TICKERS */
+.quick-tickers{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.quick-ticker{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)}
+.quick-ticker:active{background:var(--border)}
+
+/* TICKER TAPES */
+.tape-section{margin-bottom:2px}
+.tape-label{font-size:10px;color:var(--text2);padding:3px 12px;background:var(--card);font-weight:600}
+.tape-track{overflow:hidden;white-space:nowrap;background:var(--card);padding:6px 0}
+.tape-content{display:inline-block;will-change:transform}
+.tape-item{display:inline-block;padding:0 16px;font-size:12px}
+.tape-item .sym{font-weight:600}
+.tape-item .up{color:var(--green)}
+.tape-item .down{color:var(--red)}
+
+/* INDEX BOXES */
+.index-row{display:flex;gap:8px;margin-bottom:16px}
+.index-box{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer}
+.index-box:active{border-color:var(--blue)}
+.index-name{font-size:10px;color:var(--text2);font-weight:600;margin-bottom:4px}
+.index-price{font-size:16px;font-weight:700}
+.index-change{font-size:11px;margin-top:2px}
+.index-change.up{color:var(--green)}
+.index-change.down{color:var(--red)}
+
+/* ANALYSIS */
+.analysis-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.analysis-logo{width:40px;height:40px;border-radius:8px}
+.analysis-name{font-size:18px;font-weight:700}
+.analysis-symbol{font-size:13px;color:var(--text2)}
+.analysis-price{font-size:28px;font-weight:800;margin-bottom:4px}
+.analysis-change{font-size:14px;margin-bottom:16px}
+.analysis-change.up{color:var(--green)}
+.analysis-change.down{color:var(--red)}
+
+/* RATING BOX */
+.rating-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;text-align:center}
+.rating-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.rating-value{font-size:24px;font-weight:800;margin-bottom:8px}
+.rating-bars{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
+.rating-bar{height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff}
+.rating-bar.sb{background:var(--green);min-width:20px}
+.rating-bar.b{background:#5cb85c;min-width:20px}
+.rating-bar.h{background:var(--yellow);min-width:20px}
+.rating-bar.s{background:var(--orange);min-width:20px}
+.rating-bar.ss{background:var(--red);min-width:20px}
+.rating-count{font-size:11px;color:var(--text2)}
+
+/* DATA GRID */
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.data-cell{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px}
+.data-label{font-size:10px;color:var(--text2);margin-bottom:2px}
+.data-value{font-size:15px;font-weight:600}
+
+/* CHART */
+.chart-container{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px}
+#priceChart{width:100%;height:180px}
+
+/* SECTION TITLE */
+.section-title{font-size:13px;font-weight:700;color:var(--text2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+
+/* BRIEFING */
+.briefing-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.briefing-card h3{font-size:15px;margin-bottom:8px}
+.briefing-card p{font-size:13px;color:var(--text2);line-height:1.6}
+.briefing-date{font-size:12px;color:var(--text2);margin-bottom:12px}
+
+/* FEAR & GREED */
+.fg-container{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;text-align:center}
+.fg-label{font-size:11px;color:var(--text2);margin-bottom:8px}
+.fg-value{font-size:32px;font-weight:800;margin-bottom:4px}
+.fg-status{font-size:13px;font-weight:600}
+.fg-bar{height:8px;border-radius:4px;margin-top:12px;background:linear-gradient(90deg,var(--red),var(--orange),var(--yellow),var(--green))}
+
+/* TRADING */
+.pos-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.pos-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pos-symbol{font-size:15px;font-weight:700}
+.pos-side{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
+.pos-side.long{background:rgba(63,185,80,.15);color:var(--green)}
+.pos-side.short{background:rgba(248,81,73,.15);color:var(--red)}
+.pos-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px}
+.pos-grid .label{color:var(--text2)}
+.pos-pnl{font-size:16px;font-weight:700;margin-top:8px}
+.pos-pnl.up{color:var(--green)}
+.pos-pnl.down{color:var(--red)}
+.account-summary{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.account-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.account-row:last-child{border:none}
+.account-row .label{color:var(--text2);font-size:13px}
+.account-row .val{font-weight:600;font-size:13px}
+
+/* PRICING */
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;text-align:center}
+.price-card h3{font-size:16px;margin-bottom:8px}
+.price-amount{font-size:28px;font-weight:800;margin:8px 0}
+.price-features{text-align:left;margin-top:12px;font-size:13px;color:var(--text2)}
+.price-features li{list-style:none;padding:4px 0}
+.price-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:12px}
+
+/* CONFIRM DIALOG */
+.confirm-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center}
+.confirm-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin:20px;max-width:340px;text-align:center}
+.confirm-box h3{font-size:16px;margin-bottom:12px}
+.confirm-box p{font-size:14px;color:var(--text2);margin-bottom:20px}
+.confirm-btns{display:flex;gap:8px}
+.confirm-btn{flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+.confirm-btn.yes{background:var(--blue);color:#fff}
+.confirm-btn.no{background:var(--border);color:var(--text)}
+
+/* WHALE */
+.whale-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.whale-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.whale-cell{background:var(--bg);border-radius:8px;padding:10px;text-align:center}
+.whale-cell .label{font-size:10px;color:var(--text2)}
+.whale-cell .val{font-size:16px;font-weight:700;margin-top:2px}
+
+/* LOADING */
+.loading{text-align:center;padding:40px 20px;color:var(--text2)}
+.loading .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ERROR */
+.error-card{background:var(--card);border:1px solid var(--red);border-radius:12px;padding:20px;margin:20px;text-align:center;color:var(--red)}
+
+/* SNAPSHOT */
+.snap-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.snap-row .label{color:var(--text2)}
+.snap-row .val{font-weight:600}
+
+/* CLICKABLE TICKER */
+.clickable{color:var(--blue);text-decoration:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HOME VIEW -->
+<div id="view-home" class="view active">
+<div class="header">
+<h1>Big Brain <span>Ape</span> 🦍</h1>
+<p>Stock & Crypto Analysis · Powered by AI</p>
+</div>
+
+<div class="search-bar">
+<input type="text" id="searchInput" placeholder="Enter ticker (AAPL, NVDA, BTC...)">
+<button id="searchBtn" onclick="doSearch()">Analyze</button>
+</div>
+
+<div class="quick-tickers">
+<button class="quick-ticker" onclick="quickSearch('NVDA')">NVDA</button>
+<button class="quick-ticker" onclick="quickSearch('BTC')">BTC</button>
+<button class="quick-ticker" onclick="quickSearch('TSLA')">TSLA</button>
+<button class="quick-ticker" onclick="quickSearch('ETH')">ETH</button>
+<button class="quick-ticker" onclick="quickSearch('AAPL')">AAPL</button>
+<button class="quick-ticker" onclick="quickSearch('SOL')">SOL</button>
+</div>
+
+<!-- INDEX BOXES -->
+<div class="index-row">
+<div class="index-box" onclick="confirmTickerAnalysis('SPY')">
+<div class="index-name">S&P 500</div>
+<div class="index-price" id="idxSP500">—</div>
+<div class="index-change" id="chgSP500"></div>
+</div>
+<div class="index-box" onclick="confirmTickerAnalysis('QQQ')">
+<div class="index-name">NASDAQ</div>
+<div class="index-price" id="idxNASDAQ">—</div>
+<div class="index-change" id="chgNASDAQ"></div>
+</div>
+<div class="index-box" onclick="confirmTickerAnalysis('DIA')">
+<div class="index-name">DOW</div>
+<div class="index-price" id="idxDOW">—</div>
+<div class="index-change" id="chgDOW"></div>
+</div>
+</div>
+
+<!-- TICKER TAPES -->
+<div class="tape-section">
+<div class="tape-label">📊 Stocks</div>
+<div class="tape-track"><div class="tape-content" id="tapeStocks"></div></div>
+</div>
+<div class="tape-section">
+<div class="tape-label"><span style="color:var(--orange)">₿</span> Crypto</div>
+<div class="tape-track"><div class="tape-content" id="tapeCrypto"></div></div>
+</div>
+<div class="tape-section">
+<div class="tape-label">⚡️ XYZ Perps</div>
+<div class="tape-track"><div class="tape-content" id="tapeXYZ"></div></div>
+</div>
+</div>
+
+<!-- ANALYSIS VIEW -->
+<div id="view-analysis" class="view">
+<div id="analysisOutput"></div>
+</div>
+
+<!-- BRIEFING VIEW -->
+<div id="view-briefing" class="view">
+<div class="header"><h1>Daily <span>Briefing</span> 🦍</h1></div>
+<div class="briefing-date" id="briefingDate"></div>
+<div id="briefingContent"><div class="loading"><div class="spinner"></div>Loading briefing...</div></div>
+</div>
+
+<!-- TRADING VIEW -->
+<div id="view-trading" class="view">
+<div class="header"><h1>Trading <span>Desk</span> 🦍</h1></div>
+<div id="tradingContent"><div class="loading"><div class="spinner"></div>Loading positions...</div></div>
+</div>
+
+<!-- SNAPSHOT VIEW -->
+<div id="view-snapshot" class="view">
+<div class="header"><h1>Market <span>Snapshot</span> 🦍</h1></div>
+<div id="snapshotContent"><div class="loading"><div class="spinner"></div>Loading market data...</div></div>
+</div>
+
+<!-- PRICING VIEW -->
+<div id="view-pricing" class="view">
+<div class="header"><h1>Pricing <span>Plans</span> 🦍</h1></div>
+<div class="price-card">
+<h3>Single Analysis</h3>
+<div class="price-amount">$0.25</div>
+<p style="font-size:13px;color:var(--text2)">One stock or crypto deep analysis</p>
+<div class="price-features">
+<li>✓ Full rating (Buy/Sell/Hold)</li>
+<li>✓ Analyst consensus</li>
+<li>✓ Technical indicators</li>
+<li>✓ Price chart</li>
+<li>✓ Key financials</li>
+</div>
+<button class="price-btn" onclick="payWithCrypto()">Pay 0.25 USDC</button>
+</div>
+<div class="price-card">
+<h3>Daily Briefing</h3>
+<div class="price-amount">$0.25/day</div>
+<p style="font-size:13px;color:var(--text2)">Morning macro briefing delivered to your chat</p>
+<div class="price-features">
+<li>✓ Fed & liquidity analysis</li>
+<li>✓ Market regime classification</li>
+<li>✓ Key levels to watch</li>
+<li>✓ Trade setups</li>
+</div>
+<button class="price-btn" onclick="payWithCrypto()">Subscribe</button>
+</div>
+<div class="price-card">
+<h3>Portfolio Review</h3>
+<div class="price-amount">$0.50</div>
+<p style="font-size:13px;color:var(--text2)">Full analysis of every asset you own</p>
+<div class="price-features">
+<li>✓ Every position analyzed</li>
+<li>✓ Risk assessment</li>
+<li>✓ Rebalancing suggestions</li>
+<li>✓ Correlation check</li>
+</div>
+<button class="price-btn" onclick="payWithCrypto()">Pay 0.50 USDC</button>
+</div>
+</div>
+
+<!-- PAY VIEW -->
+<div id="view-pay" class="view">
+<div class="header"><h1>Payment <span>Options</span> 🦍</h1></div>
+<div class="briefing-card">
+<h3>💳 Pay with Crypto</h3>
+<p>Send USDC on Base network to:</p>
+<p style="font-size:13px;font-family:monospace;color:var(--blue);word-break:break-all;margin-top:8px">0x37a8023762c69f7150d878733fd9f635f1070fc6</p>
+<p style="font-size:12px;margin-top:8px">Then reply "I paid" in the chat</p>
+</div>
+<div class="briefing-card">
+<h3>💵 Pay with Cash App</h3>
+<p>Cashtag: $BigBrainApe</p>
+<img src="cashapp-qr.jpg" style="width:200px;border-radius:12px;margin-top:12px;display:block;margin-left:auto;margin-right:auto" onerror="this.style.display='none'">
+</div>
+<div class="briefing-card">
+<h3>⭐ Pay with Telegram Stars</h3>
+<p>25 Stars = 1 analysis</p>
+<p>500 Stars = Daily briefing (1 month)</p>
+<p>1000 Stars = Unlimited (1 month)</p>
+</div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+<button class="nav-btn active" data-view="home" onclick="switchView('home')">
+<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3l9-8z"/></svg>Home
+</button>
+<button class="nav-btn" data-view="snapshot" onclick="switchView('snapshot')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>Market
+</button>
+<button class="nav-btn" data-view="briefing" onclick="switchView('briefing')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4zM8 4v16M4 8h4M4 12h4M4 16h4"/></svg>Brief
+</button>
+<button class="nav-btn" data-view="trading" onclick="switchView('trading')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-7M14 8h7v7"/></svg>Trades
+</button>
+<button class="nav-btn" data-view="pricing" onclick="switchView('pricing')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9h4.5a2 2 0 010 4H9"/></svg>Pricing
+</button>
+</nav>
+
+<script>
+// ==============================
+// CONFIG
+// ==============================
+var FINNHUB_KEY="d9dpmp9r01qujggob290d9dpmp9r01qujggob29g";
+var MARKETS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/markets.json";
+var POSITIONS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/positions.json";
+var SNAPSHOT_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/snapshot.json";
+var STOCK_DATA_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/stock-data.json";
+var TRADING_POSTS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/trading-posts.json";
+
+var CRYPTO_MAP={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",XRP:"ripple",DOGE:"dogecoin",ADA:"cardano",AVAX:"avalanche-2",DOT:"polkadot",LINK:"chainlink"};
+var CRYPTO_REVERSE={};for(var k in CRYPTO_MAP)CRYPTO_REVERSE[CRYPTO_MAP[k]]=k;
+
+var OWNER_ID=8503471418;
+var isOwner=(window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.initDataUnsafe&&window.Telegram.WebApp.initDataUnsafe.user&&window.Telegram.WebApp.initDataUnsafe.user.id===OWNER_ID);
+if(window.Telegram&&window.Telegram.WebApp)window.Telegram.WebApp.ready();
+
+// ==============================
+// VIEW SWITCHING
+// ==============================
+function switchView(name){
+var views=document.querySelectorAll('.view');
+for(var i=0;i<views.length;i++)views[i].classList.remove('active');
+var el=document.getElementById('view-'+name);
+if(el)el.classList.add('active');
+var btns=document.querySelectorAll('.nav-btn');
+for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
+var btn=document.querySelector('[data-view="'+name+'"]');
+if(btn)btn.classList.add('active');
+window.scrollTo(0,0);
+}
+
+// ==============================
+// API HELPERS
+// ==============================
+function fhGet(endpoint){
+return fetch("https://finnhub.io/api/v1/"+endpoint+"&token="+FINNHUB_KEY)
+.then(function(r){
+if(!r.ok)throw new Error("HTTP "+r.status);
+return r.json();
+})
+.catch(function(e){throw e});
+}
+
+function fhGetQ(endpoint){
+return fetch("https://finnhub.io/api/v1/"+endpoint+"?token="+FINNHUB_KEY)
+.then(function(r){
+if(!r.ok)throw new Error("HTTP "+r.status);
+return r.json();
+})
+.catch(function(e){throw e});
+}
+
+function sameDomainGet(url){
+return fetch(url+"?t="+Date.now())
+.then(function(r){return r.json()})
+.catch(function(e){throw e});
+}
+
+// ==============================
+// SEARCH / ANALYSIS
+// ==============================
+function doSearch(){
+var input=document.getElementById('searchInput').value.trim();
+if(!input)return;
+runTickerAnalysis(input);
+}
+
+function quickSearch(ticker){
+document.getElementById('searchInput').value=ticker;
+runTickerAnalysis(ticker);
+}
+
+function confirmTickerAnalysis(ticker){
+if(isOwner){
+runTickerAnalysis(ticker);
+}else{
+showConfirm("Do You Want To Use Your 1 Free Analysis On "+ticker+"?",function(){
+runTickerAnalysis(ticker);
+});
+}
+}
+
+function showConfirm(msg,onYes){
+var overlay=document.createElement('div');
+overlay.className='confirm-overlay';
+overlay.innerHTML='<div class="confirm-box"><h3>Confirm</h3><p>'+msg+'</p><div class="confirm-btns"><button class="confirm-btn no" id="cfNo">Cancel</button><button class="confirm-btn yes" id="cfYes">Yes, Analyze</button></div></div>';
+document.body.appendChild(overlay);
+document.getElementById('cfNo').onclick=function(){overlay.remove()};
+document.getElementById('cfYes').onclick=function(){overlay.remove();onYes()};
+}
+
+function isCrypto(sym){
+return !!CRYPTO_MAP[sym.toUpperCase()];
+}
+
+function runTickerAnalysis(symbol){
+symbol=symbol.toUpperCase().trim();
+switchView('analysis');
+var out=document.getElementById('analysisOutput');
+out.innerHTML='<div class="loading"><div class="spinner"></div>Analyzing '+symbol+'...</div>';
+
+if(isCrypto(symbol)){
+analyzeCrypto(symbol,out);
+}else{
+analyzeStock(symbol,out);
+}
+}
+
+function analyzeStock(symbol,out){
+var quoteData,profileData,recData,finData;
+
+fhGetQ("quote?symbol="+symbol)
+.then(function(q){
+if(!q||q.c===0&&q.d===null)throw new Error("No data for "+symbol+". Check the ticker symbol.");
+quoteData=q;
+return fhGetQ("stock/profile2?symbol="+symbol);
+})
+.then(function(p){profileData=p||{};return fhGetQ("stock/recommendation?symbol="+symbol)})
+.then(function(r){recData=(r&&r.length>0)?r[0]:null;return fhGetQ("stock/metric?symbol="+symbol+"&metric=all")})
+.then(function(f){finData=(f&&f.metric)?f.metric:{}})
+.then(function(){
+renderStockAnalysis(symbol,quoteData,profileData,recData,finData,out);
+})
+.catch(function(err){
+// Try fallback from stock-data.json
+sameDomainGet(STOCK_DATA_URL)
+.then(function(sdd){
+var d=sdd.stocks&&sdd.stocks[symbol];
+if(!d)throw err;
+renderStockAnalysisFromCache(symbol,d,out);
+})
+.catch(function(e){
+out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br><br>'+e.message+'<br><br>Try: NVDA, AAPL, TSLA, MSFT, GOOGL, META, AMZN, AMD, NFLX, PLTR, COIN, HOOD, BTC, ETH, SOL</div>';
+});
+});
+}
+
+function renderStockAnalysis(sym,q,p,rec,fin,out){
+var changeClass=q.d>=0?'up':'down';
+var changeArrow=q.d>=0?'▲':'▼';
+var rating=calcRating(rec,q);
+
+var html='<div class="analysis-header">';
+if(p&&p.logo)html+='<img class="analysis-logo" src="'+p.logo+'" onerror="this.style.display=\'none\'">';
+html+='<div><div class="analysis-name">'+((p&&p.name)?p.name:sym)+'</div><div class="analysis-symbol">'+sym+(p&&p.exchange?' · '+p.exchange:'')+'</div></div>';
+html+='</div>';
+
+html+='<div class="analysis-price">$'+fmtNum(q.c)+'</div>';
+html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(q.d))+' ('+fmtNum(Math.abs(q.dp))+'%)</div>';
+
+// Rating box
+html+='<div class="rating-box"><div class="rating-label">Analyst Consensus</div>';
+html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
+if(rec){
+var total=rec.strongBuy+rec.buy+rec.hold+rec.sell+rec.strongSell;
+if(total>0){
+html+='<div class="rating-bars">';
+html+='<div class="rating-bar sb" style="width:'+(rec.strongBuy/total*100)+'%">'+rec.strongBuy+'</div>';
+html+='<div class="rating-bar b" style="width:'+(rec.buy/total*100)+'%">'+rec.buy+'</div>';
+html+='<div class="rating-bar h" style="width:'+(rec.hold/total*100)+'%">'+rec.hold+'</div>';
+html+='<div class="rating-bar s" style="width:'+(rec.sell/total*100)+'%">'+rec.sell+'</div>';
+html+='<div class="rating-bar ss" style="width:'+(rec.strongSell/total*100)+'%">'+rec.strongSell+'</div>';
+html+='</div>';
+}
+}
+html+='</div>';
+
+// Price chart
+html+='<div class="chart-container"><canvas id="priceChart"></canvas></div>';
+
+// Data grid
+html+='<div class="section-title">Key Stats</div>';
+html+='<div class="data-grid">';
+html+=dataCell("Open",'$'+fmtNum(q.o));
+html+=dataCell("Prev Close",'$'+fmtNum(q.pc));
+html+=dataCell("Day High",'$'+fmtNum(q.h));
+html+=dataCell("Day Low",'$'+fmtNum(q.l));
+if(fin){
+html+=dataCell("52wk High",'$'+fmtNum(fin["52WeekHigh"]||q.h));
+html+=dataCell("52wk Low",'$'+fmtNum(fin["52WeekLow"]||q.l));
+html+=dataCell("P/E Ratio",fin.peExclTTM?fmtNum(fin.peExclTTM):'N/A');
+html+=dataCell("Beta",fin.beta?fmtNum(fin.beta):'N/A');
+html+=dataCell("Dividend Yield",fin.dividendYieldIndicated?fmtNum(fin.dividendYieldIndicated)+"%":'N/A');
+html+=dataCell("10D Avg Vol",fin["10DayAverageTradingVolume"]?fin["10DayAverageTradingVolume"]+"M":'N/A');
+}
+if(p&&p.marketCapitalization){
+html+=dataCell("Market Cap",'$'+fmtCap(p.marketCapitalization));
+}
+if(p&&p.finnhubIndustry){
+html+=dataCell("Industry",p.finnhubIndustry);
+}
+html+='</div>';
+
+// Company info
+if(p&&p.name){
+html+='<div class="section-title">About</div>';
+html+='<div class="briefing-card"><h3>'+(p.name||sym)+'</h3>';
+if(p.country)html+='<p style="margin-top:4px">📍 '+p.country+'</p>';
+if(p.ipo)html+='<p style="margin-top:4px">📅 IPO: '+p.ipo+'</p>';
+if(p.exchange)html+='<p style="margin-top:4px">🏢 '+p.exchange+'</p>';
+html+='</div>';
+}
+
+out.innerHTML=html;
+
+// Draw chart
+drawChart(q);
+}
+
+function renderStockAnalysisFromCache(sym,d,out){
+var changeClass=d.changePercentage>=0?'up':'down';
+var rating={label:d.consensus||'N/A',color:'#58a6ff'};
+
+var html='<div class="analysis-header"><div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><div class="analysis-symbol">'+sym+'</div></div></div>';
+html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
+html+='<div class="analysis-change '+changeClass+'">'+(d.change>=0?'▲':'▼')+' '+fmtNum(Math.abs(d.changePercentage||d.change||0))+'%</div>';
+
+html+='<div class="rating-box"><div class="rating-label">Analyst Consensus</div>';
+html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
+if(d.buy||d.hold||d.sell){
+var total=(d.strongBuy||0)+(d.buy||0)+(d.hold||0)+(d.sell||0)+(d.strongSell||0);
+if(total>0){
+html+='<div class="rating-bars">';
+html+='<div class="rating-bar sb" style="width:'+((d.strongBuy||0)/total*100)+'%">'+(d.strongBuy||0)+'</div>';
+html+='<div class="rating-bar b" style="width:'+((d.buy||0)/total*100)+'%">'+(d.buy||0)+'</div>';
+html+='<div class="rating-bar h" style="width:'+((d.hold||0)/total*100)+'%">'+(d.hold||0)+'</div>';
+html+='<div class="rating-bar s" style="width:'+((d.sell||0)/total*100)+'%">'+(d.sell||0)+'</div>';
+html+='<div class="rating-bar ss" style="width:'+((d.strongSell||0)/total*100)+'%">'+(d.strongSell||0)+'</div>';
+html+='</div>';
+}
+}
+html+='</div>';
+
+html+='<div class="section-title">Key Stats</div>';
+html+='<div class="data-grid">';
+html+=dataCell("52wk High",'$'+fmtNum(d.yearHigh));
+html+=dataCell("52wk Low",'$'+fmtNum(d.yearLow));
+html+=dataCell("50-day Avg",'$'+fmtNum(d.priceAvg50));
+html+=dataCell("200-day Avg",'$'+fmtNum(d.priceAvg200));
+html+=dataCell("Market Cap",'$'+fmtCap(d.marketCap/1e6));
+html+=dataCell("Volume",fmtNum(d.volume));
+html+=dataCell("P/E Ratio",d.pe?fmtNum(d.pe):'N/A');
+html+=dataCell("Beta",d.beta?fmtNum(d.beta):'N/A');
+html+=dataCell("Sector",d.sector||'N/A');
+html+=dataCell("Dividend Yield",d.lastDividend?fmtNum((d.lastDividend/d.price)*100)+"%":'N/A');
+html+='</div>';
+
+if(d.description){
+html+='<div class="section-title">About</div>';
+html+='<div class="briefing-card"><h3>'+(d.companyName||d.name||sym)+'</h3><p>'+d.description+'</p></div>';
+}
+
+out.innerHTML=html;
+}
+
+function analyzeCrypto(symbol,out){
+var coinId=CRYPTO_MAP[symbol];
+if(!coinId){
+out.innerHTML='<div class="error-card">Unknown crypto: '+symbol+'<br>Try: BTC, ETH, SOL, BNB, XRP, DOGE, ADA, AVAX, DOT, LINK</div>';
+return;
+}
+
+fetch("https://api.coingecko.com/api/v3/coins/"+coinId+"?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true")
+.then(function(r){return r.json()})
+.then(function(data){
+var m=data.market_data;
+var changeClass=m.price_change_percentage_24h>=0?'up':'down';
+var rating=calcCryptoRating(m);
+
+var html='<div class="analysis-header">';
+if(data.image&&data.image.small)html+='<img class="analysis-logo" src="'+data.image.small+'">';
+html+='<div><div class="analysis-name">'+data.name+'</div><div class="analysis-symbol">'+symbol+'</div></div></div>';
+
+html+='<div class="analysis-price">$'+fmtCrypto(m.current_price.usd)+'</div>';
+html+='<div class="analysis-change '+changeClass+'">'+(m.price_change_percentage_24h>=0?'▲':'▼')+' '+fmtNum(Math.abs(m.price_change_percentage_24h))+'% (24h)</div>';
+
+html+='<div class="rating-box"><div class="rating-label">Technical Signal</div>';
+html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
+html+='<p style="font-size:12px;color:var(--text2);margin-top:6px">'+rating.reason+'</p></div>';
+
+// Chart
+html+='<div class="chart-container"><canvas id="priceChart"></canvas></div>';
+
+html+='<div class="section-title">Key Stats</div>';
+html+='<div class="data-grid">';
+html+=dataCell("Market Cap",'$'+fmtCap(m.market_cap.usd/1e6));
+html+=dataCell("24h Volume",'$'+fmtCap(m.total_volume.usd/1e6));
+html+=dataCell("24h High",'$'+fmtCrypto(m.high_24h.usd));
+html+=dataCell("24h Low",'$'+fmtCrypto(m.low_24h.usd));
+html+=dataCell("7d Change",fmtPct(m.price_change_percentage_7d));
+html+=dataCell("30d Change",fmtPct(m.price_change_percentage_30d));
+html+=dataCell("ATH",'$'+fmtCrypto(m.ath.usd));
+html+=dataCell("ATH Date",m.ath_date.usd.split('T')[0]);
+html+=dataCell("From ATH",fmtPct(m.ath_change_percentage.usd));
+html+=dataCell("Circulating Supply",fmtNum(m.circulating_supply));
+html+='</div>';
+
+if(data.description&&data.description.en){
+var desc=data.description.en.replace(/<[^>]*>/g,'').substring(0,300);
+html+='<div class="section-title">About</div>';
+html+='<div class="briefing-card"><h3>'+data.name+'</h3><p>'+desc+'...</p></div>';
+}
+
+out.innerHTML=html;
+drawCryptoChart(m.sparkline&&m.sparkline.price?m.sparkline.price:[]);
+})
+.catch(function(err){
+out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br>'+err.message+'</div>';
+});
+}
+
+// ==============================
+// RATING CALCULATION
+// ==============================
+function calcRating(rec,q){
+if(!rec)return{label:'N/A',color:'#8b949e'};
+var total=rec.strongBuy+rec.buy+rec.hold+rec.sell+rec.strongSell;
+if(total===0)return{label:'N/A',color:'#8b949e'};
+var bull=rec.strongBuy+rec.buy;
+var bear=rec.sell+rec.strongSell;
+var pct=bull/total;
+
+if(pct>=0.7)return{label:'Strong Buy',color:'#3fb950'};
+if(pct>=0.55)return{label:'Buy',color:'#5cb85c'};
+if(pct>=0.45)return{label:'Hold',color:'#d29922'};
+if(pct>=0.3)return{label:'Sell',color:'#f0883e'};
+return{label:'Strong Sell',color:'#f85149'};
+}
+
+function calcCryptoRating(m){
+var r={label:'Neutral',color:'#d29922',reason:''};
+var signals=0;
+var bullish=0;
+
+if(m.price_change_percentage_24h>2){bullish++;signals++}
+else if(m.price_change_percentage_24h<-2){signals++}
+
+if(m.price_change_percentage_7d>5){bullish++;signals++}
+else if(m.price_change_percentage_7d<-5){signals++}
+
+if(m.price_change_percentage_30d>10){bullish++;signals++}
+else if(m.price_change_percentage_30d<-10){signals++}
+
+var price=m.current_price.usd;
+var ath=m.ath.usd;
+var fromAth=pct(price,ath);
+if(fromAth>-20){bullish++;signals++}
+
+if(signals===0){r.label='Neutral';r.color='#d29922'}
+else if(bullish>=signals*0.7){r.label='Bullish';r.color='#3fb950'}
+else if(bullish<=signals*0.3){r.label='Bearish';r.color='#f85149'}
+else{r.label='Mixed';r.color='#d29922'}
+
+r.reason=bullish+'/'+signals+' bullish signals';
+return r;
+}
+
+// ==============================
+// CHART
+// ==============================
+function drawChart(q){
+var canvas=document.getElementById('priceChart');
+if(!canvas)return;
+var ctx=canvas.getContext('2d');
+var w=canvas.width=canvas.offsetWidth*2;
+var h=canvas.height=360;
+ctx.scale(2,2);
+var cw=canvas.offsetWidth,ch=180;
+
+var ohlc=[q.o,q.h,q.l,q.c];
+var min=Math.min.apply(null,ohlc);
+var max=Math.max.apply(null,ohlc);
+var pad=(max-min)*0.1||1;
+min-=pad;max+=pad;
+var range=max-min;
+
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+// Grid lines
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+for(var i=0;i<4;i++){
+var y=(i/3)*ch;
+ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();
+}
+
+// Candle
+var x=cw/2;
+var cw_width=40;
+var scale=ch/range;
+var openY=ch-((q.o-min)*scale);
+var closeY=ch-((q.c-min)*scale);
+var highY=ch-((q.h-min)*scale);
+var lowY=ch-((q.l-min)*scale);
+
+ctx.strokeStyle=q.c>=q.o?'#3fb950':'#f85149';
+ctx.fillStyle=q.c>=q.o?'#3fb950':'#f85149';
+ctx.lineWidth=1;
+
+// Wick
+ctx.beginPath();ctx.moveTo(x,highY);ctx.lineTo(x,lowY);ctx.stroke();
+
+// Body
+var bodyTop=Math.min(openY,closeY);
+var bodyH=Math.abs(closeY-openY)||2;
+ctx.fillRect(x-cw_width/2,bodyTop,cw_width,bodyH);
+
+// Labels
+ctx.fillStyle='#8b949e';
+ctx.font='10px sans-serif';
+ctx.textAlign='left';
+ctx.fillText('$'+fmtNum(max),4,12);
+ctx.fillText('$'+fmtNum(min),4,ch-4);
+ctx.textAlign='right';
+ctx.fillText('O: $'+fmtNum(q.o),cw-4,12);
+ctx.fillText('C: $'+fmtNum(q.c),cw-4,ch-16);
+}
+
+function drawCryptoChart(sparkline){
+var canvas=document.getElementById('priceChart');
+if(!canvas||!sparkline||sparkline.length===0)return;
+var ctx=canvas.getContext('2d');
+var w=canvas.width=canvas.offsetWidth*2;
+var h=canvas.height=360;
+ctx.scale(2,2);
+var cw=canvas.offsetWidth,ch=180;
+
+var min=Math.min.apply(null,sparkline);
+var max=Math.Max.apply(null,sparkline);
+var pad=(max-min)*0.1||1;
+min-=pad;max+=pad;
+var range=max-min;
+
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+for(var i=0;i<4;i++){
+var y=(i/3)*ch;
+ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();
+}
+
+// Line chart
+ctx.strokeStyle='#58a6ff';
+ctx.lineWidth=1.5;
+ctx.beginPath();
+for(var i=0;i<sparkline.length;i++){
+var x=(i/(sparkline.length-1))*cw;
+var y=ch-((sparkline[i]-min)/range)*ch;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.stroke();
+
+// Fill
+ctx.lineTo(cw,ch);
+ctx.lineTo(0,ch);
+ctx.closePath();
+ctx.fillStyle='rgba(88,166,255,0.1)';
+ctx.fill();
+
+ctx.fillStyle='#8b949e';
+ctx.font='10px sans-serif';
+ctx.textAlign='left';
+ctx.fillText('$'+fmtCrypto(max),4,12);
+ctx.fillText('$'+fmtCrypto(min),4,ch-4);
+}
+
+// ==============================
+// TICKER TAPES
+// ==============================
+function loadTickerTapes(){
+sameDomainGet(MARKETS_URL)
+.then(function(mkt){
+renderTape('tapeStocks',mkt.stocks||[]);
+renderTape('tapeCrypto',mkt.crypto||[]);
+renderTape('tapeXYZ',mkt.xyzPerps||[]);
+
+// Index boxes
+if(mkt.indices){
+for(var i=0;i<mkt.indices.length;i++){
+var idx=mkt.indices[i];
+if(idx.symbol==='GSPC'||idx.symbol==='SPY'){
+document.getElementById('idxSP500').textContent='$'+fmtNum(idx.price);
+document.getElementById('chgSP500').textContent=fmtPct(idx.changePercentage);
+document.getElementById('chgSP500').className='index-change '+(idx.changePercentage>=0?'up':'down');
+}
+if(idx.symbol==='IXIC'||idx.symbol==='QQQ'){
+document.getElementById('idxNASDAQ').textContent='$'+fmtNum(idx.price);
+document.getElementById('chgNASDAQ').textContent=fmtPct(idx.changePercentage);
+document.getElementById('chgNASDAQ').className='index-change '+(idx.changePercentage>=0?'up':'down');
+}
+if(idx.symbol==='DJI'||idx.symbol==='DIA'){
+document.getElementById('idxDOW').textContent='$'+fmtNum(idx.price);
+document.getElementById('chgDOW').textContent=fmtPct(idx.changePercentage);
+document.getElementById('chgDOW').className='index-change '+(idx.changePercentage>=0?'up':'down');
+}
+}
+}
+})
+.catch(function(){});
+
+// Animation
+requestAnimationFrame(animateTapes);
+}
+
+var tapeOffsets={tapeStocks:0,tapeCrypto:0,tapeXYZ:0};
+function animateTapes(){
+var speed=0.8;
+var ids=['tapeStocks','tapeCrypto','tapeXYZ'];
+for(var i=0;i<ids.length;i++){
+var el=document.getElementById(ids[i]);
+if(el&&el.offsetWidth>0){
+tapeOffsets[ids[i]]-=speed;
+if(Math.abs(tapeOffsets[ids[i]])>=el.offsetWidth/2)tapeOffsets[ids[i]]=0;
+el.style.transform='translateX('+tapeOffsets[ids[i]]+'px)';
+}
+}
+requestAnimationFrame(animateTapes);
+}
+
+function renderTape(id,items){
+var el=document.getElementById(id);
+if(!el||!items||items.length===0)return;
+var html='';
+for(var i=0;i<items.length;i++){
+var it=items[i];
+var cls=it.change24h>=0?'up':'down';
+var arrow=it.change24h>=0?'▲':'▼';
+html+='<span class="tape-item"><span class="sym">'+it.symbol+'</span> $'+fmtNum(it.price)+' <span class="'+cls+'">'+arrow+fmtNum(Math.abs(it.change24h))+'%</span></span>';
+}
+el.innerHTML=html+html;
+}
+
+// ==============================
+// BRIEFING
+// ==============================
+function loadBriefing(){
+var out=document.getElementById('briefingContent');
+sameDomainGet(SNAPSHOT_URL)
+.then(function(snap){
+var html='';
+html+='<div class="briefing-card"><h3>📊 Market Overview</h3>';
+html+='<p>'+formatDate(new Date())+'</p>';
+if(snap.fearGreed){
+var fg=snap.fearGreed;
+var fgLabel=fg.value>70?'Extreme Greed':fg.value>55?'Greed':fg.value>45?'Neutral':fg.value>30?'Fear':'Extreme Fear';
+var fgColor=fg.value>55?'#3fb950':fg.value>45?'#d29922':'#f85149';
+html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
+html+='<div class="fg-value" style="color:'+fgColor+'">'+fg.value+'</div>';
+html+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
+html+='<div class="fg-bar"></div></div>';
+}
+if(snap.indices){
+html+='<div class="section-title">Indices</div>';
+for(var i=0;i<snap.indices.length;i++){
+var idx=snap.indices[i];
+html+='<div class="snap-row"><span class="label">'+idx.name+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
+}
+}
+if(snap.crypto){
+html+='<div class="section-title">Crypto</div>';
+for(var i=0;i<snap.crypto.length;i++){
+var c=snap.crypto[i];
+html+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
+}
+}
+html+='</div>';
+
+if(snap.briefing){
+html+='<div class="briefing-card"><h3>🏦 Macro Analysis</h3><p>'+snap.briefing+'</p></div>';
+}
+
+if(snap.whaleData){
+html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
+var w=snap.whaleData;
+html+='<div class="whale-grid">';
+html+='<div class="whale-cell"><div class="label">24h Volume</div><div class="val">$'+fmtCap(w.btc24hVol/1e6)+'M</div></div>';
+html+='<div class="whale-cell"><div class="label">7d Avg Vol</div><div class="val">$'+fmtCap(w.btc7dAvg/1e6)+'M</div></div>';
+html+='<div class="whale-cell"><div class="label">30d Avg Vol</div><div class="val">$'+fmtCap(w.btc30dAvg/1e6)+'M</div></div>';
+html+='<div class="whale-cell"><div class="label">24h Transactions</div><div class="val">'+fmtNum(w.btc24hTx)+'</div></div>';
+html+='</div></div>';
+}
+
+out.innerHTML=html;
+})
+.catch(function(){
+out.innerHTML='<div class="briefing-card"><h3>📊 Market Overview</h3><p>Unable to load briefing data. Please try again later.</p></div>';
+});
+}
+
+// ==============================
+// TRADING
+// ==============================
+function loadTrading(){
+var out=document.getElementById('tradingContent');
+sameDomainGet(POSITIONS_URL)
+.then(function(pos){
+var html='<div class="account-summary">';
+html+='<div class="account-row"><span class="label">Account Value</span><span class="val">$'+fmtNum(pos.accountValue||0)+'</span></div>';
+html+='<div class="account-row"><span class="label">Cash (Buying Power)</span><span class="val">$'+fmtNum(pos.margin||pos.cash||0)+'</span></div>';
+html+='<div class="account-row"><span class="label">Unrealized P&L</span><span class="val" style="color:'+(pos.unrealizedPnl>=0?'var(--green)':'var(--red)')+'">'+(pos.unrealizedPnl>=0?'+':'')+'$'+fmtNum(pos.unrealizedPnl||0)+'</span></div>';
+html+='</div>';
+
+if(pos.positions&&pos.positions.length>0){
+html+='<div class="section-title">Open Positions</div>';
+for(var i=0;i<pos.positions.length;i++){
+var p=pos.positions[i];
+var pnlClass=p.pnl>=0?'up':'down';
+html+='<div class="pos-card">';
+html+='<div class="pos-header"><span class="pos-symbol">'+p.symbol+'</span><span class="pos-side '+(p.side||'long')+'">'+(p.side||'LONG').toUpperCase()+'</span></div>';
+html+='<div class="pos-grid">';
+html+='<div><span class="label">Size: </span>'+fmtNum(p.size)+' units</div>';
+html+='<div><span class="label">Entry: </span>$'+fmtNum(p.entryPrice)+'</div>';
+html+='<div><span class="label">Current: </span>$'+fmtNum(p.currentPrice)+'</div>';
+html+='<div><span class="label">Leverage: </span>'+(p.leverage||1)+'x</div>';
+html+='</div>';
+html+='<div class="pos-pnl '+pnlClass+'">'+(p.pnl>=0?'+':'')+'$'+fmtNum(p.pnl)+'</div>';
+html+='</div>';
+}
+}else{
+html+='<div class="briefing-card"><p>No open positions. The agent is currently in cash, waiting for the right setup.</p></div>';
+}
+
+if(pos.tradingPosts&&pos.tradingPosts.length>0){
+html+='<div class="section-title">Recent Trade Rationale</div>';
+for(var i=0;i<Math.min(pos.tradingPosts.length,3);i++){
+var tp=pos.tradingPosts[i];
+html+='<div class="briefing-card"><h3>'+tp.title+'</h3><p>'+tp.content.substring(0,200)+'...</p></div>';
+}
+}
+
+out.innerHTML=html;
+})
+.catch(function(){
+out.innerHTML='<div class="briefing-card"><h3>Trading Desk</h3><p>Unable to load positions. Please try again later.</p></div>';
+});
+}
+
+// ==============================
+// SNAPSHOT
+// ==============================
+function loadSnapshot(){
+var out=document.getElementById('snapshotContent');
+sameDomainGet(SNAPSHOT_URL)
+.then(function(snap){
+var html='';
+
+if(snap.fearGreed){
+var fg=snap.fearGreed;
+var fgLabel=fg.value>70?'Extreme Greed':fg.value>55?'Greed':fg.value>45?'Neutral':fg.value>30?'Fear':'Extreme Fear';
+var fgColor=fg.value>55?'#3fb950':fg.value>45?'#d29922':'#f85149';
+html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
+html+='<div class="fg-value" style="color:'+fgColor+'">'+fg.value+'</div>';
+html+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
+html+='<div class="fg-bar"></div></div>';
+}
+
+if(snap.indices){
+html+='<div class="section-title">Indices</div>';
+html+='<div class="briefing-card">';
+for(var i=0;i<snap.indices.length;i++){
+var idx=snap.indices[i];
+html+='<div class="snap-row"><span class="label">'+idx.name+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
+}
+html+='</div>';
+}
+
+if(snap.crypto){
+html+='<div class="section-title">Crypto</div>';
+html+='<div class="briefing-card">';
+for(var i=0;i<snap.crypto.length;i++){
+var c=snap.crypto[i];
+html+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
+}
+html+='</div>';
+}
+
+if(snap.whaleData){
+var w=snap.whaleData;
+html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
+html+='<div class="whale-grid">';
+html+='<div class="whale-cell"><div class="label">BTC 24h Vol</div><div class="val">$'+fmtCap(w.btc24hVol/1e6)+'M</div></div>';
+html+='<div class="whale-cell"><div class="label">7d Avg</div><div class="val">$'+fmtCap(w.btc7dAvg/1e6)+'M</div></div>';
+html+='<div class="whale-cell"><div class="label">30d Avg</div><div class="val">$'+fmtCap(w.btc30dAvg/1e6)+'M</div></div>';
+html+='<div class="whale-cell"><div class="label">24h TXs</div><div class="val">'+fmtNum(w.btc24hTx)+'</div></div>';
+html+='</div></div>';
+}
+
+out.innerHTML=html||'<div class="briefing-card"><p>No snapshot data available.</p></div>';
+})
+.catch(function(){
+out.innerHTML='<div class="briefing-card"><p>Unable to load market data.</p></div>';
+});
+}
+
+// ==============================
+// FORMATTERS
+// ==============================
+function fmtNum(n){if(!n||isNaN(n))return'0.00';return Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtCrypto(n){if(!n||isNaN(n))return'0';if(n>=1000)return fmtNum(n);if(n>=1)return Number(n).toFixed(2);if(n>=0.01)return Number(n).toFixed(4);return Number(n).toFixed(6)}
+function fmtCap(n){if(!n||isNaN(n))return'0';if(n>=1000)return fmtNum(n)+'B';return fmtNum(n)+'M'}
+function fmtPct(n){if(!n||isNaN(n))return'0.00%';return(n>=0?'+':'')+Number(n).toFixed(2)+'%'}
+function pct(a,b){if(!b)return 0;return((a-b)/b)*100}
+function formatDate(d){return d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+function dataCell(label,val){return'<div class="data-cell"><div class="data-label">'+label+'</div><div class="data-value">'+val+'</div></div>'}
+
+// ==============================
+// PAYMENT
+// ==============================
+function payWithCrypto(){switchView('pay')}
+
+// ==============================
+// INIT
+// ==============================
+document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter'||e.keyCode===13)doSearch()});
+document.getElementById('briefingDate').textContent=formatDate(new Date());
+
+loadTickerTapes();
+</script>
+</body>
+</html>
