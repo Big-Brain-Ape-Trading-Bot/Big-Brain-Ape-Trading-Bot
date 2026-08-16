@@ -1178,13 +1178,10 @@ return fetch(STOCK_DATA_URL+'?t='+Date.now())
 .then(function(sdd){
 var sd=sdd.stocks||{};
 var d=sd[upper];
-if(!d){
-// Try without uppercase
-for(var k in sd){if(k.toUpperCase()===upper){d=sd[k];break}}
-}
-if(!d){throw new Error('No data for '+symbol+'. This stock may not be in our pre-fetched list. Try NVDA, AAPL, TSLA, MSFT, GOOGL, META, AMZN, AMD, or NFLX.')}
+if(!d){for(var k in sd){if(k.toUpperCase()===upper){d=sd[k];break}}}
+if(!d){throw new Error('No data for '+symbol+'. Try NVDA, AAPL, TSLA, MSFT, GOOGL, META, AMZN, AMD, NFLX, PLTR, COIN, or HOOD.')}
 var price=d.price||0;
-if(!price||price===0){throw new Error('No price data for '+symbol)}
+if(!price||price===0){throw new Error('No price for '+symbol)}
 var change=d.change||0;
 var changePct=d.changePercentage||0;
 var yearLow=d.yearLow||0;
@@ -1194,7 +1191,6 @@ var volume=d.volume||0;
 var fiftyHigh=d.priceAvg50||price;
 var twoHigh=d.priceAvg200||price;
 var companyName=d.companyName||d.name||symbol;
-// Build synthetic closes from 52-week range
 var closes=[];
 if(yearHigh>yearLow&&price>0){
 var range=yearHigh-yearLow;
