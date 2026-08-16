@@ -1,5 +1,5 @@
 {
-  "date": "August 16, 2026 03:55 UTC",
+  "date": "August 16, 2026 04:00 UTC",
   "assets": {
     "S&P 500": {
       "price": 7785.76,
@@ -20,20 +20,20 @@
       "resistance": 54744.33
     },
     "BTC": {
-      "price": 63094.4,
-      "change_pct": 0.07,
+      "price": 63096.6,
+      "change_pct": 0.1,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1882.22,
-      "change_pct": -0.02,
+      "price": 1882.15,
+      "change_pct": 0.01,
       "support": 1820.61,
       "resistance": 1982.0
     },
     "SOL": {
       "price": 75.54,
-      "change_pct": 0.15,
+      "change_pct": 0.21,
       "support": 70.51,
       "resistance": 78.87
     }
@@ -71,7 +71,7 @@
       "color": "yellow"
     },
     "gold": {
-      "value": "$4380",
+      "value": "$4437",
       "label": "GOLD",
       "color": "yellow"
     }
@@ -91,13 +91,18 @@
       "label": "CAUTION",
       "text": "Yields rising \u2014 risk off",
       "type": "caution"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Gold up 1.7% \u2014 safe haven bid",
+      "type": "bullish"
     }
   ],
-  "btc_funding": 1.33e-06,
+  "btc_funding": 1.87e-06,
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 9.66,
+    "daily_inflow": 9.65,
     "daily_avg": 17.4,
     "daily_pct": -44.5,
     "weekly_inflow": 121.78,
@@ -106,6 +111,6 @@
     "monthly_inflow": 629.13,
     "monthly_avg": 811.61,
     "monthly_pct": -22.5,
-    "large_tx_count": 756381
+    "large_tx_count": 752642
   }
 }
