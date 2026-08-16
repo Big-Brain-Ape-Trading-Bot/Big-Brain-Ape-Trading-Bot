@@ -1172,28 +1172,29 @@ return httpGet('https://api.alternative.me/fng/?limit=1')
 }
 
 function getStockData(symbol){
-if(typeof dbgLog!=='undefined')dbgLog('getStockData: '+symbol);
-var quoteUrl='https://financialmodelingprep.com/stable/quote?symbol='+symbol+'&apikey='+FMP_KEY;
-var profileUrl='https://financialmodelingprep.com/stable/profile?symbol='+symbol+'&apikey='+FMP_KEY;
-return httpGet(quoteUrl)
-.then(function(qdata){
-if(!qdata||qdata.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
-var q=qdata[0];
-var price=q.price||0;
-if(!price||price===0){throw new Error('No price for '+symbol)}
-var change=q.change||0;
-var changePct=q.changePercentage||0;
-var yearLow=q.yearLow||0;
-var yearHigh=q.yearHigh||0;
-var marketCap=q.marketCap||0;
-var volume=q.volume||0;
-var avgVolume=q.volume||0;
-var fiftyHigh=q.priceAvg50||price;
-var twoHigh=q.priceAvg200||price;
-var name=q.name||symbol;
-return httpGet(profileUrl)
-.then(function(pdata){
-var p=(pdata&&pdata.length>0)?pdata[0]:{};
+var upper=symbol.toUpperCase().trim();
+return fetch(STOCK_DATA_URL+'?t='+Date.now())
+.then(function(r){return r.json()})
+.then(function(sdd){
+var sd=sdd.stocks||{};
+var d=sd[upper];
+if(!d){
+// Try without uppercase
+for(var k in sd){if(k.toUpperCase()===upper){d=sd[k];break}}
+}
+if(!d){throw new Error('No data for '+symbol+'. This stock may not be in our pre-fetched list. Try NVDA, AAPL, TSLA, MSFT, GOOGL, META, AMZN, AMD, or NFLX.')}
+var price=d.price||0;
+if(!price||price===0){throw new Error('No price data for '+symbol)}
+var change=d.change||0;
+var changePct=d.changePercentage||0;
+var yearLow=d.yearLow||0;
+var yearHigh=d.yearHigh||0;
+var marketCap=d.marketCap||0;
+var volume=d.volume||0;
+var fiftyHigh=d.priceAvg50||price;
+var twoHigh=d.priceAvg200||price;
+var companyName=d.companyName||d.name||symbol;
+// Build synthetic closes from 52-week range
 var closes=[];
 if(yearHigh>yearLow&&price>0){
 var range=yearHigh-yearLow;
@@ -1201,30 +1202,16 @@ for(var i=0;i<249;i++){closes.push(yearLow+((i/249)*range))}
 closes.push(price);
 }
 return{
-symbol:symbol,name:p.companyName||name,price:price,change:change,changePct:changePct,
+symbol:upper,name:companyName,price:price,change:change,changePct:changePct,
 closes:closes,yearHigh:yearHigh,yearLow:yearLow,fiftyHigh:fiftyHigh,twoHigh:twoHigh,
-marketCap:marketCap,sector:p.sector||'N/A',industry:p.industry||'N/A',
-range:(yearLow+'-'+yearHigh),beta:p.beta||0,
-dividendYield:p.lastDividend?((p.lastDividend/price)*100):0,
-peRatio:p.pe||0,volume:volume,avgVolume:avgVolume,
-description:p.description||'',isCrypto:false
+marketCap:marketCap,sector:d.sector||'N/A',industry:d.industry||'N/A',
+range:(yearLow+'-'+yearHigh),beta:d.beta||0,
+dividendYield:d.lastDividend?((d.lastDividend/price)*100):0,
+peRatio:d.pe||0,volume:volume,avgVolume:volume,
+description:d.description||'',isCrypto:false,
+targetHigh:d.targetHigh||0,targetLow:d.targetLow||0,
+targetAvg:d.targetAvg||0,targetMedian:d.targetMedian||0
 }
-})
-.catch(function(e){
-var closes=[];
-if(yearHigh>yearLow&&price>0){
-var range=yearHigh-yearLow;
-for(var i=0;i<249;i++){closes.push(yearLow+((i/249)*range))}
-closes.push(price);
-}
-return{
-symbol:symbol,name:name,price:price,change:change,changePct:changePct,
-closes:closes,yearHigh:yearHigh,yearLow:yearLow,fiftyHigh:fiftyHigh,twoHigh:twoHigh,
-marketCap:marketCap,sector:'N/A',industry:'N/A',
-range:(yearLow+'-'+yearHigh),beta:0,dividendYield:0,peRatio:0,
-volume:volume,avgVolume:avgVolume,description:'',isCrypto:false
-}
-});
 })
 }
 
@@ -1251,9 +1238,16 @@ return httpGet('https://fapi.binance.com/fapi/v1/premiumIndex?symbol='+symbol+'U
 }
 
 function getAnalystConsensus(symbol){
-return httpGet('https://financialmodelingprep.com/stable/grades-consensus?symbol='+symbol+'&apikey='+FMP_KEY)
-.then(function(data){if(!data||data.length===0){return null}var d=data[0];return{consensus:d.consensus||'N/A',strongBuy:d.strongBuy||0,buy:d.buy||0,hold:d.hold||0,sell:d.sell||0,strongSell:d.strongSell||0}})
-.catch(function(e){return null})
+var upper=symbol.toUpperCase().trim();
+return fetch(STOCK_DATA_URL+'?t='+Date.now())
+.then(function(r){return r.json()})
+.then(function(sdd){
+var d=sdd.stocks||{};var s=d[upper];
+if(!s){for(var k in d){if(k.toUpperCase()===upper){s=d[k];break}}}
+if(!s||!s.consensus){return null}
+return{consensus:s.consensus,strongBuy:s.strongBuy||0,buy:s.buy||0,hold:s.hold||0,sell:s.sell||0,strongSell:s.strongSell||0}
+})
+.catch(function(){return null})
 }
 
 function getPriceTarget(symbol){
@@ -1331,13 +1325,13 @@ return Promise.all([getAnalystConsensus(symbol),getPriceTarget(symbol),getEarnin
 }
 
 function getSPYData(){
-return httpGet('https://financialmodelingprep.com/stable/quote?symbol=%5EGSPC&apikey='+FMP_KEY)
-.then(function(data){
-if(!data||data.length===0)return null;
-var d=data[0];
-return{changePct:d.changePercentage||0,price:d.price||0}
+return fetch(MARKETS_URL+'?t='+Date.now())
+.then(function(r){return r.json()})
+.then(function(mkt){
+var sp=mkt.indices?mkt.indices.find(function(i){return i.symbol==='GSPC'}):null;
+return sp?{changePct:sp.changePercentage,price:sp.price}:null
 })
-.catch(function(e){return null})
+.catch(function(){return null})
 }
 
 // ==========================================
@@ -2237,14 +2231,14 @@ runTickerAnalysis(ticker);
 }
 
 function runTickerAnalysis(ticker){
-if(typeof dbgLog!=='undefined')dbgLog('runTickerAnalysis: ticker='+ticker);
+
 chartInterval='D';chartIndicators={ema:true,volume:false,rsi:false};
-if(typeof dbgLog!=='undefined')dbgLog('switching to analysis view');
+
 switchView('analysis');
 var out=document.getElementById('analysisOutput');
-if(typeof dbgLog!=='undefined')dbgLog('output element found='+(!!out));
+
 var resolved=resolveTicker(ticker);
-if(typeof dbgLog!=='undefined')dbgLog('resolved='+resolved.symbol+' isCrypto='+resolved.isCrypto);
+
 out.innerHTML='<div class="loading"><div class="spinner"></div><p>Analyzing '+resolved.symbol+'...</p></div>';
 // Clear old cache for this symbol to force fresh data
 try {
@@ -2259,7 +2253,7 @@ var spyPromise=resolved.isCrypto?Promise.resolve(null):getSPYData();
 dataPromise
 .then(function(data){
 out.innerHTML='<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
-if(typeof dbgLog!=='undefined')dbgLog('profile data received, fetching technicals...');
+
 return Promise.all([data,fearPromise,fundingPromise,analystPromise,spyPromise])
 })
 .then(function(results){
@@ -2276,7 +2270,7 @@ renderAnalysis(data,analysis,fearGreed,funding,analyst,spyData)
 })
 .catch(function(err){
 var errMsg=err.message||'Unknown error';
-if(typeof dbgLog!=='undefined')dbgLog('ERROR: '+errMsg);
+
 out.innerHTML='<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze '+resolved.symbol+'</p><p>'+errMsg+'</p><p style="font-size:12px;margin-top:12px">Tip: Searches are cached for 30 minutes. If the data limit is reached, try again later today.</p><button class="btn" onclick="goHome()">Back</button></div>'
 });
 }
@@ -2284,12 +2278,7 @@ out.innerHTML='<div class="error-card"><p style="font-size:18px;font-weight:700;
 // ==========================================
 // SEARCH
 // ==========================================
-function dbgLog(msg){
-var d=document.getElementById('dbgOverlay');
-if(!d){d=document.createElement('div');d.id='dbgOverlay';d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#000;color:#0f0;font-size:11px;padding:8px;max-height:200px;overflow-y:auto;z-index:99999;font-family:monospace';document.body.appendChild(d)}
-d.innerHTML+='<div>'+msg+'</div>';
-d.scrollTop=d.scrollHeight;
-}
+
 function doSearch(){
 dbgLog('doSearch called');
 var input=document.getElementById('searchInput').value.trim();
@@ -2564,6 +2553,7 @@ if (toggle) toggle.textContent = 'Tap to collapse';
 // ==========================================
 var MARKETS_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/markets.json';
 var SNAPSHOT_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/snapshot.json';
+var STOCK_DATA_URL='https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/stock-data.json';
 var marketsTimer=null;
 
 function renderScroller(containerId,items){
