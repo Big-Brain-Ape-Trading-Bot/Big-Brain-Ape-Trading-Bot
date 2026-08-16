@@ -1192,8 +1192,10 @@ return httpGet('https://api.alternative.me/fng/?limit=1')
 }
 
 function getStockData(symbol){
+if(typeof dbgLog!=='undefined')dbgLog('getStockData: symbol='+symbol);
 var profileUrl='https://financialmodelingprep.com/stable/profile?symbol='+symbol+'&apikey='+FMP_KEY;
 var histUrl='https://financialmodelingprep.com/stable/historical-price-full?symbol='+symbol+'&apikey='+FMP_KEY+'&serietype=line';
+if(typeof dbgLog!=='undefined')dbgLog('fetching profile: '+profileUrl.substring(0,60)+'...');
 return httpGet(profileUrl)
 .then(function(data){
 if(!data||data.length===0){throw new Error('No data for '+symbol+'. Check the ticker symbol.')}
@@ -2273,10 +2275,14 @@ runTickerAnalysis(ticker);
 }
 
 function runTickerAnalysis(ticker){
+if(typeof dbgLog!=='undefined')dbgLog('runTickerAnalysis: ticker='+ticker);
 chartInterval='D';chartIndicators={ema:true,volume:false,rsi:false};
+if(typeof dbgLog!=='undefined')dbgLog('switching to analysis view');
 switchView('analysis');
 var out=document.getElementById('analysisOutput');
+if(typeof dbgLog!=='undefined')dbgLog('output element found='+(!!out));
 var resolved=resolveTicker(ticker);
+if(typeof dbgLog!=='undefined')dbgLog('resolved='+resolved.symbol+' isCrypto='+resolved.isCrypto);
 out.innerHTML='<div class="loading"><div class="spinner"></div><p>Analyzing '+resolved.symbol+'...</p></div>';
 // Clear old cache for this symbol to force fresh data
 try {
@@ -2291,6 +2297,7 @@ var spyPromise=resolved.isCrypto?Promise.resolve(null):getSPYData();
 dataPromise
 .then(function(data){
 out.innerHTML='<div class="loading"><div class="spinner"></div><p>Calculating technicals...</p></div>';
+if(typeof dbgLog!=='undefined')dbgLog('profile data received, fetching technicals...');
 return Promise.all([data,fearPromise,fundingPromise,analystPromise,spyPromise])
 })
 .then(function(results){
@@ -2307,6 +2314,7 @@ renderAnalysis(data,analysis,fearGreed,funding,analyst,spyData)
 })
 .catch(function(err){
 var errMsg=err.message||'Unknown error';
+if(typeof dbgLog!=='undefined')dbgLog('ERROR: '+errMsg);
 out.innerHTML='<div class="error-card"><p style="font-size:18px;font-weight:700;margin-bottom:8px">Could not analyze '+resolved.symbol+'</p><p>'+errMsg+'</p><p style="font-size:12px;margin-top:12px">Tip: Searches are cached for 30 minutes. If the data limit is reached, try again later today.</p><button class="btn" onclick="goHome()">Back</button></div>'
 });
 }
@@ -2314,19 +2322,32 @@ out.innerHTML='<div class="error-card"><p style="font-size:18px;font-weight:700;
 // ==========================================
 // SEARCH
 // ==========================================
+function dbgLog(msg){
+var d=document.getElementById('dbgOverlay');
+if(!d){d=document.createElement('div');d.id='dbgOverlay';d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#000;color:#0f0;font-size:11px;padding:8px;max-height:200px;overflow-y:auto;z-index:99999;font-family:monospace';document.body.appendChild(d)}
+d.innerHTML+='<div>'+msg+'</div>';
+d.scrollTop=d.scrollHeight;
+}
 function doSearch(){
+dbgLog('doSearch called');
 var input=document.getElementById('searchInput').value.trim();
-if(!input)return;
-if(!canAnalyze()){showPaywall();return}
+dbgLog('input='+input);
+if(!input){dbgLog('empty input, returning');return;}
+var canAn=canAnalyze();
+dbgLog('canAnalyze='+canAn);
+if(!canAn){dbgLog('showing paywall');showPaywall();return;}
 var btn=document.getElementById('searchBtn');btn.disabled=true;btn.textContent='...';
+dbgLog('isFreeAnalysis='+isFreeAnalysis());
 if(isFreeAnalysis()){
 var resolved=resolveTicker(input);
+dbgLog('resolved symbol='+resolved.symbol);
 var name=toTitleCase(getTickerDisplayName(resolved.symbol));
 showConfirmDialog('Are You Sure You Want To Use Your Free Ticker Analysis On '+name+'?',function(){
 runTickerAnalysis(input);
 btn.disabled=false;btn.textContent='Analyze';
 });
 }else{
+dbgLog('owner path: calling runTickerAnalysis directly');
 runTickerAnalysis(input);
 btn.disabled=false;btn.textContent='Analyze';
 }
