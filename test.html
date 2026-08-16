@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Big Brain Ape - Test</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{margin:0;padding:20px;background:#0d1117;color:#fff;font-family:sans-serif}
+input{padding:12px;font-size:16px;width:60%;border:1px solid #333;border-radius:8px;background:#1a1a2e;color:#fff}
+button{padding:12px 20px;font-size:16px;border:none;border-radius:8px;background:#0095f6;color:#fff;cursor:pointer}
+#result{margin-top:20px;padding:15px;background:#1a1a2e;border-radius:10px;min-height:100px}
+.loading{color:#888}
+.error{color:#ff3b30}
+.success{color:#00d68f}
+</style>
+</head>
+<body>
+<h2>🦍 Big Brain Ape - Analysis Test</h2>
+<div style="display:flex;gap:10px;margin-bottom:15px">
+<input type="text" id="ticker" placeholder="Enter ticker (AAPL, NVDA...)">
+<button onclick="analyze()">Analyze</button>
+</div>
+<div id="result">Type a ticker and click Analyze</div>
+<script>
+var FMP_KEY="FYPPeClubVq4A3KcyNkDH5S1g2Rw1SCL";
+function analyze(){
+  var ticker=document.getElementById("ticker").value.trim().toUpperCase();
+  if(!ticker)return;
+  var el=document.getElementById("result");
+  el.innerHTML='<div class="loading">Fetching data for '+ticker+'...</div>';
+  
+  fetch("https://financialmodelingprep.com/stable/quote?symbol="+ticker+"&apikey="+FMP_KEY)
+  .then(function(r){
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    return r.text();
+  })
+  .then(function(text){
+    var data=JSON.parse(text);
+    if(!data||data.length===0)throw new Error("No data for "+ticker);
+    var q=data[0];
+    el.innerHTML='<div class="success">'+
+      '<h3>'+q.symbol+' - '+q.name+'</h3>'+
+      '<p>Price: $'+q.price+'</p>'+
+      '<p>Change: '+(q.changePercentage>0?"+":"")+q.changePercentage.toFixed(2)+"%</p>'+
+      '<p>52wk Range: $'+q.yearLow+' - $'+q.yearHigh+'</p>'+
+      '<p>50-day Avg: $'+(q.priceAvg50?q.priceAvg50.toFixed(2):"N/A")+'</p>'+
+      '<p>200-day Avg: $'+(q.priceAvg200?q.priceAvg200.toFixed(2):"N/A")+'</p>'+
+      '<p>Market Cap: $'+(q.marketCap/1e9).toFixed(1)+'B</p>'+
+      '<p>Volume: '+q.volume.toLocaleString()+'</p>'+
+      '</div>';
+  })
+  .catch(function(err){
+    // Try XHR as fallback
+    var xhr=new XMLHttpRequest();
+    xhr.open("GET","https://financialmodelingprep.com/stable/quote?symbol="+ticker+"&apikey="+FMP_KEY,true);
+    xhr.timeout=10000;
+    xhr.ontimeout=function(){el.innerHTML='<div class="error">Request timed out. FMP API may be unreachable.</div>'};
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState===4){
+        if(xhr.status===200){
+          try{
+            var data=JSON.parse(xhr.responseText);
+            if(!data||data.length===0){el.innerHTML='<div class="error">No data found for '+ticker+'</div>';return}
+            var q=data[0];
+            el.innerHTML='<div class="success">'+
+              '<h3>'+q.symbol+' - '+q.name+'</h3>'+
+              '<p>Price: $'+q.price+'</p>'+
+              '<p>Change: '+(q.changePercentage>0?"+":"")+q.changePercentage.toFixed(2)+"%</p>"+
+              '<p>52wk Range: $'+q.yearLow+' - $'+q.yearHigh+'</p>'+
+              '</div>';
+          }catch(e){
+            el.innerHTML='<div class="error">Parse error: '+e.message+'</div>';
+          }
+        }else{
+          el.innerHTML='<div class="error">XHR failed: HTTP '+xhr.status+' - '+err.message+'</div>';
+        }
+      }
+    };
+    xhr.send();
+  });
+}
+document.getElementById("ticker").addEventListener("keydown",function(e){if(e.key==="Enter")analyze()});
+if(window.Telegram&&window.Telegram.WebApp){window.Telegram.WebApp.ready()}
+</script>
+</body>
+</html>
