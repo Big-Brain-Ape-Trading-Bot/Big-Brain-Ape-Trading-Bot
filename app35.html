@@ -878,8 +878,11 @@ sameDomainGet(SNAPSHOT_URL)
 var html='';
 html+='<div class="briefing-card"><h3>📊 Market Overview</h3>';
 html+='<p>'+formatDate(new Date())+'</p>';
-if(snap.fearGreed){
-var fg=snap.fearGreed;
+// Handle both camelCase and snake_case
+var fgVal=snap.fearGreed?snap.fearGreed.value:(snap.fear_greed||50);
+var fgObj=snap.fearGreed||{value:snap.fear_greed||50};
+if(fgVal||snap.fear_greed){
+var fg=fgObj;
 var fgLabel=fg.value>70?'Extreme Greed':fg.value>55?'Greed':fg.value>45?'Neutral':fg.value>30?'Fear':'Extreme Fear';
 var fgColor=fg.value>55?'#3fb950':fg.value>45?'#d29922':'#f85149';
 html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
@@ -887,29 +890,33 @@ html+='<div class="fg-value" style="color:'+fgColor+'">'+fg.value+'</div>';
 html+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
 html+='<div class="fg-bar"></div></div>';
 }
-if(snap.indices){
+var snapIndices=snap.indices||[];
+if(snapIndices.length>0){
 html+='<div class="section-title">Indices</div>';
-for(var i=0;i<snap.indices.length;i++){
-var idx=snap.indices[i];
+for(var i=0;i<snapIndices.length;i++){
+var idx=snapIndices[i];
 html+='<div class="snap-row"><span class="label">'+idx.name+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
 }
 }
-if(snap.crypto){
+var snapCrypto=snap.crypto||[];
+if(snapCrypto.length>0){
 html+='<div class="section-title">Crypto</div>';
-for(var i=0;i<snap.crypto.length;i++){
-var c=snap.crypto[i];
+for(var i=0;i<snapCrypto.length;i++){
+var c=snapCrypto[i];
 html+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
 }
 }
 html+='</div>';
 
-if(snap.briefing){
-html+='<div class="briefing-card"><h3>🏦 Macro Analysis</h3><p>'+snap.briefing+'</p></div>';
+var snapBrief=snap.briefing||snap.signals||'';
+if(snapBrief){
+html+='<div class="briefing-card"><h3>🏦 Macro Analysis</h3><p>'+snapBrief+'</p></div>';
 }
 
-if(snap.whaleData){
+var snapWhale=snap.whaleData||snap.whale_data||snap.whale_flow||null;
+if(snapWhale){
 html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
-var w=snap.whaleData;
+var w=snapWhale;
 html+='<div class="whale-grid">';
 html+='<div class="whale-cell"><div class="label">24h Volume</div><div class="val">$'+fmtCap(w.btc24hVol/1e6)+'M</div></div>';
 html+='<div class="whale-cell"><div class="label">7d Avg Vol</div><div class="val">$'+fmtCap(w.btc7dAvg/1e6)+'M</div></div>';
@@ -982,8 +989,9 @@ sameDomainGet(SNAPSHOT_URL)
 .then(function(snap){
 var html='';
 
-if(snap.fearGreed){
-var fg=snap.fearGreed;
+var fgVal=snap.fearGreed?snap.fearGreed.value:(snap.fear_greed||50);
+if(fgVal||snap.fear_greed){
+var fg={value:fgVal};
 var fgLabel=fg.value>70?'Extreme Greed':fg.value>55?'Greed':fg.value>45?'Neutral':fg.value>30?'Fear':'Extreme Fear';
 var fgColor=fg.value>55?'#3fb950':fg.value>45?'#d29922':'#f85149';
 html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
@@ -996,7 +1004,7 @@ if(snap.indices){
 html+='<div class="section-title">Indices</div>';
 html+='<div class="briefing-card">';
 for(var i=0;i<snap.indices.length;i++){
-var idx=snap.indices[i];
+var idx=snapIndices[i];
 html+='<div class="snap-row"><span class="label">'+idx.name+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
 }
 html+='</div>';
@@ -1006,14 +1014,15 @@ if(snap.crypto){
 html+='<div class="section-title">Crypto</div>';
 html+='<div class="briefing-card">';
 for(var i=0;i<snap.crypto.length;i++){
-var c=snap.crypto[i];
+var c=snapCrypto[i];
 html+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
 }
 html+='</div>';
 }
 
-if(snap.whaleData){
-var w=snap.whaleData;
+var snapWhale=snap.whaleData||snap.whale_data||snap.whale_flow||null;
+if(snapWhale){
+var w=snapWhale;
 html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
 html+='<div class="whale-grid">';
 html+='<div class="whale-cell"><div class="label">BTC 24h Vol</div><div class="val">$'+fmtCap(w.btc24hVol/1e6)+'M</div></div>';
