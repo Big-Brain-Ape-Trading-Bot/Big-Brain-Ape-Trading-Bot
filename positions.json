@@ -1,12 +1,12 @@
 {
-  "timestamp": 1786905945,
-  "generatedAt": "2026-08-16 18:45 UTC",
-  "accountValue": 1790.08,
-  "withdrawable": 268.83,
-  "portfolioValue": 1790.08,
-  "totalUnrealizedPnl": 207.17,
-  "totalMarginUsed": 1314.08,
-  "availableCash": 268.83,
+  "timestamp": 1786906245,
+  "generatedAt": "2026-08-16 18:50 UTC",
+  "accountValue": 1791.02,
+  "withdrawable": 269.15,
+  "portfolioValue": 1791.02,
+  "totalUnrealizedPnl": 207.64,
+  "totalMarginUsed": 1314.23,
+  "availableCash": 269.15,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 225.18,
-      "unrealizedPnl": 108.86,
+      "currentPrice": 225.23,
+      "unrealizedPnl": 109.3,
       "pnlPercent": 17.7,
-      "marginUsed": 653.02,
+      "marginUsed": 653.17,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1959.06,
+      "positionValue": 1959.5,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -44,20 +44,20 @@
       "side": "LONG",
       "size": 0.115,
       "entryPrice": 7650.33,
-      "currentPrice": 7783.3,
-      "unrealizedPnl": 15.29,
+      "currentPrice": 7783.6,
+      "unrealizedPnl": 15.33,
       "pnlPercent": 8.7,
       "marginUsed": 179.02,
       "leverage": 5,
       "marginType": "cross",
-      "positionValue": 895.08,
+      "positionValue": 895.11,
       "tvSymbol": "SP:SPX"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1959.06
+      "value": 1959.5
     },
     {
       "label": "GOLD",
@@ -65,17 +65,17 @@
     },
     {
       "label": "SP500",
-      "value": 895.08
+      "value": 895.11
     },
     {
       "label": "Cash",
-      "value": 268.83
+      "value": 269.15
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 653.02
+      "value": 653.17
     },
     {
       "label": "GOLD",
@@ -87,7 +87,7 @@
     },
     {
       "label": "Available",
-      "value": 268.83
+      "value": 269.15
     }
   ]
 }
