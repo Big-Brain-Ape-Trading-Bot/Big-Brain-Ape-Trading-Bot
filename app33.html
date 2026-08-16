@@ -2276,25 +2276,18 @@ out.innerHTML='<div class="error-card"><p style="font-size:18px;font-weight:700;
 // ==========================================
 
 function doSearch(){
-dbgLog('doSearch called');
 var input=document.getElementById('searchInput').value.trim();
-dbgLog('input='+input);
-if(!input){dbgLog('empty input, returning');return;}
-var canAn=canAnalyze();
-dbgLog('canAnalyze='+canAn);
-if(!canAn){dbgLog('showing paywall');showPaywall();return;}
+if(!input)return;
+if(!canAnalyze()){showPaywall();return}
 var btn=document.getElementById('searchBtn');btn.disabled=true;btn.textContent='...';
-dbgLog('isFreeAnalysis='+isFreeAnalysis());
 if(isFreeAnalysis()){
 var resolved=resolveTicker(input);
-dbgLog('resolved symbol='+resolved.symbol);
 var name=toTitleCase(getTickerDisplayName(resolved.symbol));
 showConfirmDialog('Are You Sure You Want To Use Your Free Ticker Analysis On '+name+'?',function(){
 runTickerAnalysis(input);
 btn.disabled=false;btn.textContent='Analyze';
 });
 }else{
-dbgLog('owner path: calling runTickerAnalysis directly');
 runTickerAnalysis(input);
 btn.disabled=false;btn.textContent='Analyze';
 }
