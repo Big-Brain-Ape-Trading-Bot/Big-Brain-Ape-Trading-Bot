@@ -1,54 +1,294 @@
 {
   "date": "August 16, 2026 18:30 UTC",
-  "assets": {
-    "S&P 500": {
+  "fearGreed": {
+    "value": {
+      "value": 34,
+      "classification": "Fear"
+    },
+    "label": ""
+  },
+  "indices": [
+    {
+      "symbol": "GSPC",
+      "name": "S&P 500",
       "price": 7785.76,
-      "change_pct": -0.17,
-      "support": 7313.92,
-      "resistance": 7816.7
+      "changePercentage": 0.48
     },
-    "NASDAQ": {
-      "price": 26729.16,
-      "change_pct": -0.28,
-      "support": 24425.34,
-      "resistance": 26875.52
+    {
+      "symbol": "IXIC",
+      "name": "NASDAQ",
+      "price": 26729.164,
+      "changePercentage": 0.53
     },
-    "Dow Jones": {
+    {
+      "symbol": "DJI",
+      "name": "Dow Jones",
       "price": 53732.41,
-      "change_pct": -0.2,
-      "support": 51542.06,
-      "resistance": 54744.33
-    },
-    "BTC": {
-      "price": 63123.7,
-      "change_pct": 0.17,
-      "support": 62228.8,
-      "resistance": 66924.1
-    },
-    "ETH": {
-      "price": 1884.98,
-      "change_pct": 0.16,
-      "support": 1820.61,
-      "resistance": 1982.0
-    },
-    "SOL": {
-      "price": 75.12,
-      "change_pct": -0.46,
-      "support": 70.51,
-      "resistance": 78.87
+      "changePercentage": -0.07
     }
+  ],
+  "crypto": [
+    {
+      "symbol": "BTC",
+      "price": 63123.7,
+      "change24h": 0.17,
+      "tvSymbol": "BINANCE:BTCUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "ETH",
+      "price": 1884.99,
+      "change24h": 0.16,
+      "tvSymbol": "BINANCE:ETHUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "SOL",
+      "price": 75.11,
+      "change24h": -0.48,
+      "tvSymbol": "BINANCE:SOLUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "BNB",
+      "price": 605.98,
+      "change24h": -0.75,
+      "tvSymbol": "BINANCE:BNBUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "XRP",
+      "price": 0.9981,
+      "change24h": -0.23,
+      "tvSymbol": "BINANCE:XRPUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "ADA",
+      "price": 0.1755,
+      "change24h": -1.01,
+      "tvSymbol": "BINANCE:ADAUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "AVAX",
+      "price": 6.338,
+      "change24h": -2.36,
+      "tvSymbol": "BINANCE:AVAXUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "LINK",
+      "price": 9.39,
+      "change24h": -1.71,
+      "tvSymbol": "BINANCE:LINKUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "DOT",
+      "price": 0.7612,
+      "change24h": -1.01,
+      "tvSymbol": "BINANCE:DOTUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "DOGE",
+      "price": 0.06988,
+      "change24h": 0.16,
+      "tvSymbol": "BINANCE:DOGEUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "LTC",
+      "price": 44.45,
+      "change24h": 0.75,
+      "tvSymbol": "BINANCE:LTCUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "TRX",
+      "price": 0.3319,
+      "change24h": -0.03,
+      "tvSymbol": "BINANCE:TRXUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "UNI",
+      "price": 3.294,
+      "change24h": 1.98,
+      "tvSymbol": "BINANCE:UNIUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "ATOM",
+      "price": 1.47,
+      "change24h": 0.27,
+      "tvSymbol": "BINANCE:ATOMUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "NEAR",
+      "price": 1.607,
+      "change24h": -1.65,
+      "tvSymbol": "BINANCE:NEARUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "ARB",
+      "price": 0.07422,
+      "change24h": 0.32,
+      "tvSymbol": "BINANCE:ARBUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "OP",
+      "price": 0.0843,
+      "change24h": -1.29,
+      "tvSymbol": "BINANCE:OPUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "APT",
+      "price": 0.5305,
+      "change24h": -0.92,
+      "tvSymbol": "BINANCE:APTUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "FIL",
+      "price": 0.6812,
+      "change24h": -0.6,
+      "tvSymbol": "BINANCE:FILUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "INJ",
+      "price": 4.12,
+      "change24h": -1.6,
+      "tvSymbol": "BINANCE:INJUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "TIA",
+      "price": 0.3067,
+      "change24h": 1.19,
+      "tvSymbol": "BINANCE:TIAUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "SEI",
+      "price": 0.03972,
+      "change24h": -0.6,
+      "tvSymbol": "BINANCE:SEIUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "SUI",
+      "price": 0.6755,
+      "change24h": -0.47,
+      "tvSymbol": "BINANCE:SUIUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "RUNE",
+      "price": 0.4194,
+      "change24h": -0.14,
+      "tvSymbol": "BINANCE:RUNEUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "AAVE",
+      "price": 86.51,
+      "change24h": 0.01,
+      "tvSymbol": "BINANCE:AAVEUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "CRV",
+      "price": 0.2507,
+      "change24h": 4.89,
+      "tvSymbol": "BINANCE:CRVUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "LDO",
+      "price": 0.3055,
+      "change24h": 2.0,
+      "tvSymbol": "BINANCE:LDOUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "FET",
+      "price": 0.1242,
+      "change24h": -3.04,
+      "tvSymbol": "BINANCE:FETUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "TAO",
+      "price": 196.89,
+      "change24h": -0.27,
+      "tvSymbol": "BINANCE:TAOUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "WIF",
+      "price": 0.1374,
+      "change24h": 0.29,
+      "tvSymbol": "BINANCE:WIFUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "JTO",
+      "price": 0.5962,
+      "change24h": 3.04,
+      "tvSymbol": "BINANCE:JTOUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "ETHFI",
+      "price": 0.5087,
+      "change24h": 7.0,
+      "tvSymbol": "BINANCE:ETHFIUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "HBAR",
+      "price": 0.06506,
+      "change24h": -0.7,
+      "tvSymbol": "BINANCE:HBARUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "XLM",
+      "price": 0.15732,
+      "change24h": -0.85,
+      "tvSymbol": "BINANCE:XLMUSDT",
+      "type": "crypto"
+    },
+    {
+      "symbol": "ENA",
+      "price": 0.08331,
+      "change24h": -1.62,
+      "tvSymbol": "BINANCE:ENAUSDT",
+      "type": "crypto"
+    }
+  ],
+  "whaleData": {
+    "daily_inflow": 9.12,
+    "daily_avg": 17.32,
+    "daily_pct": -47.3,
+    "weekly_inflow": 121.25,
+    "weekly_avg": 146.67,
+    "weekly_pct": -17.3,
+    "monthly_inflow": 628.6,
+    "monthly_avg": 811.43,
+    "monthly_pct": -22.5,
+    "large_tx_count": 798977
   },
-  "risk_score": 63,
-  "risk_bias": "RISK-ON",
-  "fear_greed": {
-    "value": 34,
-    "classification": "Fear"
-  },
-  "sector_tech": "NEUTRAL",
-  "sector_color": "gray",
-  "put_call": "0.85",
-  "options_bias": "NEUTRAL",
-  "whale_flow": "NEUTRAL",
+  "briefing": "[{\"label\": \"BULLISH\", \"text\": \"VIX low \\u2014 market calm\", \"type\": \"bullish\"}, {\"label\": \"BULLISH\", \"text\": \"Dollar weakening \\u2014 risk asset fuel\", \"type\": \"bullish\"}, {\"label\": \"CAUTION\", \"text\": \"Yields rising \\u2014 risk off\", \"type\": \"caution\"}, {\"label\": \"BULLISH\", \"text\": \"Gold up 1.7% \\u2014 safe haven bid\", \"type\": \"bullish\"}]",
+  "riskScore": 63,
+  "riskBias": "RISK-ON",
   "metrics": {
     "vix": {
       "value": "14.2",
@@ -76,41 +316,7 @@
       "color": "yellow"
     }
   },
-  "signals": [
-    {
-      "label": "BULLISH",
-      "text": "VIX low \u2014 market calm",
-      "type": "bullish"
-    },
-    {
-      "label": "BULLISH",
-      "text": "Dollar weakening \u2014 risk asset fuel",
-      "type": "bullish"
-    },
-    {
-      "label": "CAUTION",
-      "text": "Yields rising \u2014 risk off",
-      "type": "caution"
-    },
-    {
-      "label": "BULLISH",
-      "text": "Gold up 1.7% \u2014 safe haven bid",
-      "type": "bullish"
-    }
-  ],
-  "btc_funding": 6.379e-05,
-  "btc_oi": 0,
-  "btc_long_short": 0,
-  "whale_data": {
-    "daily_inflow": 9.12,
-    "daily_avg": 17.32,
-    "daily_pct": -47.3,
-    "weekly_inflow": 121.25,
-    "weekly_avg": 146.67,
-    "weekly_pct": -17.3,
-    "monthly_inflow": 628.6,
-    "monthly_avg": 811.43,
-    "monthly_pct": -22.5,
-    "large_tx_count": 798977
-  }
+  "btcFunding": 6.379e-05,
+  "btcOi": 0,
+  "btcLongShort": 0
 }
