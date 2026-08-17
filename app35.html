@@ -479,7 +479,8 @@ return r.json();
 }
 
 function fhGetQ(endpoint){
-return fetch("https://finnhub.io/api/v1/"+endpoint+"?token="+FINNHUB_KEY)
+var sep=endpoint.indexOf("?")>=0?"&":"?";
+return fetch("https://finnhub.io/api/v1/"+endpoint+sep+"token="+FINNHUB_KEY)
 .then(function(r){
 if(!r.ok)throw new Error("HTTP "+r.status);
 return r.json();
