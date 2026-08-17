@@ -1183,9 +1183,43 @@ ctx.fillText('$'+fmtCrypto(min),4,ch-4);
 function loadTickerTapes(){
 sameDomainGet(MARKETS_URL)
 .then(function(mkt){
-renderTape('tapeStocks',mkt.stocks||[]);
-renderTape('tapeCrypto',mkt.crypto||[]);
-renderTape('tapeXYZ',mkt.xyzPerps||[]);
+var stocks=mkt.stocks||[];
+var crypto=mkt.crypto||[];
+var xyz=mkt.xyzPerps||[];
+
+// Fallback: if stocks have no prices, get from stock-data.json
+var stocksValid=stocks.length>0&&stocks[0].price>0;
+if(!stocksValid){
+sameDomainGet(STOCK_DATA_URL).then(function(sd){
+var sdStocks=[];
+for(var key in sd.stocks){
+if(sd.stocks[key].price){
+sdStocks.push({symbol:key,price:sd.stocks[key].price,change24h:sd.stocks[key].change||0});
+}
+}
+renderTape('tapeStocks',sdStocks);
+}).catch(function(){});
+}else{
+renderTape('tapeStocks',stocks);
+}
+
+renderTape('tapeCrypto',crypto);
+
+// Fallback: if xyz perps have no prices, use stock-data.json for those too
+var xyzValid=xyz.length>0&&xyz[0].price>0;
+if(!xyzValid){
+sameDomainGet(STOCK_DATA_URL).then(function(sd){
+var sdXyz=[];
+for(var key in sd.stocks){
+if(sd.stocks[key].price){
+sdXyz.push({symbol:key,price:sd.stocks[key].price,change24h:sd.stocks[key].change||0});
+}
+}
+renderTape('tapeXYZ',sdXyz);
+}).catch(function(){});
+}else{
+renderTape('tapeXYZ',xyz);
+}
 
 // Index boxes
 if(mkt.indices){
@@ -1372,22 +1406,75 @@ return sym;
 }
 
 function loadTradingViewChart(container,tvSymbol){
-// Clear container
+// Show a preview chart inline + click to open full screen overlay
 container.innerHTML='';
+container.style.cursor='pointer';
+container.style.position='relative';
 
-// Add "Open Full Chart" button overlay
+// Add click overlay
 var btn=document.createElement('div');
 btn.className='tv-click-overlay';
-btn.textContent='⛶ Open Full Chart';
-btn.onclick=function(e){
-e.preventDefault();
-e.stopPropagation();
-var url='https://www.tradingview.com/chart/?symbol='+encodeURIComponent(tvSymbol)+'&interval=D';
-window.open(url,'_blank');
-};
+btn.textContent='⛶ Tap for Full Screen Chart';
 container.appendChild(btn);
 
-// Create TradingView advanced chart widget
+// Create TradingView widget inline (non-interactive preview)
+var script=document.createElement('script');
+script.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+script.type='text/javascript';
+script.async=true;
+script.innerHTML=JSON.stringify({
+"autosize":true,
+"symbol":tvSymbol,
+"interval":"D",
+"timezone":"Etc/UTC",
+"theme":"dark",
+"style":"1",
+"locale":"en",
+"enable_publishing":false,
+"hide_side_toolbar":true,
+"allow_symbol_change":false,
+"studies":["STD;SMA","STD;EMA","STD;Volume"],
+"show_popup_button":false,
+"range":"1Y",
+"support_host":"www.tradingview.com",
+"container_id":container.id
+});
+container.appendChild(script);
+
+// Click opens full-screen overlay (not new tab)
+container.onclick=function(e){
+e.preventDefault();
+e.stopPropagation();
+openTVFullScreen(tvSymbol);
+};
+}
+
+function openTVFullScreen(tvSymbol){
+// Create full-screen overlay that locks body scroll
+var overlay=document.createElement('div');
+overlay.id='tvFullScreenOverlay';
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#131722;display:flex;flex-direction:column';
+
+// Header bar with close button
+var header=document.createElement('div');
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0d1117;border-bottom:1px solid #30363d;flex-shrink:0';
+var title=document.createElement('div');
+title.style.cssText='font-size:16px;font-weight:600;color:#58a6ff';
+title.textContent='📈 '+tvSymbol.replace(':',' ');
+var closeBtn=document.createElement('div');
+closeBtn.style.cssText='width:32px;height:32px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f85149;font-size:20px;cursor:pointer;font-weight:bold';
+closeBtn.textContent='✕';
+closeBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';};
+header.appendChild(title);
+header.appendChild(closeBtn);
+overlay.appendChild(header);
+
+// Chart container (fills remaining space)
+var chartDiv=document.createElement('div');
+chartDiv.style.cssText='flex:1;overflow:hidden;position:relative';
+overlay.appendChild(chartDiv);
+
+// Add TradingView advanced chart with FULL features
 var script=document.createElement('script');
 script.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
 script.type='text/javascript';
@@ -1409,16 +1496,19 @@ script.innerHTML=JSON.stringify({
 "popup_height":"650",
 "range":"1Y",
 "support_host":"www.tradingview.com",
-"container_id":container.id
+"container_id":"tvFullScreenChart"
 });
+chartDiv.id='tvFullScreenChart';
+chartDiv.appendChild(script);
 
-container.appendChild(script);
+// Add to body and lock scrolling
+document.body.appendChild(overlay);
+document.body.style.overflow='hidden';
 
-// Make entire container clickable to open full chart
-container.onclick=function(){
-var url='https://www.tradingview.com/chart/?symbol='+encodeURIComponent(tvSymbol)+'&interval=D';
-window.open(url,'_blank');
-};
+// Prevent touchmove on overlay from scrolling the page
+overlay.addEventListener('touchmove',function(e){
+e.stopPropagation();
+},{passive:true});
 }
 
 function getTVSymbolForModal(type){
