@@ -182,11 +182,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .sq4-val{font-size:16px;font-weight:700}
 .sq4-sub{font-size:9px;color:var(--text2);margin-top:2px}
 
-/* FOUR RECT - 4 smaller rectangles */
-.four-rect{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
-.rect4{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}
-.rect4-label{font-size:8px;color:var(--text2);font-weight:600;margin-bottom:2px}
-.rect4-val{font-size:13px;font-weight:600}
+/* FIVE RECT - 5 smaller rectangles */
+.five-rect{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:10px}
+.rect5{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 2px;text-align:center}
+.rect5-label{font-size:8px;color:var(--text2);font-weight:600;margin-bottom:2px}
+.rect5-val{font-size:12px;font-weight:600}
+.rect5-val.green{color:var(--green)}
+.rect5-val.red{color:var(--red)}
+.rect5-val.yellow{color:var(--yellow)}
+.rect5-val.blue{color:var(--blue)}
 
 /* TWO BIG SQUARES */
 .two-big{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
@@ -268,47 +272,51 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <button class="quick-ticker" onclick="quickSearch('SOL')">SOL</button>
 </div>
 
-<!-- 4 SQUARES (same size) -->
+<!-- 4 SQUARES -->
 <div class="four-grid">
 <div class="sq4" id="sq4-1">
-<div class="sq4-label">Fear & Greed</div>
+<div class="sq4-label">Risk On</div>
+<div class="sq4-val" id="sq4-risk">—</div>
+<div class="sq4-sub" id="sq4-risk-sub"></div>
+</div>
+<div class="sq4" id="sq4-2">
+<div class="sq4-label">Market Sentiment</div>
 <div class="sq4-val" id="sq4-fg">—</div>
 <div class="sq4-sub" id="sq4-fg-label"></div>
 </div>
-<div class="sq4" id="sq4-2">
-<div class="sq4-label">DXY</div>
-<div class="sq4-val" id="sq4-dxy">—</div>
-<div class="sq4-sub" id="sq4-dxy-chg"></div>
-</div>
 <div class="sq4" id="sq4-3">
-<div class="sq4-label">10Y Yield</div>
-<div class="sq4-val" id="sq4-10y">—</div>
-<div class="sq4-sub" id="sq4-10y-chg"></div>
+<div class="sq4-label">Tech Sector</div>
+<div class="sq4-val" id="sq4-tech">—</div>
+<div class="sq4-sub" id="sq4-tech-sub"></div>
 </div>
 <div class="sq4" id="sq4-4">
-<div class="sq4-label">VIX</div>
-<div class="sq4-val" id="sq4-vix">—</div>
-<div class="sq4-sub" id="sq4-vix-chg"></div>
+<div class="sq4-label">Options Flow</div>
+<div class="sq4-val" id="sq4-opt">—</div>
+<div class="sq4-sub" id="sq4-opt-sub"></div>
 </div>
 </div>
 
-<!-- 4 SMALLER RECTANGLES -->
-<div class="four-rect">
-<div class="rect4" id="rect4-1">
-<div class="rect4-label">BTC Dominance</div>
-<div class="rect4-val" id="rect4-btcd">—</div>
+<!-- 5 SMALLER RECTANGLES -->
+<div class="five-rect">
+<div class="rect5" id="rect5-vix">
+<div class="rect5-label">VIX</div>
+<div class="rect5-val" id="rect5-vix-val">—</div>
 </div>
-<div class="rect4" id="rect4-2">
-<div class="rect4-label">Total Mkt Cap</div>
-<div class="rect4-val" id="rect4-tmc">—</div>
+<div class="rect5" id="rect5-10y">
+<div class="rect5-label">10Y Yield</div>
+<div class="rect5-val" id="rect5-10y-val">—</div>
 </div>
-<div class="rect4" id="rect4-3">
-<div class="rect4-label">24h Volume</div>
-<div class="rect4-val" id="rect4-vol">—</div>
+<div class="rect5" id="rect5-oil">
+<div class="rect5-label">WTI Oil</div>
+<div class="rect5-val" id="rect5-oil-val">—</div>
 </div>
-<div class="rect4" id="rect4-4">
-<div class="rect4-label">Active Coins</div>
-<div class="rect4-val" id="rect4-coins">—</div>
+<div class="rect5" id="rect5-silver">
+<div class="rect5-label">Silver</div>
+<div class="rect5-val" id="rect5-silver-val">—</div>
+</div>
+<div class="rect5" id="rect5-gold">
+<div class="rect5-label">Gold</div>
+<div class="rect5-val" id="rect5-gold-val">—</div>
 </div>
 </div>
 
@@ -974,49 +982,54 @@ if(sol)setSq6('SOL',sol.price,sol.change24h,getSR(sol));
 return sameDomainGet(SNAPSHOT_URL);
 })
 .then(function(snap){
-// Fear & Greed
-var fgVal=snap.fearGreed?snap.fearGreed.value:(snap.fear_greed||0);
+// 4 SQUARES: Risk On, Market Sentiment, Tech Sector, Options Flow
+// Risk On
+var riskBias=snap.risk_bias||snap.riskBias||'—';
+var riskScore=snap.risk_score||snap.riskScore||0;
+var riskColor=riskBias.indexOf('ON')>=0?'var(--green)':riskBias.indexOf('OFF')>=0?'var(--red)':'var(--yellow)';
+var rEl=document.getElementById('sq4-risk');
+if(rEl){rEl.textContent=riskBias.replace('RISK-','');rEl.style.color=riskColor}
+var rSub=document.getElementById('sq4-risk-sub');
+if(rSub)rSub.textContent='Score: '+riskScore;
+
+// Market Sentiment (Fear & Greed)
+var fgVal=snap.fear_greed?(snap.fear_greed.value||snap.fear_greed):0;
+var fgClass=snap.fear_greed?(snap.fear_greed.classification||''):'';
 var fgLabel=fgVal>70?'Extreme Greed':fgVal>55?'Greed':fgVal>45?'Neutral':fgVal>30?'Fear':'Extreme Fear';
 var fgColor=fgVal>55?'var(--green)':fgVal>45?'var(--yellow)':'var(--red)';
 if(fgVal>0){
 var fgEl=document.getElementById('sq4-fg');
 if(fgEl){fgEl.textContent=fgVal;fgEl.style.color=fgColor}
 var fgL=document.getElementById('sq4-fg-label');
-if(fgL){fgL.textContent=fgLabel;fgL.style.color=fgColor}
+if(fgL){fgL.textContent=fgLabel||fgClass;fgL.style.color=fgColor}
 }
 
-// DXY, 10Y, VIX from metrics if available
+// Tech Sector
+var techVal=snap.sector_tech||'—';
+var techColor=snap.sector_color==='green'?'var(--green)':snap.sector_color==='red'?'var(--red)':'var(--yellow)';
+var tEl=document.getElementById('sq4-tech');
+if(tEl){tEl.textContent=techVal;tEl.style.color=techColor}
+
+// Options Flow
+var optVal=snap.options_bias||'—';
+var optPc=snap.put_call||0;
+var optColor=optVal.indexOf('BULL')>=0?'var(--green)':optVal.indexOf('BEAR')>=0?'var(--red)':'var(--yellow)';
+var oEl=document.getElementById('sq4-opt');
+if(oEl){oEl.textContent=optVal;oEl.style.color=optColor}
+var oSub=document.getElementById('sq4-opt-sub');
+if(oSub)oSub.textContent='P/C: '+optPc;
+
+// 5 RECTANGLES: VIX, 10Y, WTI Oil, Silver, Gold
 var metrics=snap.metrics||{};
-if(metrics.dxy){
-var dEl=document.getElementById('sq4-dxy');
-if(dEl)dEl.textContent=fmtNum(metrics.dxy);
+function setRect5(id,val,color){
+var el=document.getElementById(id);
+if(el){el.textContent=val;el.className='rect5-val '+(color||'')}
 }
-if(metrics.yield10y||metrics.yield_10y){
-var yEl=document.getElementById('sq4-10y');
-if(yEl)yEl.textContent=fmtNum(metrics.yield10y||metrics.yield_10y)+'%';
-}
-if(metrics.vix){
-var vEl=document.getElementById('sq4-vix');
-if(vEl)vEl.textContent=fmtNum(metrics.vix);
-}
-
-// 4 rectangles: BTC dominance, total mkt cap, 24h vol, active coins
-if(metrics.btcDominance||metrics.btc_dominance){
-var el=document.getElementById('rect4-btcd');
-if(el)el.textContent=fmtNum(metrics.btcDominance||metrics.btc_dominance)+'%';
-}
-if(metrics.totalMktCap||metrics.total_mkt_cap){
-var el=document.getElementById('rect4-tmc');
-if(el)el.textContent='$'+fmtCap(metrics.totalMktCap||metrics.total_mkt_cap);
-}
-if(metrics.totalVolume24h||metrics.total_volume_24h){
-var el=document.getElementById('rect4-vol');
-if(el)el.textContent='$'+fmtCap(metrics.totalVolume24h||metrics.total_volume_24h);
-}
-if(metrics.activeCoins||metrics.active_coins){
-var el=document.getElementById('rect4-coins');
-if(el)el.textContent=fmtNum(metrics.activeCoins||metrics.active_coins);
-}
+if(metrics.vix){var v=metrics.vix;setRect5('rect5-vix-val',v.value,v.color)}
+if(metrics.yield_10y){var v=metrics.yield_10y;setRect5('rect5-10y-val',v.value,v.color)}
+if(metrics.oil){var v=metrics.oil;setRect5('rect5-oil-val',v.value,v.color)}
+if(metrics.silver){var v=metrics.silver;setRect5('rect5-silver-val',v.value,v.color)}
+if(metrics.gold){var v=metrics.gold;setRect5('rect5-gold-val',v.value,v.color)}
 
 // 2 big squares - update with live data
 var posEl=document.getElementById('big-sq-1');
