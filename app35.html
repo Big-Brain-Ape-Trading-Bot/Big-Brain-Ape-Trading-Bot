@@ -33,7 +33,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .search-bar button:disabled{opacity:.5}
 
 /* QUICK TICKERS */
-.quick-tickers{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.quick-tickers{display:flex;gap:6px;flex-wrap:nowrap;margin-bottom:16px}.quick-ticker{flex:1;text-align:center;padding:8px 4px;font-size:12px}
 .quick-ticker{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)}
 .quick-ticker:active{background:var(--border)}
 
@@ -259,15 +259,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <button id="searchBtn" onclick="doSearch()">Analyze</button>
 </div>
 
-<div class="quick-tickers" style="justify-content:flex-end;margin-bottom:4px">
-<button class="quick-ticker" onclick="quickSearch('SOL')">SOL</button>
-</div>
 <div class="quick-tickers">
 <button class="quick-ticker" onclick="quickSearch('NVDA')">NVDA</button>
 <button class="quick-ticker" onclick="quickSearch('BTC')">BTC</button>
 <button class="quick-ticker" onclick="quickSearch('TSLA')">TSLA</button>
 <button class="quick-ticker" onclick="quickSearch('ETH')">ETH</button>
 <button class="quick-ticker" onclick="quickSearch('AAPL')">AAPL</button>
+<button class="quick-ticker" onclick="quickSearch('SOL')">SOL</button>
 </div>
 
 <!-- 4 SQUARES (same size) -->
