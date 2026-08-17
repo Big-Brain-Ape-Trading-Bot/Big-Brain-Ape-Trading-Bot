@@ -198,6 +198,22 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .big-sq:active{border-color:var(--blue)}
 .big-sq-label{font-size:13px;font-weight:700;margin-bottom:6px}
 .big-sq-val{font-size:11px;color:var(--text2)}
+
+/* DETAIL MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:300;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin:16px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-close{float:right;font-size:24px;color:var(--text2);cursor:pointer;line-height:1;background:none;border:none;padding:4px}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.modal-value{font-size:36px;font-weight:800;margin-bottom:8px}
+.modal-sub{font-size:14px;color:var(--text2);margin-bottom:16px}
+.modal-chart{width:100%;height:200px;background:var(--bg);border-radius:12px;margin-bottom:12px}
+.modal-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modal-stat{background:var(--bg);border-radius:8px;padding:10px;text-align:center}
+.modal-stat .label{font-size:10px;color:var(--text2);margin-bottom:2px}
+.modal-stat .val{font-size:16px;font-weight:700}
+.modal-stat .val.green{color:var(--green)}
+.modal-stat .val.red{color:var(--red)}
 </style>
 </head>
 <body>
@@ -274,22 +290,22 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <!-- 4 SQUARES -->
 <div class="four-grid">
-<div class="sq4" id="sq4-1">
+<div class="sq4" id="sq4-1" onclick="showDetail('risk')">
 <div class="sq4-label">Risk On</div>
 <div class="sq4-val" id="sq4-risk">—</div>
 <div class="sq4-sub" id="sq4-risk-sub"></div>
 </div>
-<div class="sq4" id="sq4-2">
+<div class="sq4" id="sq4-2" onclick="showDetail('sentiment')">
 <div class="sq4-label">Market Sentiment</div>
 <div class="sq4-val" id="sq4-fg">—</div>
 <div class="sq4-sub" id="sq4-fg-label"></div>
 </div>
-<div class="sq4" id="sq4-3">
+<div class="sq4" id="sq4-3" onclick="showDetail('tech')">
 <div class="sq4-label">Tech Sector</div>
 <div class="sq4-val" id="sq4-tech">—</div>
 <div class="sq4-sub" id="sq4-tech-sub"></div>
 </div>
-<div class="sq4" id="sq4-4">
+<div class="sq4" id="sq4-4" onclick="showDetail('options')">
 <div class="sq4-label">Options Flow</div>
 <div class="sq4-val" id="sq4-opt">—</div>
 <div class="sq4-sub" id="sq4-opt-sub"></div>
@@ -298,23 +314,23 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <!-- 5 SMALLER RECTANGLES -->
 <div class="five-rect">
-<div class="rect5" id="rect5-vix">
+<div class="rect5" id="rect5-vix" onclick="showDetail('vix')">
 <div class="rect5-label">VIX</div>
 <div class="rect5-val" id="rect5-vix-val">—</div>
 </div>
-<div class="rect5" id="rect5-10y">
+<div class="rect5" id="rect5-10y" onclick="showDetail('yield')">
 <div class="rect5-label">10Y Yield</div>
 <div class="rect5-val" id="rect5-10y-val">—</div>
 </div>
-<div class="rect5" id="rect5-oil">
+<div class="rect5" id="rect5-oil" onclick="showDetail('oil')">
 <div class="rect5-label">WTI Oil</div>
 <div class="rect5-val" id="rect5-oil-val">—</div>
 </div>
-<div class="rect5" id="rect5-silver">
+<div class="rect5" id="rect5-silver" onclick="showDetail('silver')">
 <div class="rect5-label">Silver</div>
 <div class="rect5-val" id="rect5-silver-val">—</div>
 </div>
-<div class="rect5" id="rect5-gold">
+<div class="rect5" id="rect5-gold" onclick="showDetail('gold')">
 <div class="rect5-label">Gold</div>
 <div class="rect5-val" id="rect5-gold-val">—</div>
 </div>
@@ -440,6 +456,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9h4.5a2 2 0 010 4H9"/></svg>Pricing
 </button>
 </nav>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeModal()">
+<div class="modal-box">
+<button class="modal-close" onclick="closeModal()">&times;</button>
+<div id="modalContent"></div>
+</div>
+</div>
 
 <script>
 // ==============================
@@ -1077,6 +1101,264 @@ if(n>=1000)return(n/1000).toFixed(1)+'K';
 if(n>=1)return n.toFixed(2);
 return n.toFixed(4);
 }
+
+// ==============================
+// DETAIL MODAL + CHARTS
+// ==============================
+var snapCache=null;
+var snapHistory=null;
+
+function getCachedSnap(){
+if(snapCache)return Promise.resolve(snapCache);
+return sameDomainGet(SNAPSHOT_URL).then(function(s){snapCache=s;snapHistory=s.history||{};return s});
+}
+
+function closeModal(){
+var m=document.getElementById('detailModal');
+if(m)m.classList.remove('show');
+}
+
+function showDetail(type){
+getCachedSnap().then(function(snap){
+var html='';
+var hist=snap.history||{};
+var metrics=snap.metrics||{};
+
+if(type==='risk'){
+var bias=snap.risk_bias||'—';
+var score=snap.risk_score||50;
+var color=bias.indexOf('ON')>=0?'var(--green)':bias.indexOf('OFF')>=0?'var(--red)':'var(--yellow)';
+var signals=snap.signals||[];
+html='<div class="modal-title">Risk Regime</div>';
+html+='<div class="modal-value" style="color:'+color+'">'+bias.replace('RISK-','')+'</div>';
+html+='<div class="modal-sub">Risk Score: '+score+'/100</div>';
+// S&P 500 chart as proxy
+if(hist.sp500&&hist.sp500.length>1){
+html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">S&P 500 Change</div><div class="val '+((snap.assets&&snap.assets['S&P 500']&&snap.assets['S&P 500'].change_pct>=0)?'green':'red')+'">'+(snap.assets?snap.assets['S&P 500']?snap.assets['S&P 500'].change_pct.toFixed(1)+'%':'—':'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">BTC Change</div><div class="val '+((snap.assets&&snap.assets['BTC']&&snap.assets['BTC'].change_pct>=0)?'green':'red')+'">'+(snap.assets?snap.assets['BTC']?snap.assets['BTC'].change_pct.toFixed(1)+'%':'—':'—')+'</div></div>';
+html+='</div>';
+html+='<div style="margin-top:12px;font-size:13px;color:var(--text2);line-height:1.8">';
+for(var i=0;i<Math.min(signals.length,6);i++){
+var sig=signals[i];
+var sc=sig.type==='bullish'?'var(--green)':sig.type==='caution'?'var(--red)':'var(--text2)';
+html+='<div style="margin-bottom:4px"><span style="color:'+sc+';font-weight:600">'+sig.label+'</span> — '+sig.text+'</div>';
+}
+html+='</div>';
+}
+
+else if(type==='sentiment'){
+var fg=snap.fear_greed||{value:50,classification:'Neutral'};
+var color=fg.value>55?'var(--green)':fg.value>45?'var(--yellow)':'var(--red)';
+html='<div class="modal-title">Market Sentiment</div>';
+html+='<div class="modal-value" style="color:'+color+'">'+fg.value+'</div>';
+html+='<div class="modal-sub">'+fg.classification+'</div>';
+// Fear & Greed gauge
+html+='<div style="text-align:center;margin:16px 0"><div style="height:12px;border-radius:6px;background:linear-gradient(90deg,var(--red),var(--orange),var(--yellow),var(--green))"></div>';
+html+='<div style="position:relative;margin-top:-8px"><div style="position:absolute;left:'+(fg.value)+'%;transform:translateX(-50%);font-size:20px">▼</div></div></div>';
+// History chart
+if(fg.history&&fg.history.length>1){
+html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">7-Day Low</div><div class="val">'+(fg.history?Math.min.apply(null,fg.history.map(function(h){return h.value})):'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">7-Day High</div><div class="val">'+(fg.history?Math.max.apply(null,fg.history.map(function(h){return h.value})):'—')+'</div></div>';
+html+='</div>';
+}
+
+else if(type==='tech'){
+var tech=snap.sector_tech||'—';
+var color=snap.sector_color==='green'?'var(--green)':snap.sector_color==='red'?'var(--red)':'var(--yellow)';
+html='<div class="modal-title">Tech Sector Performance</div>';
+html+='<div class="modal-value" style="color:'+color+'">'+tech+'</div>';
+html+='<div class="modal-sub">Nasdaq vs S&P 500 relative strength</div>';
+// NASDAQ chart
+if(hist.nasdaq&&hist.nasdaq.length>1){
+html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+}
+html+='<div class="modal-stats">';
+var nas=snap.assets&&snap.assets['NASDAQ']?snap.assets['NASDAQ']:null;
+var sp=snap.assets&&snap.assets['S&P 500']?snap.assets['S&P 500']:null;
+if(nas){html+='<div class="modal-stat"><div class="label">NASDAQ Change</div><div class="val '+(nas.change_pct>=0?'green':'red')+'">'+nas.change_pct.toFixed(1)+'%</div></div>'}
+if(sp){html+='<div class="modal-stat"><div class="label">S&P 500 Change</div><div class="val '+(sp.change_pct>=0?'green':'red')+'">'+sp.change_pct.toFixed(1)+'%</div></div>'}
+html+='</div>';
+}
+
+else if(type==='options'){
+var opt=snap.options_bias||'—';
+var pc=snap.put_call||0;
+var color=opt.indexOf('BULL')>=0?'var(--green)':opt.indexOf('BEAR')>=0?'var(--red)':'var(--yellow)';
+html='<div class="modal-title">Options Flow</div>';
+html+='<div class="modal-value" style="color:'+color+'">'+opt+'</div>';
+html+='<div class="modal-sub">Put/Call Ratio: '+pc+'</div>';
+// VIX chart as options proxy
+if(hist.vix&&hist.vix.length>1){
+html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">Put/Call Ratio</div><div class="val">'+pc+'</div></div>';
+var vixM=metrics.vix||{};
+html+='<div class="modal-stat"><div class="label">VIX</div><div class="val '+(vixM.color==='green'?'green':vixM.color==='red'?'red':'')+'">'+(vixM.value||'—')+'</div></div>';
+html+='</div>';
+}
+
+else if(type==='vix'){
+var v=metrics.vix||{};
+var histData=hist.vix||[];
+html='<div class="modal-title">VIX (Volatility Index)</div>';
+html+='<div class="modal-value">'+(v.value||'—')+'</div>';
+html+='<div class="modal-sub">'+(parseFloat(v.value)<18?'Low volatility — market calm':parseFloat(v.value)<25?'Moderate volatility':'High volatility — fear in market')+'</div>';
+if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?Math.min.apply(null,histData).toFixed(1):'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?Math.max.apply(null,histData).toFixed(1):'—')+'</div></div>';
+html+='</div>';
+}
+
+else if(type==='yield'){
+var v=metrics.yield_10y||{};
+var histData=hist.yield_10y||[];
+html='<div class="modal-title">10-Year Treasury Yield</div>';
+html+='<div class="modal-value">'+(v.value||'—')+'</div>';
+html+='<div class="modal-sub">'+(parseFloat((v.value||'4.5').replace('%',''))<4?'Low yields — dovish':parseFloat((v.value||'4.5').replace('%',''))<5?'Moderate yields':'High yields — restrictive')+'</div>';
+if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?Math.min.apply(null,histData).toFixed(2)+'%':'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?Math.max.apply(null,histData).toFixed(2)+'%':'—')+'</div></div>';
+html+='</div>';
+}
+
+else if(type==='oil'){
+var v=metrics.oil||{};
+var histData=hist.oil||[];
+html='<div class="modal-title">WTI Crude Oil</div>';
+html+='<div class="modal-value">'+(v.value||'—')+'</div>';
+html+='<div class="modal-sub">West Texas Intermediate futures</div>';
+if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?'$'+Math.min.apply(null,histData).toFixed(2):'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?'$'+Math.max.apply(null,histData).toFixed(2):'—')+'</div></div>';
+html+='</div>';
+}
+
+else if(type==='silver'){
+var v=metrics.silver||{};
+var histData=hist.silver||[];
+html='<div class="modal-title">Silver</div>';
+html+='<div class="modal-value">'+(v.value||'—')+'</div>';
+html+='<div class="modal-sub">Silver futures (SI=F)</div>';
+if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?'$'+Math.min.apply(null,histData).toFixed(2):'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?'$'+Math.max.apply(null,histData).toFixed(2):'—')+'</div></div>';
+html+='</div>';
+}
+
+else if(type==='gold'){
+var v=metrics.gold||{};
+var histData=hist.gold||[];
+html='<div class="modal-title">Gold</div>';
+html+='<div class="modal-value">'+(v.value||'—')+'</div>';
+html+='<div class="modal-sub">Gold futures (GC=F)</div>';
+if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+html+='<div class="modal-stats">';
+html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?'$'+Math.min.apply(null,histData).toFixed(0):'—')+'</div></div>';
+html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?'$'+Math.max.apply(null,histData).toFixed(0):'—')+'</div></div>';
+html+='</div>';
+}
+
+var mc=document.getElementById('modalContent');
+mc.innerHTML=html;
+var modal=document.getElementById('detailModal');
+modal.classList.add('show');
+
+// Draw chart if canvas exists
+var canvas=document.getElementById('modalChart');
+if(canvas){
+drawModalChart(canvas,type,hist,fg);
+}
+});
+}
+
+function drawModalChart(canvas,type,hist,fg){
+var ctx=canvas.getContext('2d');
+var w=canvas.width=canvas.offsetWidth*2;
+var h=canvas.height=400;
+ctx.scale(2,2);
+var cw=canvas.offsetWidth,ch=200;
+
+var data=[];
+var label='';
+
+if(type==='risk'){data=hist.sp500||[];label='S&P 500'}
+else if(type==='sentiment'){if(fg&&fg.history){data=fg.history.map(function(h){return h.value})}label='Fear & Greed'}
+else if(type==='tech'){data=hist.nasdaq||[];label='NASDAQ'}
+else if(type==='options'){data=hist.vix||[];label='VIX'}
+else if(type==='vix'){data=hist.vix||[];label='VIX'}
+else if(type==='yield'){data=hist.yield_10y||[];label='10Y Yield'}
+else if(type==='oil'){data=hist.oil||[];label='WTI Oil'}
+else if(type==='silver'){data=hist.silver||[];label='Silver'}
+else if(type==='gold'){data=hist.gold||[];label='Gold'}
+
+if(!data||data.length<2)return;
+
+var min=Math.min.apply(null,data);
+var max=Math.max.apply(null,data);
+var pad=(max-min)*0.1||1;
+min-=pad;max+=pad;
+var range=max-min;
+
+// Background
+ctx.fillStyle='#0d1117';
+ctx.fillRect(0,0,cw,ch);
+
+// Grid lines
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+for(var i=0;i<4;i++){
+var y=(i/3)*ch;
+ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();
+}
+
+// Line chart
+ctx.strokeStyle='#58a6ff';
+ctx.lineWidth=2;
+ctx.beginPath();
+for(var i=0;i<data.length;i++){
+var x=(i/(data.length-1))*cw;
+var y=ch-((data[i]-min)/range)*ch;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.stroke();
+
+// Fill
+ctx.lineTo(cw,ch);
+ctx.lineTo(0,ch);
+ctx.closePath();
+ctx.fillStyle='rgba(88,166,255,0.12)';
+ctx.fill();
+
+// Labels
+ctx.fillStyle='#8b949e';
+ctx.font='11px sans-serif';
+ctx.textAlign='left';
+ctx.fillText(label,8,16);
+ctx.fillText((max>1000?'$':'')+fmtShort(max),8,ch-4);
+ctx.textAlign='right';
+ctx.fillText((min>1000?'$':'')+fmtShort(min),cw-8,ch-4);
+
+// Current value dot
+var lastX=cw;
+var lastY=ch-((data[data.length-1]-min)/range)*ch;
+ctx.fillStyle='#58a6ff';
+ctx.beginPath();
+ctx.arc(lastX-4,lastY,4,0,Math.PI*2);
+ctx.fill();
+}
+
+
 
 
 
