@@ -515,6 +515,10 @@ for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
 var btn=document.querySelector('[data-view="'+name+'"]');
 if(btn)btn.classList.add('active');
 window.scrollTo(0,0);
+// Load data for the tab being opened
+if(name==='trading')loadTrading();
+else if(name==='briefing')loadBriefing();
+else if(name==='snapshot')loadSnapshot();
 }
 
 // ==============================
@@ -1864,54 +1868,87 @@ sameDomainGet(SNAPSHOT_URL)
 var html='';
 html+='<div class="briefing-card"><h3>📊 Market Overview</h3>';
 html+='<p>'+formatDate(new Date())+'</p>';
-// Handle both camelCase and snake_case
-var fgVal=snap.fearGreed?snap.fearGreed.value:(snap.fear_greed||50);
-var fgObj=snap.fearGreed||{value:snap.fear_greed||50};
-if(fgVal||snap.fear_greed){
-var fg=fgObj;
-var fgLabel=fg.value>70?'Extreme Greed':fg.value>55?'Greed':fg.value>45?'Neutral':fg.value>30?'Fear':'Extreme Fear';
-var fgColor=fg.value>55?'#3fb950':fg.value>45?'#d29922':'#f85149';
+
+// Fear & Greed
+var fgObj=snap.fear_greed||snap.fearGreed||{};
+var fgVal=typeof fgObj==='object'?(fgObj.value||50):fgObj;
+var fgLabel=fgVal>70?'Extreme Greed':fgVal>55?'Greed':fgVal>45?'Neutral':fgVal>30?'Fear':'Extreme Fear';
+var fgColor=fgVal>55?'#3fb950':fgVal>45?'#d29922':'#f85149';
 html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
-html+='<div class="fg-value" style="color:'+fgColor+'">'+fg.value+'</div>';
+html+='<div class="fg-value" style="color:'+fgColor+'">'+fgVal+'</div>';
 html+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
 html+='<div class="fg-bar"></div></div>';
-}
-var snapIndices=snap.indices||[];
-if(snapIndices.length>0){
-html+='<div class="section-title">Indices</div>';
-for(var i=0;i<snapIndices.length;i++){
-var idx=snapIndices[i];
-html+='<div class="snap-row"><span class="label">'+idx.name+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
-}
-}
-var snapCrypto=snap.crypto||[];
-if(snapCrypto.length>0){
-html+='<div class="section-title">Crypto</div>';
-for(var i=0;i<snapCrypto.length;i++){
-var c=snapCrypto[i];
-html+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
-}
-}
+
+// Risk Score
+var rs=snap.risk_score||0;
+var rb=snap.risk_bias||'';
+var rsColor=rs>=50?'#3fb950':rs<30?'#f85149':'#d29922';
+html+='<div class="snap-row"><span class="label">Risk Score</span><span class="val" style="color:'+rsColor+'">'+rs+' '+rb+'</span></div>';
+
+// Metrics
+var m=snap.metrics||{};
+if(m.vix)html+='<div class="snap-row"><span class="label">VIX</span><span class="val">'+m.vix.value+'</span></div>';
+if(m.yield_10y)html+='<div class="snap-row"><span class="label">10Y Yield</span><span class="val">'+m.yield_10y.value+'</span></div>';
+if(m.oil)html+='<div class="snap-row"><span class="label">Oil</span><span class="val">'+m.oil.value+'</span></div>';
+if(m.gold)html+='<div class="snap-row"><span class="label">Gold</span><span class="val">'+m.gold.value+'</span></div>';
 html+='</div>';
 
-var snapBrief=snap.briefing||snap.signals||'';
-if(snapBrief){
-html+='<div class="briefing-card"><h3>🏦 Macro Analysis</h3><p>'+snapBrief+'</p></div>';
+// Signals
+var sigs=snap.signals||[];
+if(sigs.length>0){
+html+='<div class="briefing-card"><h3>🎯 Key Signals</h3>';
+for(var i=0;i<sigs.length;i++){
+var s=sigs[i];
+var st=s.type||'bullish';
+var dot=st==='bullish'?'🟢':st==='bearish'?'🔴':'🟡';
+html+='<div class="snap-row"><span class="label">'+dot+' '+(s.text||s.label||'')+'</span></div>';
+}
+html+='</div>';
 }
 
+// Whale data
 var snapWhale=snap.whaleData||snap.whale_data||snap.whale_flow||null;
 if(snapWhale){
-html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
 var w=snapWhale;
+html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
 html+='<div class="whale-grid">';
-html+='<div class="whale-cell"><div class="label">24h Volume</div><div class="val">$'+fmtCap(w.btc24hVol/1e6)+'M</div></div>';
-html+='<div class="whale-cell"><div class="label">7d Avg Vol</div><div class="val">$'+fmtCap(w.btc7dAvg/1e6)+'M</div></div>';
-html+='<div class="whale-cell"><div class="label">30d Avg Vol</div><div class="val">$'+fmtCap(w.btc30dAvg/1e6)+'M</div></div>';
-html+='<div class="whale-cell"><div class="label">24h Transactions</div><div class="val">'+fmtNum(w.btc24hTx)+'</div></div>';
+if(w.daily_inflow!==undefined)html+='<div class="whale-cell"><div class="label">Daily Volume</div><div class="val">$'+(w.daily_inflow||0).toFixed(1)+'B</div></div>';
+if(w.weekly_inflow!==undefined)html+='<div class="whale-cell"><div class="label">Weekly</div><div class="val">$'+(w.weekly_inflow||0).toFixed(1)+'B</div></div>';
+if(w.monthly_inflow!==undefined)html+='<div class="whale-cell"><div class="label">Monthly</div><div class="val">$'+(w.monthly_inflow||0).toFixed(1)+'B</div></div>';
+if(w.large_tx_count!==undefined)html+='<div class="whale-cell"><div class="label">Large TXs</div><div class="val">'+(w.large_tx_count||0).toLocaleString()+'</div></div>';
 html+='</div></div>';
 }
 
 out.innerHTML=html;
+
+// Also fetch markets for indices and crypto
+return sameDomainGet(MARKETS_URL);
+})
+.then(function(mkt){
+if(!mkt)return;
+var out=document.getElementById('briefingContent');
+var html=out.innerHTML;
+var addHtml='';
+
+if(mkt.indices&&mkt.indices.length>0){
+addHtml+='<div class="briefing-card"><h3>📈 Indices</h3>';
+for(var i=0;i<mkt.indices.length;i++){
+var idx=mkt.indices[i];
+addHtml+='<div class="snap-row"><span class="label">'+(idx.name||idx.symbol)+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
+}
+addHtml+='</div>';
+}
+
+if(mkt.crypto&&mkt.crypto.length>0){
+addHtml+='<div class="briefing-card"><h3>🪙 Crypto</h3>';
+for(var i=0;i<Math.min(mkt.crypto.length,5);i++){
+var c=mkt.crypto[i];
+addHtml+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
+}
+addHtml+='</div>';
+}
+
+out.innerHTML=html+addHtml;
 })
 .catch(function(){
 out.innerHTML='<div class="briefing-card"><h3>📊 Market Overview</h3><p>Unable to load briefing data. Please try again later.</p></div>';
@@ -1927,15 +1964,19 @@ sameDomainGet(POSITIONS_URL)
 .then(function(pos){
 var html='<div class="account-summary">';
 html+='<div class="account-row"><span class="label">Account Value</span><span class="val">$'+fmtNum(pos.accountValue||0)+'</span></div>';
-html+='<div class="account-row"><span class="label">Cash (Buying Power)</span><span class="val">$'+fmtNum(pos.margin||pos.cash||0)+'</span></div>';
-html+='<div class="account-row"><span class="label">Unrealized P&L</span><span class="val" style="color:'+(pos.unrealizedPnl>=0?'var(--green)':'var(--red)')+'">'+(pos.unrealizedPnl>=0?'+':'')+'$'+fmtNum(pos.unrealizedPnl||0)+'</span></div>';
+html+='<div class="account-row"><span class="label">Cash (Buying Power)</span><span class="val">$'+fmtNum(pos.availableCash||pos.withdrawable||pos.margin||pos.cash||0)+'</span></div>';
+var upnl=pos.totalUnrealizedPnl||pos.unrealizedPnl||0;
+html+='<div class="account-row"><span class="label">Unrealized P&L</span><span class="val" style="color:'+(upnl>=0?'var(--green)':'var(--red)')+'">'+(upnl>=0?'+':'')+'$'+fmtNum(upnl)+'</span></div>';
+html+='<div class="account-row"><span class="label">Margin Used</span><span class="val">$'+fmtNum(pos.totalMarginUsed||0)+'</span></div>';
 html+='</div>';
 
 if(pos.positions&&pos.positions.length>0){
 html+='<div class="section-title">Open Positions</div>';
 for(var i=0;i<pos.positions.length;i++){
 var p=pos.positions[i];
-var pnlClass=p.pnl>=0?'up':'down';
+var pnl=p.unrealizedPnl||p.pnl||0;
+var pnlPct=p.pnlPercent||0;
+var pnlClass=pnl>=0?'up':'down';
 html+='<div class="pos-card">';
 html+='<div class="pos-header"><span class="pos-symbol">'+p.symbol+'</span><span class="pos-side '+(p.side||'long')+'">'+(p.side||'LONG').toUpperCase()+'</span></div>';
 html+='<div class="pos-grid">';
@@ -1943,22 +1984,32 @@ html+='<div><span class="label">Size: </span>'+fmtNum(p.size)+' units</div>';
 html+='<div><span class="label">Entry: </span>$'+fmtNum(p.entryPrice)+'</div>';
 html+='<div><span class="label">Current: </span>$'+fmtNum(p.currentPrice)+'</div>';
 html+='<div><span class="label">Leverage: </span>'+(p.leverage||1)+'x</div>';
+html+='<div><span class="label">Margin: </span>$'+fmtNum(p.marginUsed||0)+'</div>';
+html+='<div><span class="label">Value: </span>$'+fmtNum(p.positionValue||0)+'</div>';
 html+='</div>';
-html+='<div class="pos-pnl '+pnlClass+'">'+(p.pnl>=0?'+':'')+'$'+fmtNum(p.pnl)+'</div>';
+html+='<div class="pos-pnl '+pnlClass+'">'+(pnl>=0?'+':'')+'$'+fmtNum(pnl)+' ('+(pnlPct>=0?'+':'')+pnlPct.toFixed(1)+'%)</div>';
 html+='</div>';
 }
 }else{
 html+='<div class="briefing-card"><p>No open positions. The agent is currently in cash, waiting for the right setup.</p></div>';
 }
 
-if(pos.tradingPosts&&pos.tradingPosts.length>0){
-html+='<div class="section-title">Recent Trade Rationale</div>';
-for(var i=0;i<Math.min(pos.tradingPosts.length,3);i++){
-var tp=pos.tradingPosts[i];
-html+='<div class="briefing-card"><h3>'+tp.title+'</h3><p>'+tp.content.substring(0,200)+'...</p></div>';
-}
-}
+out.innerHTML=html;
 
+// Also fetch trading posts for rationale
+return sameDomainGet(TRADING_POSTS_URL);
+})
+.then(function(tp){
+if(!tp||!tp.posts||tp.posts.length===0)return;
+var out=document.getElementById('tradingContent');
+var html=out.innerHTML;
+html+='<div class="section-title">Recent Trade Rationale</div>';
+for(var i=0;i<Math.min(tp.posts.length,3);i++){
+var post=tp.posts[i];
+var title=post.title||post.token||'Trade Update';
+var content=post.content||post.reason||post.body||'';
+html+='<div class="briefing-card"><h3>'+title+'</h3><p>'+content.substring(0,300)+'...</p></div>';
+}
 out.innerHTML=html;
 })
 .catch(function(){
@@ -1975,50 +2026,80 @@ sameDomainGet(SNAPSHOT_URL)
 .then(function(snap){
 var html='';
 
-var fgVal=snap.fearGreed?snap.fearGreed.value:(snap.fear_greed||50);
-if(fgVal||snap.fear_greed){
-var fg={value:fgVal};
-var fgLabel=fg.value>70?'Extreme Greed':fg.value>55?'Greed':fg.value>45?'Neutral':fg.value>30?'Fear':'Extreme Fear';
-var fgColor=fg.value>55?'#3fb950':fg.value>45?'#d29922':'#f85149';
+// Fear & Greed
+var fgObj=snap.fear_greed||snap.fearGreed||{};
+var fgVal=typeof fgObj==='object'?(fgObj.value||50):fgObj;
+var fgLabel=fgVal>70?'Extreme Greed':fgVal>55?'Greed':fgVal>45?'Neutral':fgVal>30?'Fear':'Extreme Fear';
+var fgColor=fgVal>55?'#3fb950':fgVal>45?'#d29922':'#f85149';
 html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
-html+='<div class="fg-value" style="color:'+fgColor+'">'+fg.value+'</div>';
+html+='<div class="fg-value" style="color:'+fgColor+'">'+fgVal+'</div>';
 html+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
 html+='<div class="fg-bar"></div></div>';
-}
 
-if(snap.indices){
-html+='<div class="section-title">Indices</div>';
+// Risk Score
+var rs=snap.risk_score||0;
+var rb=snap.risk_bias||'';
+var rsColor=rs>=50?'#3fb950':rs<30?'#f85149':'#d29922';
+html+='<div class="briefing-card" style="margin-top:12px">';
+html+='<div class="snap-row"><span class="label">Risk Score</span><span class="val" style="color:'+rsColor+'">'+rs+' '+rb+'</span></div>';
+
+// Metrics
+var m=snap.metrics||{};
+var vix=m.vix?m.vix.value:(snap.vix||'N/A');
+var yld=m.yield_10y?m.yield_10y.value:(snap.yield_10y||'N/A');
+var oil=m.oil?m.oil.value:(snap.oil||'N/A');
+var silv=m.silver?m.silver.value:(snap.silver||'N/A');
+var gold=m.gold?m.gold.value:(snap.gold||'N/A');
+html+='<div class="snap-row"><span class="label">VIX</span><span class="val">'+vix+'</span></div>';
+html+='<div class="snap-row"><span class="label">10Y Yield</span><span class="val">'+yld+'</span></div>';
+html+='<div class="snap-row"><span class="label">Oil</span><span class="val">'+oil+'</span></div>';
+html+='<div class="snap-row"><span class="label">Silver</span><span class="val">'+silv+'</span></div>';
+html+='<div class="snap-row"><span class="label">Gold</span><span class="val">'+gold+'</span></div>';
+html+='</div>';
+
+// Signals
+var sigs=snap.signals||[];
+if(sigs.length>0){
+html+='<div class="section-title">Key Signals</div>';
 html+='<div class="briefing-card">';
-for(var i=0;i<snap.indices.length;i++){
-var idx=snapIndices[i];
-html+='<div class="snap-row"><span class="label">'+idx.name+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
+for(var i=0;i<sigs.length;i++){
+var s=sigs[i];
+var st=s.type||'bullish';
+var dot=st==='bullish'?'🟢':st==='bearish'?'🔴':'🟡';
+html+='<div class="snap-row"><span class="label">'+dot+' '+(s.text||s.label||'')+'</span></div>';
 }
 html+='</div>';
 }
 
-if(snap.crypto){
-html+='<div class="section-title">Crypto</div>';
-html+='<div class="briefing-card">';
-for(var i=0;i<snap.crypto.length;i++){
-var c=snapCrypto[i];
-html+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
+out.innerHTML=html;
+
+// Also fetch markets for indices and crypto
+return sameDomainGet(MARKETS_URL);
+})
+.then(function(mkt){
+if(!mkt)return;
+var out=document.getElementById('snapshotContent');
+var html=out.innerHTML;
+
+if(mkt.indices&&mkt.indices.length>0){
+var idxHtml='<div class="section-title">Indices</div><div class="briefing-card">';
+for(var i=0;i<mkt.indices.length;i++){
+var idx=mkt.indices[i];
+idxHtml+='<div class="snap-row"><span class="label">'+(idx.name||idx.symbol)+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
 }
-html+='</div>';
+idxHtml+='</div>';
+out.innerHTML=idxHtml+html;
 }
 
-var snapWhale=snap.whaleData||snap.whale_data||snap.whale_flow||null;
-if(snapWhale){
-var w=snapWhale;
-html+='<div class="whale-section"><h3>🐳 Whale Activity</h3>';
-html+='<div class="whale-grid">';
-html+='<div class="whale-cell"><div class="label">BTC 24h Vol</div><div class="val">$'+fmtCap(w.btc24hVol/1e6)+'M</div></div>';
-html+='<div class="whale-cell"><div class="label">7d Avg</div><div class="val">$'+fmtCap(w.btc7dAvg/1e6)+'M</div></div>';
-html+='<div class="whale-cell"><div class="label">30d Avg</div><div class="val">$'+fmtCap(w.btc30dAvg/1e6)+'M</div></div>';
-html+='<div class="whale-cell"><div class="label">24h TXs</div><div class="val">'+fmtNum(w.btc24hTx)+'</div></div>';
-html+='</div></div>';
+if(mkt.crypto&&mkt.crypto.length>0){
+var crypHtml='<div class="section-title">Crypto</div><div class="briefing-card">';
+for(var i=0;i<Math.min(mkt.crypto.length,10);i++){
+var c=mkt.crypto[i];
+crypHtml+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
 }
-
-out.innerHTML=html||'<div class="briefing-card"><p>No snapshot data available.</p></div>';
+crypHtml+='</div>';
+out.innerHTML=out.innerHTML+crypHtml;
+}
 })
 .catch(function(){
 out.innerHTML='<div class="briefing-card"><p>Unable to load market data.</p></div>';
