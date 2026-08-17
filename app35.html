@@ -223,6 +223,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .news-headline{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:4px}
 .news-source{font-size:11px;color:var(--text2)}
 .news-summary{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.4}
+
+/* TRADINGVIEW CHART */
+.tv-chart-container{height:400px;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;background:#131722}
+.tv-chart-container iframe{width:100%;height:100%;border:none}
 </style>
 </head>
 <body>
@@ -678,13 +682,9 @@ html+='<div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><di
 html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
 html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
 
-// === SECTION 2: INTERACTIVE PRICE CHART ===
-html+='<div class="section-title">📈 Interactive Price Chart (30 Day)</div>';
-if(d.history&&d.history.length>1){
-html+='<div class="chart-container"><canvas id="priceChart" style="width:100%;height:220px;cursor:crosshair"></canvas></div>';
-}else{
-html+='<div class="briefing-card"><p>30-day chart data loading. Available on next data refresh.</p></div>';
-}
+// === SECTION 2: INTERACTIVE TRADINGVIEW CHART ===
+html+='<div class="section-title">📈 Live Trading Chart</div>';
+html+='<div class="tv-chart-container" id="tvChartContainer"></div>';
 
 // === SECTION 3: MORE CHARTS & GRAPHS ===
 html+='<div class="section-title">📊 Key Metrics Visualization</div>';
@@ -801,9 +801,9 @@ out.innerHTML=html;
 
 // === DRAW ALL CHARTS ===
 setTimeout(function(){
-// Price chart
-var pc=document.getElementById('priceChart');
-if(pc&&d.history&&d.history.length>1)drawPriceChart(pc,d.history);
+// TradingView chart
+var tvContainer=document.getElementById('tvChartContainer');
+if(tvContainer)loadTradingViewChart(tvContainer,getTVSymbol(sym));
 
 // Recommendation trend chart
 var rc=document.getElementById('recTrendChart');
@@ -982,8 +982,8 @@ html+='<div class="rating-box"><div class="rating-label">Technical Signal</div>'
 html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
 html+='<p style="font-size:12px;color:var(--text2);margin-top:6px">'+rating.reason+'</p></div>';
 
-// Chart
-html+='<div class="chart-container"><canvas id="priceChart"></canvas></div>';
+// TradingView chart
+html+='<div class="tv-chart-container" id="tvChartContainer"></div>';
 
 html+='<div class="section-title">Key Stats</div>';
 html+='<div class="data-grid">';
@@ -1006,7 +1006,8 @@ html+='<div class="briefing-card"><h3>'+data.name+'</h3><p>'+desc+'...</p></div>
 }
 
 out.innerHTML=html;
-drawCryptoChart(m.sparkline&&m.sparkline.price?m.sparkline.price:[]);
+var tvC=document.getElementById('tvChartContainer');
+if(tvC)loadTradingViewChart(tvC,getTVSymbol(symbol));
 })
 .catch(function(err){
 out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br>'+err.message+'</div>';
@@ -1337,6 +1338,83 @@ return n.toFixed(4);
 }
 
 // ==============================
+// TRADINGVIEW CHART FUNCTIONS
+// ==============================
+function getTVSymbol(sym){
+sym=sym.toUpperCase();
+// Crypto
+if(sym==='BTC')return 'BINANCE:BTCUSDT';
+if(sym==='ETH')return 'BINANCE:ETHUSDT';
+if(sym==='SOL')return 'BINANCE:SOLUSDT';
+if(sym==='BNB')return 'BINANCE:BNBUSDT';
+if(sym==='XRP')return 'BINANCE:XRPUSDT';
+if(sym==='DOGE')return 'BINANCE:DOGEUSDT';
+if(sym==='ADA')return 'BINANCE:ADAUSDT';
+if(sym==='AVAX')return 'BINANCE:AVAXUSDT';
+if(sym==='DOT')return 'BINANCE:DOTUSDT';
+if(sym==='LINK')return 'BINANCE:LINKUSDT';
+// Indices
+if(sym==='SPY'||sym==='GSPC'||sym==='%5EGSPC')return 'SP:SPX';
+if(sym==='QQQ'||sym==='IXIC'||sym==='%5EIXIC')return 'NASDAQ:IXIC';
+if(sym==='DIA'||sym==='DJI'||sym==='%5EDJI')return 'DJ:DJI';
+// Commodities
+if(sym==='GOLD'||sym==='GC=F')return 'TVC:GOLD';
+if(sym==='SILVER'||sym==='SI=F')return 'TVC:SILVER';
+if(sym==='WTI'||sym==='CL=F'||sym==='USO')return 'TVC:USOIL';
+if(sym==='OIL')return 'TVC:USOIL';
+// Default: try as stock
+return sym;
+}
+
+function loadTradingViewChart(container,tvSymbol){
+// Clear container
+container.innerHTML='';
+
+// Create TradingView advanced chart widget
+var script=document.createElement('script');
+script.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+script.type='text/javascript';
+script.async=true;
+script.innerHTML=JSON.stringify({
+"autosize":true,
+"symbol":tvSymbol,
+"interval":"D",
+"timezone":"Etc/UTC",
+"theme":"dark",
+"style":"1",
+"locale":"en",
+"enable_publishing":false,
+"hide_side_toolbar":false,
+"allow_symbol_change":true,
+"studies":["STD;SMA","STD;EMA","STD;Volume"],
+"show_popup_button":true,
+"popup_width":"1000",
+"popup_height":"650",
+"support_host":"www.tradingview.com",
+"container_id":container.id
+});
+
+container.appendChild(script);
+}
+
+function getTVSymbolForModal(type){
+if(type==='risk')return 'SP:SPX';
+if(type==='sentiment')return 'CRYPTOCAP:TOTAL';
+if(type==='tech')return 'NASDAQ:IXIC';
+if(type==='options')return 'TVC:VIX';
+if(type==='vix')return 'TVC:VIX';
+if(type==='yield')return 'TVC:US10Y';
+if(type==='oil')return 'TVC:USOIL';
+if(type==='silver')return 'TVC:SILVER';
+if(type==='gold')return 'TVC:GOLD';
+return 'SP:SPX';
+}
+
+
+
+
+
+// ==============================
 // DETAIL MODAL + CHARTS
 // ==============================
 var snapCache=null;
@@ -1394,7 +1472,7 @@ html+='<div class="modal-value" style="color:'+color+'">'+bias.replace('RISK-','
 html+='<div class="modal-sub">Risk Score: '+score+'/100</div>';
 // S&P 500 chart as proxy
 if(hist.sp500&&hist.sp500.length>1){
-html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+html+='<div class="modal-chart" id="modalTVChart"></div>';
 }
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">S&P 500 Change</div><div class="val '+((snap.assets&&snap.assets['S&P 500']&&snap.assets['S&P 500'].change_pct>=0)?'green':'red')+'">'+(snap.assets?snap.assets['S&P 500']?snap.assets['S&P 500'].change_pct.toFixed(1)+'%':'—':'—')+'</div></div>';
@@ -1420,7 +1498,7 @@ html+='<div style="text-align:center;margin:16px 0"><div style="height:12px;bord
 html+='<div style="position:relative;margin-top:-8px"><div style="position:absolute;left:'+(fg.value)+'%;transform:translateX(-50%);font-size:20px">▼</div></div></div>';
 // History chart
 if(fg.history&&fg.history.length>1){
-html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+html+='<div class="modal-chart" id="modalTVChart"></div>';
 }
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">7-Day Low</div><div class="val">'+(fg.history?Math.min.apply(null,fg.history.map(function(h){return h.value})):'—')+'</div></div>';
@@ -1436,7 +1514,7 @@ html+='<div class="modal-value" style="color:'+color+'">'+tech+'</div>';
 html+='<div class="modal-sub">Nasdaq vs S&P 500 relative strength</div>';
 // NASDAQ chart
 if(hist.nasdaq&&hist.nasdaq.length>1){
-html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+html+='<div class="modal-chart" id="modalTVChart"></div>';
 }
 html+='<div class="modal-stats">';
 var nas=snap.assets&&snap.assets['NASDAQ']?snap.assets['NASDAQ']:null;
@@ -1455,7 +1533,7 @@ html+='<div class="modal-value" style="color:'+color+'">'+opt+'</div>';
 html+='<div class="modal-sub">Put/Call Ratio: '+pc+'</div>';
 // VIX chart as options proxy
 if(hist.vix&&hist.vix.length>1){
-html+='<canvas class="modal-chart" id="modalChart"></canvas>';
+html+='<div class="modal-chart" id="modalTVChart"></div>';
 }
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">Put/Call Ratio</div><div class="val">'+pc+'</div></div>';
@@ -1470,7 +1548,7 @@ var histData=hist.vix||[];
 html='<div class="modal-title">VIX (Volatility Index)</div>';
 html+='<div class="modal-value">'+(v.value||'—')+'</div>';
 html+='<div class="modal-sub">'+(parseFloat(v.value)<18?'Low volatility — market calm':parseFloat(v.value)<25?'Moderate volatility':'High volatility — fear in market')+'</div>';
-if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+if(histData.length>1){html+='<div class="modal-chart" id="modalTVChart"></div>'}
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?Math.min.apply(null,histData).toFixed(1):'—')+'</div></div>';
 html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?Math.max.apply(null,histData).toFixed(1):'—')+'</div></div>';
@@ -1483,7 +1561,7 @@ var histData=hist.yield_10y||[];
 html='<div class="modal-title">10-Year Treasury Yield</div>';
 html+='<div class="modal-value">'+(v.value||'—')+'</div>';
 html+='<div class="modal-sub">'+(parseFloat((v.value||'4.5').replace('%',''))<4?'Low yields — dovish':parseFloat((v.value||'4.5').replace('%',''))<5?'Moderate yields':'High yields — restrictive')+'</div>';
-if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+if(histData.length>1){html+='<div class="modal-chart" id="modalTVChart"></div>'}
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?Math.min.apply(null,histData).toFixed(2)+'%':'—')+'</div></div>';
 html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?Math.max.apply(null,histData).toFixed(2)+'%':'—')+'</div></div>';
@@ -1496,7 +1574,7 @@ var histData=hist.oil||[];
 html='<div class="modal-title">WTI Crude Oil</div>';
 html+='<div class="modal-value">'+(v.value||'—')+'</div>';
 html+='<div class="modal-sub">West Texas Intermediate futures</div>';
-if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+if(histData.length>1){html+='<div class="modal-chart" id="modalTVChart"></div>'}
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?'$'+Math.min.apply(null,histData).toFixed(2):'—')+'</div></div>';
 html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?'$'+Math.max.apply(null,histData).toFixed(2):'—')+'</div></div>';
@@ -1509,7 +1587,7 @@ var histData=hist.silver||[];
 html='<div class="modal-title">Silver</div>';
 html+='<div class="modal-value">'+(v.value||'—')+'</div>';
 html+='<div class="modal-sub">Silver futures (SI=F)</div>';
-if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+if(histData.length>1){html+='<div class="modal-chart" id="modalTVChart"></div>'}
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?'$'+Math.min.apply(null,histData).toFixed(2):'—')+'</div></div>';
 html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?'$'+Math.max.apply(null,histData).toFixed(2):'—')+'</div></div>';
@@ -1522,7 +1600,7 @@ var histData=hist.gold||[];
 html='<div class="modal-title">Gold</div>';
 html+='<div class="modal-value">'+(v.value||'—')+'</div>';
 html+='<div class="modal-sub">Gold futures (GC=F)</div>';
-if(histData.length>1){html+='<canvas class="modal-chart" id="modalChart"></canvas>'}
+if(histData.length>1){html+='<div class="modal-chart" id="modalTVChart"></div>'}
 html+='<div class="modal-stats">';
 html+='<div class="modal-stat"><div class="label">30-Day Low</div><div class="val green">'+(histData.length?'$'+Math.min.apply(null,histData).toFixed(0):'—')+'</div></div>';
 html+='<div class="modal-stat"><div class="label">30-Day High</div><div class="val red">'+(histData.length?'$'+Math.max.apply(null,histData).toFixed(0):'—')+'</div></div>';
@@ -1534,10 +1612,12 @@ mc.innerHTML=html;
 var modal=document.getElementById('detailModal');
 modal.classList.add('show');
 
-// Draw chart if canvas exists
-var canvas=document.getElementById('modalChart');
-if(canvas){
-drawModalChart(canvas,type,hist,fg);
+// Load TradingView chart in modal
+var modalChartContainer=document.querySelector('.modal-chart');
+if(modalChartContainer){
+modalChartContainer.id='modalTVChart';
+modalChartContainer.style.height='300px';
+loadTradingViewChart(modalChartContainer,getTVSymbolForModal(type));
 }
 
 // Fetch and append news
