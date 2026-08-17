@@ -1,12 +1,12 @@
 {
-  "timestamp": 1786971361,
-  "generatedAt": "2026-08-17 12:56 UTC",
-  "accountValue": 1810.58,
-  "withdrawable": 275.32,
-  "portfolioValue": 1810.58,
-  "totalUnrealizedPnl": 217.65,
-  "totalMarginUsed": 1317.61,
-  "availableCash": 275.32,
+  "timestamp": 1786971661,
+  "generatedAt": "2026-08-17 13:01 UTC",
+  "accountValue": 1816.51,
+  "withdrawable": 277.31,
+  "portfolioValue": 1816.51,
+  "totalUnrealizedPnl": 220.62,
+  "totalMarginUsed": 1318.57,
+  "availableCash": 277.31,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 226.28,
-      "unrealizedPnl": 118.43,
-      "pnlPercent": 19.2,
-      "marginUsed": 656.21,
+      "currentPrice": 226.48,
+      "unrealizedPnl": 120.17,
+      "pnlPercent": 19.5,
+      "marginUsed": 656.79,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1968.63,
+      "positionValue": 1970.37,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.33,
       "entryPrice": 4130.63,
-      "currentPrice": 4385.8,
-      "unrealizedPnl": 84.2,
-      "pnlPercent": 18.5,
-      "marginUsed": 482.44,
+      "currentPrice": 4388.9,
+      "unrealizedPnl": 85.23,
+      "pnlPercent": 18.8,
+      "marginUsed": 482.78,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1447.31,
+      "positionValue": 1448.34,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -44,50 +44,50 @@
       "side": "LONG",
       "size": 0.115,
       "entryPrice": 7650.33,
-      "currentPrice": 7780.9,
-      "unrealizedPnl": 15.02,
-      "pnlPercent": 8.5,
-      "marginUsed": 178.96,
+      "currentPrice": 7782.7,
+      "unrealizedPnl": 15.22,
+      "pnlPercent": 8.7,
+      "marginUsed": 179.0,
       "leverage": 5,
       "marginType": "cross",
-      "positionValue": 894.8,
+      "positionValue": 895.01,
       "tvSymbol": "SP:SPX"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1968.63
+      "value": 1970.37
     },
     {
       "label": "GOLD",
-      "value": 1447.31
+      "value": 1448.34
     },
     {
       "label": "SP500",
-      "value": 894.8
+      "value": 895.01
     },
     {
       "label": "Cash",
-      "value": 275.32
+      "value": 277.31
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 656.21
+      "value": 656.79
     },
     {
       "label": "GOLD",
-      "value": 482.44
+      "value": 482.78
     },
     {
       "label": "SP500",
-      "value": 178.96
+      "value": 179.0
     },
     {
       "label": "Available",
-      "value": 275.32
+      "value": 277.31
     }
   ]
 }
