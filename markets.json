@@ -1,6 +1,6 @@
 {
-  "timestamp": 1786972598,
-  "generatedAt": "2026-08-17 13:16 UTC",
+  "timestamp": 1786972883,
+  "generatedAt": "2026-08-17 13:21 UTC",
   "xyzPerps": [
     {
       "symbol": "NVDA",
@@ -8,6 +8,14 @@
       "price": 225.16,
       "change24h": 0.0,
       "tvSymbol": "NASDAQ:NVDA",
+      "type": "perp"
+    },
+    {
+      "symbol": "META",
+      "rawSymbol": "META",
+      "price": 589.85,
+      "change24h": 0.0,
+      "tvSymbol": "NASDAQ:META",
       "type": "perp"
     },
     {
@@ -64,6 +72,14 @@
       "price": 174.04,
       "change24h": 0.0,
       "tvSymbol": "NYSE:PLTR",
+      "type": "perp"
+    },
+    {
+      "symbol": "NFLX",
+      "rawSymbol": "NFLX",
+      "price": 78.16,
+      "change24h": 0.0,
+      "tvSymbol": "NASDAQ:NFLX",
       "type": "perp"
     },
     {
@@ -242,78 +258,78 @@
   "crypto": [
     {
       "symbol": "BTC",
-      "price": 63477.1,
-      "change24h": 0.7,
+      "price": 63464.6,
+      "change24h": 0.67,
       "tvSymbol": "BINANCE:BTCUSDT",
       "type": "crypto"
     },
     {
       "symbol": "ETH",
-      "price": 1896.06,
-      "change24h": 0.85,
+      "price": 1897.0,
+      "change24h": 0.9,
       "tvSymbol": "BINANCE:ETHUSDT",
       "type": "crypto"
     },
     {
       "symbol": "SOL",
-      "price": 75.31,
-      "change24h": 0.03,
+      "price": 75.32,
+      "change24h": 0.01,
       "tvSymbol": "BINANCE:SOLUSDT",
       "type": "crypto"
     },
     {
       "symbol": "BNB",
-      "price": 604.45,
-      "change24h": -0.64,
+      "price": 604.27,
+      "change24h": -0.68,
       "tvSymbol": "BINANCE:BNBUSDT",
       "type": "crypto"
     },
     {
       "symbol": "XRP",
-      "price": 0.9979,
-      "change24h": -0.16,
+      "price": 0.998,
+      "change24h": -0.2,
       "tvSymbol": "BINANCE:XRPUSDT",
       "type": "crypto"
     },
     {
       "symbol": "ADA",
-      "price": 0.1732,
-      "change24h": -1.53,
+      "price": 0.173,
+      "change24h": -1.71,
       "tvSymbol": "BINANCE:ADAUSDT",
       "type": "crypto"
     },
     {
       "symbol": "AVAX",
-      "price": 6.295,
-      "change24h": -1.27,
+      "price": 6.296,
+      "change24h": -1.29,
       "tvSymbol": "BINANCE:AVAXUSDT",
       "type": "crypto"
     },
     {
       "symbol": "LINK",
-      "price": 9.518,
-      "change24h": 1.88,
+      "price": 9.513,
+      "change24h": 1.9,
       "tvSymbol": "BINANCE:LINKUSDT",
       "type": "crypto"
     },
     {
       "symbol": "DOT",
-      "price": 0.7545,
-      "change24h": -1.01,
+      "price": 0.7544,
+      "change24h": -1.02,
       "tvSymbol": "BINANCE:DOTUSDT",
       "type": "crypto"
     },
     {
       "symbol": "DOGE",
       "price": 0.06999,
-      "change24h": 0.09,
+      "change24h": 0.04,
       "tvSymbol": "BINANCE:DOGEUSDT",
       "type": "crypto"
     },
     {
       "symbol": "LTC",
-      "price": 44.17,
-      "change24h": -0.25,
+      "price": 44.2,
+      "change24h": -0.18,
       "tvSymbol": "BINANCE:LTCUSDT",
       "type": "crypto"
     },
@@ -326,141 +342,141 @@
     },
     {
       "symbol": "UNI",
-      "price": 3.29,
+      "price": 3.287,
       "change24h": 0.7,
       "tvSymbol": "BINANCE:UNIUSDT",
       "type": "crypto"
     },
     {
       "symbol": "ATOM",
-      "price": 1.421,
-      "change24h": -4.25,
+      "price": 1.419,
+      "change24h": -4.38,
       "tvSymbol": "BINANCE:ATOMUSDT",
       "type": "crypto"
     },
     {
       "symbol": "NEAR",
-      "price": 1.643,
-      "change24h": 1.17,
+      "price": 1.644,
+      "change24h": 1.23,
       "tvSymbol": "BINANCE:NEARUSDT",
       "type": "crypto"
     },
     {
       "symbol": "ARB",
-      "price": 0.07475,
+      "price": 0.0747,
       "change24h": 1.01,
       "tvSymbol": "BINANCE:ARBUSDT",
       "type": "crypto"
     },
     {
       "symbol": "OP",
-      "price": 0.0834,
-      "change24h": -1.77,
+      "price": 0.0835,
+      "change24h": -1.65,
       "tvSymbol": "BINANCE:OPUSDT",
       "type": "crypto"
     },
     {
       "symbol": "APT",
-      "price": 0.5172,
-      "change24h": -3.2,
+      "price": 0.5173,
+      "change24h": -3.07,
       "tvSymbol": "BINANCE:APTUSDT",
       "type": "crypto"
     },
     {
       "symbol": "FIL",
       "price": 0.6677,
-      "change24h": -1.68,
+      "change24h": -1.64,
       "tvSymbol": "BINANCE:FILUSDT",
       "type": "crypto"
     },
     {
       "symbol": "INJ",
-      "price": 4.1,
-      "change24h": -0.32,
+      "price": 4.103,
+      "change24h": -0.29,
       "tvSymbol": "BINANCE:INJUSDT",
       "type": "crypto"
     },
     {
       "symbol": "TIA",
-      "price": 0.2988,
-      "change24h": -1.19,
+      "price": 0.2986,
+      "change24h": -1.29,
       "tvSymbol": "BINANCE:TIAUSDT",
       "type": "crypto"
     },
     {
       "symbol": "SEI",
-      "price": 0.03984,
-      "change24h": -0.07,
+      "price": 0.03981,
+      "change24h": -0.15,
       "tvSymbol": "BINANCE:SEIUSDT",
       "type": "crypto"
     },
     {
       "symbol": "SUI",
-      "price": 0.6749,
-      "change24h": -0.43,
+      "price": 0.6746,
+      "change24h": -0.53,
       "tvSymbol": "BINANCE:SUIUSDT",
       "type": "crypto"
     },
     {
       "symbol": "RUNE",
-      "price": 0.4146,
-      "change24h": -0.65,
+      "price": 0.4145,
+      "change24h": -0.69,
       "tvSymbol": "BINANCE:RUNEUSDT",
       "type": "crypto"
     },
     {
       "symbol": "AAVE",
-      "price": 86.48,
-      "change24h": 0.88,
+      "price": 86.45,
+      "change24h": 0.72,
       "tvSymbol": "BINANCE:AAVEUSDT",
       "type": "crypto"
     },
     {
       "symbol": "CRV",
-      "price": 0.2442,
-      "change24h": -1.85,
+      "price": 0.2446,
+      "change24h": -1.69,
       "tvSymbol": "BINANCE:CRVUSDT",
       "type": "crypto"
     },
     {
       "symbol": "LDO",
-      "price": 0.3031,
-      "change24h": 0.53,
+      "price": 0.3029,
+      "change24h": 0.56,
       "tvSymbol": "BINANCE:LDOUSDT",
       "type": "crypto"
     },
     {
       "symbol": "FET",
-      "price": 0.121,
-      "change24h": -1.71,
+      "price": 0.1211,
+      "change24h": -1.47,
       "tvSymbol": "BINANCE:FETUSDT",
       "type": "crypto"
     },
     {
       "symbol": "TAO",
-      "price": 195.11,
-      "change24h": -0.68,
+      "price": 194.9,
+      "change24h": -0.79,
       "tvSymbol": "BINANCE:TAOUSDT",
       "type": "crypto"
     },
     {
       "symbol": "WIF",
-      "price": 0.1364,
-      "change24h": -0.8,
+      "price": 0.1365,
+      "change24h": -0.73,
       "tvSymbol": "BINANCE:WIFUSDT",
       "type": "crypto"
     },
     {
       "symbol": "JTO",
-      "price": 0.5975,
-      "change24h": 0.3,
+      "price": 0.5958,
+      "change24h": 0.17,
       "tvSymbol": "BINANCE:JTOUSDT",
       "type": "crypto"
     },
     {
       "symbol": "ETHFI",
-      "price": 0.4996,
-      "change24h": 1.03,
+      "price": 0.5002,
+      "change24h": 1.38,
       "tvSymbol": "BINANCE:ETHFIUSDT",
       "type": "crypto"
     },
@@ -473,15 +489,15 @@
     },
     {
       "symbol": "XLM",
-      "price": 0.15731,
-      "change24h": 0.2,
+      "price": 0.15728,
+      "change24h": 0.18,
       "tvSymbol": "BINANCE:XLMUSDT",
       "type": "crypto"
     },
     {
       "symbol": "ENA",
-      "price": 0.08289,
-      "change24h": -0.98,
+      "price": 0.08296,
+      "change24h": -0.6,
       "tvSymbol": "BINANCE:ENAUSDT",
       "type": "crypto"
     }
@@ -560,6 +576,14 @@
       "type": "stock"
     },
     {
+      "symbol": "META",
+      "price": 589.85,
+      "change24h": 0.0,
+      "name": "META",
+      "tvSymbol": "NASDAQ:META",
+      "type": "stock"
+    },
+    {
       "symbol": "AMD",
       "price": 514.39,
       "change24h": 0.0,
@@ -573,6 +597,14 @@
       "change24h": 0.0,
       "name": "GOOGL",
       "tvSymbol": "NASDAQ:GOOGL",
+      "type": "stock"
+    },
+    {
+      "symbol": "NFLX",
+      "price": 78.16,
+      "change24h": 0.0,
+      "name": "NFLX",
+      "tvSymbol": "NASDAQ:NFLX",
       "type": "stock"
     },
     {
