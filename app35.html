@@ -200,15 +200,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .big-sq-val{font-size:11px;color:var(--text2)}
 
 /* DETAIL MODAL */
-/* NEWS IN MODAL */
-.modal-news{margin-top:16px}
-.modal-news-title{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
-.news-item{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer}
-.news-item:active{background:var(--border)}
-.news-headline{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:4px}
-.news-source{font-size:11px;color:var(--text2)}
-.news-summary{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.4}
-
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:300;display:none;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
 .modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin:16px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto}
@@ -483,7 +474,6 @@ var MARKETS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Tradi
 var POSITIONS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/positions.json";
 var SNAPSHOT_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/snapshot.json";
 var STOCK_DATA_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/stock-data.json";
-var NEWS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/news.json";
 var TRADING_POSTS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/trading-posts.json";
 
 var CRYPTO_MAP={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",XRP:"ripple",DOGE:"dogecoin",ADA:"cardano",AVAX:"avalanche-2",DOT:"polkadot",LINK:"chainlink"};
@@ -1118,32 +1108,6 @@ return n.toFixed(4);
 var snapCache=null;
 var snapHistory=null;
 
-var newsCache=null;
-function getCachedNews(){
-if(newsCache)return Promise.resolve(newsCache);
-return fetch(NEWS_URL+"?t="+Date.now()).then(function(r){return r.json()}).then(function(d){newsCache=d;return d}).catch(function(){return{topics:{}}});
-}
-
-function renderNews(topic){
-return getCachedNews().then(function(newsData){
-var topicData=(newsData.topics||{})[topic];
-if(!topicData||!topicData.articles||topicData.articles.length===0)return'';
-var html='<div class="modal-news">';
-html+='<div class="modal-news-title">Recent News</div>';
-for(var i=0;i<topicData.articles.length;i++){
-var a=topicData.articles[i];
-html+='<div class="news-item" onclick="window.open(''+a.url+'',\'_blank\')">';
-html+='<div class="news-headline">'+a.headline+'</div>';
-if(a.source)html+='<div class="news-source">'+a.source+'</div>';
-if(a.summary)html+='<div class="news-summary">'+a.summary+'</div>';
-html+='</div>';
-}
-html+='</div>';
-return html;
-});
-}
-
-
 function getCachedSnap(){
 if(snapCache)return Promise.resolve(snapCache);
 return sameDomainGet(SNAPSHOT_URL).then(function(s){snapCache=s;snapHistory=s.history||{};return s});
@@ -1310,21 +1274,11 @@ mc.innerHTML=html;
 var modal=document.getElementById('detailModal');
 modal.classList.add('show');
 
-// Fetch and append news
-renderNews(type).then(function(newsHtml){
-if(newsHtml){
-var newsDiv=document.createElement('div');
-newsDiv.innerHTML=newsHtml;
-mc.appendChild(newsDiv);
-}
-// Redraw chart if it exists
+// Draw chart if canvas exists
 var canvas=document.getElementById('modalChart');
 if(canvas){
-drawModalChart(canvas,type,snapHistory,snapCache?snapCache.fear_greed:null);
+drawModalChart(canvas,type,hist,fg);
 }
-});
-
-// Chart drawn after news loads
 });
 }
 
