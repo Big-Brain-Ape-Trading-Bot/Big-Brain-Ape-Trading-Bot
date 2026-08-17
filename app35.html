@@ -587,27 +587,43 @@ analyzeStock(symbol,out);
 }
 
 function analyzeStock(symbol,out){
-var quoteData,profileData,recData,finData;
-
-fhGetQ("quote?symbol="+symbol)
-.then(function(q){
-if(!q||q.c===0&&q.d===null)throw new Error("No data for "+symbol+". Check the ticker symbol.");
-quoteData=q;
-return fhGetQ("stock/profile2?symbol="+symbol);
-})
-.then(function(p){profileData=p||{};return fhGetQ("stock/recommendation?symbol="+symbol)})
-.then(function(r){recData=(r&&r.length>0)?r[0]:null;return fhGetQ("stock/metric?symbol="+symbol+"&metric=all")})
-.then(function(f){finData=(f&&f.metric)?f.metric:{}})
-.then(function(){
-renderStockAnalysis(symbol,quoteData,profileData,recData,finData,out);
-})
-.catch(function(err){
-// Try fallback from stock-data.json
+// Fetch from stock-data.json (has all rich data: history, earnings, recs, guidance)
 sameDomainGet(STOCK_DATA_URL)
 .then(function(sdd){
 var d=sdd.stocks&&sdd.stocks[symbol];
-if(!d)throw err;
-renderStockAnalysisFromCache(symbol,d,out);
+if(!d)throw new Error("No pre-fetched data for "+symbol+". Trying live...");
+// Try to get live quote from Finnhub for real-time price
+return fhGetQ("quote?symbol="+symbol).then(function(q){
+if(q&&q.c>0){
+d.price=q.c;d.change=q.d;d.changePercentage=q.dp;
+d.open=q.o;d.high=q.h;d.low=q.l;d.prevClose=q.pc;
+}
+return renderStockAnalysisFull(symbol,d,out);
+}).catch(function(){
+return renderStockAnalysisFull(symbol,d,out);
+});
+})
+.catch(function(err){
+// Fallback: try Finnhub directly
+fhGetQ("quote?symbol="+symbol)
+.then(function(q){
+if(!q||q.c===0&&q.d===null)throw new Error("No data for "+symbol);
+return fhGetQ("stock/profile2?symbol="+symbol).then(function(p){
+return fhGetQ("stock/recommendation?symbol="+symbol).then(function(r){
+return fhGetQ("stock/metric?symbol="+symbol+"&metric=all").then(function(f){
+var d={symbol:symbol,price:q.c,change:q.d,changePercentage:q.dp,open:q.o,high:q.h,low:q.l,prevClose:q.pc,
+name:p?p.name:symbol,companyName:p?p.name:symbol,exchange:p?p.exchange:"",sector:p?p.finnhubIndustry:"",industry:p?p.finnhubIndustry:"",
+marketCap:p?p.marketCapitalization*1e6:0,beta:f&&f.metric?f.metric.beta:0,
+yearHigh:f&&f.metric?f.metric["52WeekHigh"]:q.h,yearLow:f&&f.metric?f.metric["52WeekLow"]:q.l,
+strongBuy:r&&r[0]?r[0].strongBuy:0,buy:r&&r[0]?r[0].buy:0,hold:r&&r[0]?r[0].hold:0,sell:r&&r[0]?r[0].sell:0,strongSell:r&&r[0]?r[0].strongSell:0,
+recTrend:r?r.slice(0,4).map(function(x){return{period:x.period,sb:x.strongBuy,b:x.buy,h:x.hold,s:x.sell,ss:x.strongSell}}):[],
+pe:f&&f.metric?f.metric.peExclTTM:0,eps:f&&f.metric?f.metric.epsAnnual:0,roe:f&&f.metric?f.metric.roeTTM:0,
+grossMargin:f&&f.metric?f.metric.grossMarginTTM:0,netMargin:f&&f.metric?f.metric.netProfitMarginTTM:0,
+history:[]};
+return renderStockAnalysisFull(symbol,d,out);
+});
+});
+});
 })
 .catch(function(e){
 out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br><br>'+e.message+'<br><br>Try: NVDA, AAPL, TSLA, MSFT, GOOGL, META, AMZN, AMD, NFLX, PLTR, COIN, HOOD, BTC, ETH, SOL</div>';
@@ -615,122 +631,330 @@ out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br><br>'+e.
 });
 }
 
-function renderStockAnalysis(sym,q,p,rec,fin,out){
-var changeClass=q.d>=0?'up':'down';
-var changeArrow=q.d>=0?'▲':'▼';
-var rating=calcRating(rec,q);
+function renderStockAnalysisFull(sym,d,out){
+var changeClass=d.change>=0?'up':'down';
+var changeArrow=d.change>=0?'▲':'▼';
+var rating=calcRating({strongBuy:d.strongBuy,buy:d.buy,hold:d.hold,sell:d.sell,strongSell:d.strongSell},d);
 
-var html='<div class="analysis-header">';
-if(p&&p.logo)html+='<img class="analysis-logo" src="'+p.logo+'" onerror="this.style.display=\'none\'">';
-html+='<div><div class="analysis-name">'+((p&&p.name)?p.name:sym)+'</div><div class="analysis-symbol">'+sym+(p&&p.exchange?' · '+p.exchange:'')+'</div></div>';
-html+='</div>';
+var html='';
 
-html+='<div class="analysis-price">$'+fmtNum(q.c)+'</div>';
-html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(q.d))+' ('+fmtNum(Math.abs(q.dp))+'%)</div>';
+// === SECTION 1: ANALYST RATINGS GRAPH (FIRST thing they see) ===
+html+='<div class="section-title" style="margin-top:0">📊 Analyst Ratings & Price Targets</div>';
 
-// Rating box
+// Rating consensus box
 html+='<div class="rating-box"><div class="rating-label">Analyst Consensus</div>';
 html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
-if(rec){
-var total=rec.strongBuy+rec.buy+rec.hold+rec.sell+rec.strongSell;
+var sb=d.strongBuy||0,b=d.buy||0,h=d.hold||0,s=d.sell||0,ss=d.strongSell||0;
+var total=sb+b+h+s+ss;
 if(total>0){
 html+='<div class="rating-bars">';
-html+='<div class="rating-bar sb" style="width:'+(rec.strongBuy/total*100)+'%">'+rec.strongBuy+'</div>';
-html+='<div class="rating-bar b" style="width:'+(rec.buy/total*100)+'%">'+rec.buy+'</div>';
-html+='<div class="rating-bar h" style="width:'+(rec.hold/total*100)+'%">'+rec.hold+'</div>';
-html+='<div class="rating-bar s" style="width:'+(rec.sell/total*100)+'%">'+rec.sell+'</div>';
-html+='<div class="rating-bar ss" style="width:'+(rec.strongSell/total*100)+'%">'+rec.strongSell+'</div>';
+html+='<div class="rating-bar sb" style="width:'+(sb/total*100)+'%">'+sb+'</div>';
+html+='<div class="rating-bar b" style="width:'+(b/total*100)+'%">'+b+'</div>';
+html+='<div class="rating-bar h" style="width:'+(h/total*100)+'%">'+h+'</div>';
+html+='<div class="rating-bar s" style="width:'+(s/total*100)+'%">'+s+'</div>';
+html+='<div class="rating-bar ss" style="width:'+(ss/total*100)+'%">'+ss+'</div>';
 html+='</div>';
 }
-}
-html+='</div>';
+html+='<div class="rating-count">'+total+' analysts covering</div></div>';
 
-// Price chart
-html+='<div class="chart-container"><canvas id="priceChart"></canvas></div>';
+// Recommendation trend chart (4 periods)
+if(d.recTrend&&d.recTrend.length>0){
+html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Recommendation Trend (4 months)</div><canvas id="recTrendChart" style="width:100%;height:140px"></canvas></div>';
+}
 
-// Data grid
-html+='<div class="section-title">Key Stats</div>';
-html+='<div class="data-grid">';
-html+=dataCell("Open",'$'+fmtNum(q.o));
-html+=dataCell("Prev Close",'$'+fmtNum(q.pc));
-html+=dataCell("Day High",'$'+fmtNum(q.h));
-html+=dataCell("Day Low",'$'+fmtNum(q.l));
-if(fin){
-html+=dataCell("52wk High",'$'+fmtNum(fin["52WeekHigh"]||q.h));
-html+=dataCell("52wk Low",'$'+fmtNum(fin["52WeekLow"]||q.l));
-html+=dataCell("P/E Ratio",fin.peExclTTM?fmtNum(fin.peExclTTM):'N/A');
-html+=dataCell("Beta",fin.beta?fmtNum(fin.beta):'N/A');
-html+=dataCell("Dividend Yield",fin.dividendYieldIndicated?fmtNum(fin.dividendYieldIndicated)+"%":'N/A');
-html+=dataCell("10D Avg Vol",fin["10DayAverageTradingVolume"]?fin["10DayAverageTradingVolume"]+"M":'N/A');
-}
-if(p&&p.marketCapitalization){
-html+=dataCell("Market Cap",'$'+fmtCap(p.marketCapitalization));
-}
-if(p&&p.finnhubIndustry){
-html+=dataCell("Industry",p.finnhubIndustry);
-}
-html+='</div>';
-
-// Company info
-if(p&&p.name){
-html+='<div class="section-title">About</div>';
-html+='<div class="briefing-card"><h3>'+(p.name||sym)+'</h3>';
-if(p.country)html+='<p style="margin-top:4px">📍 '+p.country+'</p>';
-if(p.ipo)html+='<p style="margin-top:4px">📅 IPO: '+p.ipo+'</p>';
-if(p.exchange)html+='<p style="margin-top:4px">🏢 '+p.exchange+'</p>';
+// Price target info
+if(d.targetAvg||d.targetHigh||d.targetLow){
+html+='<div class="data-grid" style="margin-bottom:12px">';
+if(d.targetHigh)html+=dataCell("Target High",'$'+fmtNum(d.targetHigh));
+if(d.targetAvg)html+=dataCell("Target Avg",'$'+fmtNum(d.targetAvg));
+if(d.targetLow)html+=dataCell("Target Low",'$'+fmtNum(d.targetLow));
 html+='</div>';
 }
 
-out.innerHTML=html;
-
-// Draw chart
-drawChart(q);
-}
-
-function renderStockAnalysisFromCache(sym,d,out){
-var changeClass=d.changePercentage>=0?'up':'down';
-var rating={label:d.consensus||'N/A',color:'#58a6ff'};
-
-var html='<div class="analysis-header"><div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><div class="analysis-symbol">'+sym+'</div></div></div>';
+// === HEADER with price ===
+html+='<div class="analysis-header">';
+if(d.logo)html+='<img class="analysis-logo" src="'+d.logo+'" onerror="this.style.display=\'none\'">';
+html+='<div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><div class="analysis-symbol">'+sym+(d.exchange?' · '+d.exchange:'')+'</div></div></div>';
 html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
-html+='<div class="analysis-change '+changeClass+'">'+(d.change>=0?'▲':'▼')+' '+fmtNum(Math.abs(d.changePercentage||d.change||0))+'%</div>';
+html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
 
-html+='<div class="rating-box"><div class="rating-label">Analyst Consensus</div>';
-html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
-if(d.buy||d.hold||d.sell){
-var total=(d.strongBuy||0)+(d.buy||0)+(d.hold||0)+(d.sell||0)+(d.strongSell||0);
-if(total>0){
-html+='<div class="rating-bars">';
-html+='<div class="rating-bar sb" style="width:'+((d.strongBuy||0)/total*100)+'%">'+(d.strongBuy||0)+'</div>';
-html+='<div class="rating-bar b" style="width:'+((d.buy||0)/total*100)+'%">'+(d.buy||0)+'</div>';
-html+='<div class="rating-bar h" style="width:'+((d.hold||0)/total*100)+'%">'+(d.hold||0)+'</div>';
-html+='<div class="rating-bar s" style="width:'+((d.sell||0)/total*100)+'%">'+(d.sell||0)+'</div>';
-html+='<div class="rating-bar ss" style="width:'+((d.strongSell||0)/total*100)+'%">'+(d.strongSell||0)+'</div>';
+// === SECTION 2: INTERACTIVE PRICE CHART ===
+html+='<div class="section-title">📈 Interactive Price Chart (30 Day)</div>';
+if(d.history&&d.history.length>1){
+html+='<div class="chart-container"><canvas id="priceChart" style="width:100%;height:220px;cursor:crosshair"></canvas></div>';
+}else{
+html+='<div class="briefing-card"><p>30-day chart data loading. Available on next data refresh.</p></div>';
+}
+
+// === SECTION 3: MORE CHARTS & GRAPHS ===
+html+='<div class="section-title">📊 Key Metrics Visualization</div>';
+
+// Earnings bar chart
+if(d.earnings&&d.earnings.length>0){
+html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Earnings Per Share (4 Quarters)</div><canvas id="earningsChart" style="width:100%;height:160px"></canvas></div>';
+}
+
+// Margin gauges
+if(d.grossMargin||d.netMargin){
+html+='<div class="data-grid" style="margin-bottom:12px">';
+if(d.grossMargin)html+='<div class="data-cell"><div class="data-label">Gross Margin</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px"><div style="height:6px;background:var(--green);border-radius:3px;width:'+Math.min(100,d.grossMargin)+'%"></div></div><div class="data-value" style="font-size:12px;margin-top:2px">'+fmtNum(d.grossMargin)+'%</div></div>';
+if(d.netMargin)html+='<div class="data-cell"><div class="data-label">Net Margin</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px"><div style="height:6px;background:var(--blue);border-radius:3px;width:'+Math.min(100,Math.max(0,d.netMargin))+'%"></div></div><div class="data-value" style="font-size:12px;margin-top:2px">'+fmtNum(d.netMargin)+'%</div></div>';
 html+='</div>';
 }
-}
-html+='</div>';
 
-html+='<div class="section-title">Key Stats</div>';
+// ROE gauge
+if(d.roe){
+html+='<div class="data-grid" style="margin-bottom:12px">';
+html+='<div class="data-cell"><div class="data-label">Return on Equity (ROE)</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px"><div style="height:6px;background:var(--orange);border-radius:3px;width:'+Math.min(100,d.roe)+'%"></div></div><div class="data-value" style="font-size:12px;margin-top:2px">'+fmtNum(d.roe)+'%</div></div>';
+html+='</div>';
+}
+
+// 52-week range bar
+if(d.yearHigh&&d.yearLow){
+var range=d.yearHigh-d.yearLow;
+var pos=range>0?((d.price-d.yearLow)/range*100):50;
+pos=Math.max(0,Math.min(100,pos));
+html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">52-Week Range</div>';
+html+='<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--red)">$'+fmtNum(d.yearLow)+'</span><span style="color:var(--green)">$'+fmtNum(d.yearHigh)+'</span></div>';
+html+='<div style="height:8px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green));border-radius:4px;position:relative">';
+html+='<div style="position:absolute;left:'+pos+'%;top:-4px;width:12px;height:16px;background:var(--text);border-radius:2px;transform:translateX(-50%)"></div></div>';
+html+='<div style="text-align:center;font-size:12px;margin-top:6px">Current: $'+fmtNum(d.price)+' ('+fmtNum(pos)+'% of range)</div></div>';
+}
+
+// === SECTION 4: KEY STATS GRID ===
+html+='<div class="section-title">📋 Key Statistics</div>';
 html+='<div class="data-grid">';
-html+=dataCell("52wk High",'$'+fmtNum(d.yearHigh));
-html+=dataCell("52wk Low",'$'+fmtNum(d.yearLow));
-html+=dataCell("50-day Avg",'$'+fmtNum(d.priceAvg50));
-html+=dataCell("200-day Avg",'$'+fmtNum(d.priceAvg200));
-html+=dataCell("Market Cap",'$'+fmtCap(d.marketCap/1e6));
-html+=dataCell("Volume",fmtNum(d.volume));
-html+=dataCell("P/E Ratio",d.pe?fmtNum(d.pe):'N/A');
-html+=dataCell("Beta",d.beta?fmtNum(d.beta):'N/A');
-html+=dataCell("Sector",d.sector||'N/A');
-html+=dataCell("Dividend Yield",d.lastDividend?fmtNum((d.lastDividend/d.price)*100)+"%":'N/A');
+html+=dataCell("Open",'$'+fmtNum(d.open||0));
+html+=dataCell("Prev Close",'$'+fmtNum(d.prevClose||0));
+html+=dataCell("Day High",'$'+fmtNum(d.high||0));
+html+=dataCell("Day Low",'$'+fmtNum(d.low||0));
+html+=dataCell("52wk High",'$'+fmtNum(d.yearHigh||0));
+html+=dataCell("52wk Low",'$'+fmtNum(d.yearLow||0));
+html+=dataCell("50-day Avg",'$'+fmtNum(d.priceAvg50||0));
+html+=dataCell("200-day Avg",'$'+fmtNum(d.priceAvg200||0));
+if(d.pe)html+=dataCell("P/E Ratio",fmtNum(d.pe));
+if(d.eps)html+=dataCell("EPS",fmtNum(d.eps));
+if(d.beta)html+=dataCell("Beta",fmtNum(d.beta));
+if(d.marketCap)html+=dataCell("Market Cap",'$'+fmtCap(d.marketCap/1e6));
+if(d.dividendYield)html+=dataCell("Div Yield",fmtNum(d.dividendYield)+"%");
 html+='</div>';
 
-if(d.description){
+// === SECTION 5: EARNINGS REPORT & GUIDANCE ===
+if(d.earnings&&d.earnings.length>0||d.upcomingEarnings&&d.upcomingEarnings.length>0){
+html+='<div class="section-title">💰 Earnings Report & Future Guidance</div>';
+
+// Last earnings report
+if(d.earnings&&d.earnings.length>0){
+var le=d.earnings[0];
+var beat=le.actual>=le.estimate;
+html+='<div class="briefing-card"><h3>Latest Earnings Report</h3>';
+html+='<p style="margin-top:6px">📅 Period: '+le.period+' (Q'+le.quarter+')</p>';
+html+='<p style="margin-top:4px">EPS Estimate: $'+fmtNum(le.estimate)+'</p>';
+html+='<p style="margin-top:4px">EPS Actual: <strong style="color:'+(beat?'var(--green)':'var(--red)')+'">$'+fmtNum(le.actual)+'</strong></p>';
+if(le.surprisePct){
+html+='<p style="margin-top:4px">'+(beat?'▲ Beat':'▼ Missed')+' by $'+fmtNum(Math.abs(le.surprise||0))+' ('+fmtNum(Math.abs(le.surprisePct))+'%)</p>';
+}
+html+='</div>';
+}
+
+// Earnings history table
+if(d.earnings&&d.earnings.length>1){
+html+='<div class="briefing-card"><h3>Earnings History</h3>';
+html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;font-size:12px;margin-top:8px">';
+html+='<div style="color:var(--text2);font-weight:600">Period</div><div style="color:var(--text2);font-weight:600">Estimate</div><div style="color:var(--text2);font-weight:600">Actual</div><div style="color:var(--text2);font-weight:600">Surprise</div>';
+for(var i=0;i<d.earnings.length;i++){
+var e=d.earnings[i];
+var b=e.actual>=e.estimate;
+html+='<div>'+e.period.split('-').slice(0,2).join('/')+'</div>';
+html+='<div>$'+fmtNum(e.estimate)+'</div>';
+html+='<div style="color:'+(b?'var(--green)':'var(--red)')+'">$'+fmtNum(e.actual)+'</div>';
+html+='<div style="color:'+(b?'var(--green)':'var(--red)')+'">'+(e.surprisePct>=0?'+':'')+fmtNum(e.surprisePct)+'%</div>';
+}
+html+='</div></div>';
+}
+
+// Future guidance
+if(d.upcomingEarnings&&d.upcomingEarnings.length>0){
+html+='<div class="briefing-card"><h3>Future Earnings Guidance</h3>';
+for(var i=0;i<d.upcomingEarnings.length;i++){
+var ue=d.upcomingEarnings[i];
+html+='<p style="margin-top:8px;font-size:13px"><strong>📅 '+ue.date+'</strong> (Q'+ue.quarter+')</p>';
+if(ue.epsEstimate)html+='<p style="margin-top:2px">EPS Estimate: $'+fmtNum(ue.epsEstimate)+'</p>';
+if(ue.revenueEstimate)html+='<p style="margin-top:2px">Revenue Estimate: $'+fmtCap(ue.revenueEstimate/1e6)+'M</p>';
+}
+html+='</div>';
+}
+}
+
+// === SECTION 6: COMPANY INFO ===
+if(d.companyName||d.name){
 html+='<div class="section-title">About</div>';
-html+='<div class="briefing-card"><h3>'+(d.companyName||d.name||sym)+'</h3><p>'+d.description+'</p></div>';
+html+='<div class="briefing-card"><h3>'+(d.companyName||d.name||sym)+'</h3>';
+if(d.sector)html+='<p style="margin-top:4px">🏭 '+d.sector+'</p>';
+if(d.exchange)html+='<p style="margin-top:4px">🏢 '+d.exchange+'</p>';
+if(d.ipo)html+='<p style="margin-top:4px">📅 IPO: '+d.ipo+'</p>';
+if(d.country)html+='<p style="margin-top:4px">📍 '+d.country+'</p>';
+html+='</div>';
 }
 
 out.innerHTML=html;
+
+// === DRAW ALL CHARTS ===
+setTimeout(function(){
+// Price chart
+var pc=document.getElementById('priceChart');
+if(pc&&d.history&&d.history.length>1)drawPriceChart(pc,d.history);
+
+// Recommendation trend chart
+var rc=document.getElementById('recTrendChart');
+if(rc&&d.recTrend)drawRecTrendChart(rc,d.recTrend);
+
+// Earnings chart
+var ec=document.getElementById('earningsChart');
+if(ec&&d.earnings)drawEarningsChart(ec,d.earnings);
+},50);
+}
+
+function drawPriceChart(canvas,history){
+var ctx=canvas.getContext('2d');
+var w=canvas.width=canvas.offsetWidth*2;
+var h=canvas.height=440;
+ctx.scale(2,2);
+var cw=canvas.offsetWidth,ch=220;
+
+var closes=history.map(function(d){return d.c});
+var highs=history.map(function(d){return d.h});
+var lows=history.map(function(d){return d.l});
+var min=Math.min.apply(null,lows);
+var max=Math.max.apply(null,highs);
+var pad=(max-min)*0.05||1;
+min-=pad;max+=pad;
+var range=max-min;
+
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+// Grid
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+for(var i=0;i<5;i++){
+var y=(i/4)*ch;
+ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();
+}
+
+// Candlesticks
+var barW=cw/history.length*0.7;
+var gap=cw/history.length;
+for(var i=0;i<history.length;i++){
+var d=history[i];
+var x=i*gap+gap/2;
+var isUp=d.c>=d.o;
+ctx.strokeStyle=isUp?'#3fb950':'#f85149';
+ctx.fillStyle=isUp?'#3fb950':'#f85149';
+ctx.lineWidth=1;
+// Wick
+ctx.beginPath();ctx.moveTo(x,ch-((d.h-min)/range)*ch);ctx.lineTo(x,ch-((d.l-min)/range)*ch);ctx.stroke();
+// Body
+var oY=ch-((d.o-min)/range)*ch;
+var cY=ch-((d.c-min)/range)*ch;
+ctx.fillRect(x-barW/2,Math.min(oY,cY),barW,Math.abs(cY-oY)||2);
+}
+
+// Labels
+ctx.fillStyle='#8b949e';
+ctx.font='10px sans-serif';
+ctx.textAlign='left';
+ctx.fillText('$'+fmtNum(max),4,12);
+ctx.fillText('$'+fmtNum(min),4,ch-4);
+ctx.textAlign='right';
+ctx.fillText(history[0].date,cw-4,12);
+ctx.fillText(history[history.length-1].date,cw-4,ch-4);
+}
+
+function drawRecTrendChart(canvas,recs){
+var ctx=canvas.getContext('2d');
+var w=canvas.width=canvas.offsetWidth*2;
+var h=canvas.height=280;
+ctx.scale(2,2);
+var cw=canvas.offsetWidth,ch=140;
+var n=recs.length;
+var barW=cw/n*0.6;
+var gap=cw/n;
+var maxVal=0;
+for(var i=0;i<n;i++){var t=recs[i].sb+recs[i].b+recs[i].h+recs[i].s+recs[i].ss;if(t>maxVal)maxVal=t}
+if(maxVal===0)return;
+
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+var colors=['#3fb950','#5cb85c','#d29922','#f0883e','#f85149'];
+var labels=['SB','B','H','S','SS'];
+
+for(var i=0;i<n;i++){
+var r=recs[i];
+var vals=[r.sb,r.b,r.h,r.s,r.ss];
+var x=i*gap+gap/2-barW/2;
+var y=ch;
+for(var j=0;j<5;j++){
+var bh=(vals[j]/maxVal)*ch;
+ctx.fillStyle=colors[j];
+ctx.fillRect(x,y-bh,barW,bh);
+y-=bh;
+}
+// Period label
+ctx.fillStyle='#8b949e';
+ctx.font='8px sans-serif';
+ctx.textAlign='center';
+var period=r.period.split('-').slice(0,2).join('/');
+ctx.fillText(period,x+barW/2,ch-2);
+}
+}
+
+function drawEarningsChart(canvas,earnings){
+var ctx=canvas.getContext('2d');
+var w=canvas.width=canvas.offsetWidth*2;
+var h=canvas.height=320;
+ctx.scale(2,2);
+var cw=canvas.offsetWidth,ch=160;
+var n=earnings.length;
+var barW=cw/n*0.5;
+var gap=cw/n;
+
+var allVals=earnings.map(function(e){return Math.max(e.estimate,e.actual)});
+var maxVal=Math.max.apply(null,allVals);
+if(maxVal===0)return;
+
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+// Grid
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+for(var i=0;i<3;i++){var y=(i/2)*ch;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke()}
+
+for(var i=0;i<n;i++){
+var e=earnings[i];
+var x=i*gap+gap/2;
+// Estimate bar (blue)
+var ebh=(e.estimate/maxVal)*ch;
+ctx.fillStyle='#58a6ff';
+ctx.fillRect(x-barW-2,ch-ebh,barW,ebh);
+// Actual bar (green or red)
+var abh=(e.actual/maxVal)*ch;
+ctx.fillStyle=e.actual>=e.estimate?'#3fb950':'#f85149';
+ctx.fillRect(x+2,ch-abh,barW,abh);
+// Period label
+ctx.fillStyle='#8b949e';
+ctx.font='8px sans-serif';
+ctx.textAlign='center';
+ctx.fillText(e.period.split('-').slice(0,2).join('/'),x,ch-2);
+}
+
+// Legend
+ctx.font='9px sans-serif';
+ctx.textAlign='left';
+ctx.fillStyle='#58a6ff';ctx.fillText('■ Estimate',4,12);
+ctx.fillStyle='#3fb950';ctx.fillText('■ Actual',80,12);
 }
 
 function analyzeCrypto(symbol,out){
