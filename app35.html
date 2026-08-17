@@ -164,6 +164,36 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 /* CLICKABLE TICKER */
 .clickable{color:var(--blue);text-decoration:none;cursor:pointer}
+
+/* SIX GRID - 6 equal squares */
+.six-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.sq6{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer}
+.sq6:active{border-color:var(--blue)}
+.sq6-name{font-size:10px;color:var(--text2);font-weight:600;margin-bottom:3px}
+.sq6-price{font-size:14px;font-weight:700;margin-bottom:4px}
+.sq6-sr{display:flex;justify-content:center;gap:8px;font-size:9px}
+.sq6-sr .sup{color:var(--green)}
+.sq6-sr .res{color:var(--red)}
+
+/* FOUR GRID - 4 equal squares */
+.four-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.sq4{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center}
+.sq4-label{font-size:9px;color:var(--text2);font-weight:600;margin-bottom:3px}
+.sq4-val{font-size:16px;font-weight:700}
+.sq4-sub{font-size:9px;color:var(--text2);margin-top:2px}
+
+/* FOUR RECT - 4 smaller rectangles */
+.four-rect{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.rect4{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}
+.rect4-label{font-size:8px;color:var(--text2);font-weight:600;margin-bottom:2px}
+.rect4-val{font-size:13px;font-weight:600}
+
+/* TWO BIG SQUARES */
+.two-big{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.big-sq{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer}
+.big-sq:active{border-color:var(--blue)}
+.big-sq-label{font-size:13px;font-weight:700;margin-bottom:6px}
+.big-sq-val{font-size:11px;color:var(--text2)}
 </style>
 </head>
 <body>
@@ -173,9 +203,57 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div id="view-home" class="view active">
 <div class="header">
 <h1>Big Brain <span>Ape</span> 🦍</h1>
-<p>Stock & Crypto Analysis · Powered by AI</p>
 </div>
 
+<!-- TICKER TAPES (right under title) -->
+<div class="tape-section">
+<div class="tape-label">📊 Stocks</div>
+<div class="tape-track"><div class="tape-content" id="tapeStocks"></div></div>
+</div>
+<div class="tape-section">
+<div class="tape-label"><span style="color:var(--orange)">₿</span> Crypto</div>
+<div class="tape-track"><div class="tape-content" id="tapeCrypto"></div></div>
+</div>
+<div class="tape-section">
+<div class="tape-label">⚡️ XYZ Perps</div>
+<div class="tape-track"><div class="tape-content" id="tapeXYZ"></div></div>
+</div>
+
+<!-- 6 SQUARES: S&P500, NASDAQ, Dow, BTC, ETH, SOL with support/resistance -->
+<div class="six-grid" id="sixGrid">
+<div class="sq6" onclick="confirmTickerAnalysis('SPY')">
+<div class="sq6-name">S&P 500</div>
+<div class="sq6-price" id="sq6-SP500">—</div>
+<div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
+</div>
+<div class="sq6" onclick="confirmTickerAnalysis('QQQ')">
+<div class="sq6-name">NASDAQ</div>
+<div class="sq6-price" id="sq6-NASDAQ">—</div>
+<div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
+</div>
+<div class="sq6" onclick="confirmTickerAnalysis('DIA')">
+<div class="sq6-name">DOW</div>
+<div class="sq6-price" id="sq6-DOW">—</div>
+<div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
+</div>
+<div class="sq6" onclick="quickSearch('BTC')">
+<div class="sq6-name">BTC</div>
+<div class="sq6-price" id="sq6-BTC">—</div>
+<div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
+</div>
+<div class="sq6" onclick="quickSearch('ETH')">
+<div class="sq6-name">ETH</div>
+<div class="sq6-price" id="sq6-ETH">—</div>
+<div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
+</div>
+<div class="sq6" onclick="quickSearch('SOL')">
+<div class="sq6-name">SOL</div>
+<div class="sq6-price" id="sq6-SOL">—</div>
+<div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
+</div>
+</div>
+
+<!-- ANALYZE BAR + 5 QUICK BUTTONS (SOL on the right end) -->
 <div class="search-bar">
 <input type="text" id="searchInput" placeholder="Enter ticker (AAPL, NVDA, BTC...)">
 <button id="searchBtn" onclick="doSearch()">Analyze</button>
@@ -190,38 +268,62 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <button class="quick-ticker" onclick="quickSearch('SOL')">SOL</button>
 </div>
 
-<!-- INDEX BOXES -->
-<div class="index-row">
-<div class="index-box" onclick="confirmTickerAnalysis('SPY')">
-<div class="index-name">S&P 500</div>
-<div class="index-price" id="idxSP500">—</div>
-<div class="index-change" id="chgSP500"></div>
+<!-- 4 SQUARES (same size) -->
+<div class="four-grid">
+<div class="sq4" id="sq4-1">
+<div class="sq4-label">Fear & Greed</div>
+<div class="sq4-val" id="sq4-fg">—</div>
+<div class="sq4-sub" id="sq4-fg-label"></div>
 </div>
-<div class="index-box" onclick="confirmTickerAnalysis('QQQ')">
-<div class="index-name">NASDAQ</div>
-<div class="index-price" id="idxNASDAQ">—</div>
-<div class="index-change" id="chgNASDAQ"></div>
+<div class="sq4" id="sq4-2">
+<div class="sq4-label">DXY</div>
+<div class="sq4-val" id="sq4-dxy">—</div>
+<div class="sq4-sub" id="sq4-dxy-chg"></div>
 </div>
-<div class="index-box" onclick="confirmTickerAnalysis('DIA')">
-<div class="index-name">DOW</div>
-<div class="index-price" id="idxDOW">—</div>
-<div class="index-change" id="chgDOW"></div>
+<div class="sq4" id="sq4-3">
+<div class="sq4-label">10Y Yield</div>
+<div class="sq4-val" id="sq4-10y">—</div>
+<div class="sq4-sub" id="sq4-10y-chg"></div>
+</div>
+<div class="sq4" id="sq4-4">
+<div class="sq4-label">VIX</div>
+<div class="sq4-val" id="sq4-vix">—</div>
+<div class="sq4-sub" id="sq4-vix-chg"></div>
 </div>
 </div>
 
-<!-- TICKER TAPES -->
-<div class="tape-section">
-<div class="tape-label">📊 Stocks</div>
-<div class="tape-track"><div class="tape-content" id="tapeStocks"></div></div>
+<!-- 4 SMALLER RECTANGLES -->
+<div class="four-rect">
+<div class="rect4" id="rect4-1">
+<div class="rect4-label">BTC Dominance</div>
+<div class="rect4-val" id="rect4-btcd">—</div>
 </div>
-<div class="tape-section">
-<div class="tape-label"><span style="color:var(--orange)">₿</span> Crypto</div>
-<div class="tape-track"><div class="tape-content" id="tapeCrypto"></div></div>
+<div class="rect4" id="rect4-2">
+<div class="rect4-label">Total Mkt Cap</div>
+<div class="rect4-val" id="rect4-tmc">—</div>
 </div>
-<div class="tape-section">
-<div class="tape-label">⚡️ XYZ Perps</div>
-<div class="tape-track"><div class="tape-content" id="tapeXYZ"></div></div>
+<div class="rect4" id="rect4-3">
+<div class="rect4-label">24h Volume</div>
+<div class="rect4-val" id="rect4-vol">—</div>
 </div>
+<div class="rect4" id="rect4-4">
+<div class="rect4-label">Active Coins</div>
+<div class="rect4-val" id="rect4-coins">—</div>
+</div>
+</div>
+
+<!-- 2 BIG SQUARES -->
+<div class="two-big">
+<div class="big-sq" onclick="switchView('trading')">
+<div class="big-sq-label">📈 Trading Desk</div>
+<div class="big-sq-val" id="big-sq-1">Tap to view positions</div>
+</div>
+<div class="big-sq" onclick="switchView('briefing')">
+<div class="big-sq-label">📰 Daily Briefing</div>
+<div class="big-sq-val" id="big-sq-2">Tap to read today's briefing</div>
+</div>
+</div>
+
 </div>
 
 <!-- ANALYSIS VIEW -->
@@ -839,6 +941,130 @@ document.getElementById('chgDOW').className='index-change '+(idx.changePercentag
 // Animation
 requestAnimationFrame(animateTapes);
 }
+// ==============================
+// HOME PAGE DATA - 6 squares, 4 squares, 4 rectangles
+// ==============================
+function loadHomeData(){
+sameDomainGet(MARKETS_URL)
+.then(function(mkt){
+// 6 squares: S&P500, NASDAQ, Dow, BTC, ETH, SOL
+var idxList=mkt.indices||[];
+var cryList=mkt.crypto||[];
+
+// Indices
+var sp500=findItem(idxList,'GSPC')||findItem(idxList,'SPY')||findItem(idxList,'^GSPC');
+var nasdaq=findItem(idxList,'IXIC')||findItem(idxList,'QQQ')||findItem(idxList,'^IXIC');
+var dow=findItem(idxList,'DJI')||findItem(idxList,'DIA')||findItem(idxList,'^DJI');
+
+if(sp500)setSq6('SP500',sp500.price,sp500.changePercentage,getSR(sp500));
+if(nasdaq)setSq6('NASDAQ',nasdaq.price,nasdaq.changePercentage,getSR(nasdaq));
+if(dow)setSq6('DOW',dow.price,dow.changePercentage,getSR(dow));
+
+// Crypto
+var btc=findItem(cryList,'BTC');
+var eth=findItem(cryList,'ETH');
+var sol=findItem(cryList,'SOL');
+
+if(btc)setSq6('BTC',btc.price,btc.change24h,getSR(btc));
+if(eth)setSq6('ETH',eth.price,eth.change24h,getSR(eth));
+if(sol)setSq6('SOL',sol.price,sol.change24h,getSR(sol));
+
+// 4 squares: Fear & Greed, DXY, 10Y, VIX (from snapshot)
+return sameDomainGet(SNAPSHOT_URL);
+})
+.then(function(snap){
+// Fear & Greed
+var fgVal=snap.fearGreed?snap.fearGreed.value:(snap.fear_greed||0);
+var fgLabel=fgVal>70?'Extreme Greed':fgVal>55?'Greed':fgVal>45?'Neutral':fgVal>30?'Fear':'Extreme Fear';
+var fgColor=fgVal>55?'var(--green)':fgVal>45?'var(--yellow)':'var(--red)';
+if(fgVal>0){
+var fgEl=document.getElementById('sq4-fg');
+if(fgEl){fgEl.textContent=fgVal;fgEl.style.color=fgColor}
+var fgL=document.getElementById('sq4-fg-label');
+if(fgL){fgL.textContent=fgLabel;fgL.style.color=fgColor}
+}
+
+// DXY, 10Y, VIX from metrics if available
+var metrics=snap.metrics||{};
+if(metrics.dxy){
+var dEl=document.getElementById('sq4-dxy');
+if(dEl)dEl.textContent=fmtNum(metrics.dxy);
+}
+if(metrics.yield10y||metrics.yield_10y){
+var yEl=document.getElementById('sq4-10y');
+if(yEl)yEl.textContent=fmtNum(metrics.yield10y||metrics.yield_10y)+'%';
+}
+if(metrics.vix){
+var vEl=document.getElementById('sq4-vix');
+if(vEl)vEl.textContent=fmtNum(metrics.vix);
+}
+
+// 4 rectangles: BTC dominance, total mkt cap, 24h vol, active coins
+if(metrics.btcDominance||metrics.btc_dominance){
+var el=document.getElementById('rect4-btcd');
+if(el)el.textContent=fmtNum(metrics.btcDominance||metrics.btc_dominance)+'%';
+}
+if(metrics.totalMktCap||metrics.total_mkt_cap){
+var el=document.getElementById('rect4-tmc');
+if(el)el.textContent='$'+fmtCap(metrics.totalMktCap||metrics.total_mkt_cap);
+}
+if(metrics.totalVolume24h||metrics.total_volume_24h){
+var el=document.getElementById('rect4-vol');
+if(el)el.textContent='$'+fmtCap(metrics.totalVolume24h||metrics.total_volume_24h);
+}
+if(metrics.activeCoins||metrics.active_coins){
+var el=document.getElementById('rect4-coins');
+if(el)el.textContent=fmtNum(metrics.activeCoins||metrics.active_coins);
+}
+
+// 2 big squares - update with live data
+var posEl=document.getElementById('big-sq-1');
+var briefEl=document.getElementById('big-sq-2');
+})
+.catch(function(){});
+}
+
+function findItem(arr,sym){
+if(!arr)return null;
+for(var i=0;i<arr.length;i++){
+if(arr[i].symbol===sym||arr[i].symbol==='%5E'+sym||arr[i].symbol==='^'+sym)return arr[i];
+}
+return null;
+}
+
+function setSq6(name,price,changePct,sr){
+var pEl=document.getElementById('sq6-'+name);
+if(pEl){
+if(price>=1000)pEl.textContent='$'+price.toLocaleString('en-US',{maximumFractionDigits:0});
+else if(price>=1)pEl.textContent='$'+fmtNum(price);
+else pEl.textContent='$'+fmtCrypto(price);
+}
+var srEl=pEl?pEl.parentElement.querySelector('.sq6-sr'):null;
+if(srEl&&sr){
+srEl.innerHTML='<span class="sup">S: $'+fmtShort(sr.support)+'</span><span class="res">R: $'+fmtShort(sr.resistance)+'</span>';
+}
+}
+
+function getSR(item){
+if(!item)return null;
+var price=item.price||0;
+var yearLow=item.yearLow||item.low52w||0;
+var yearHigh=item.yearHigh||item.high52w||0;
+// Support = recent low or 52wk low, Resistance = recent high or 52wk high
+var support=yearLow||price*0.95;
+var resistance=yearHigh||price*1.05;
+return{support:support,resistance:resistance};
+}
+
+function fmtShort(n){
+if(!n)return'—';
+if(n>=10000)return(n/1000).toFixed(0)+'K';
+if(n>=1000)return(n/1000).toFixed(1)+'K';
+if(n>=1)return n.toFixed(2);
+return n.toFixed(4);
+}
+
+
 
 var tapeOffsets={tapeStocks:0,tapeCrypto:0,tapeXYZ:0};
 function animateTapes(){
@@ -1062,6 +1288,7 @@ document.getElementById('searchInput').addEventListener('keydown',function(e){if
 document.getElementById('briefingDate').textContent=formatDate(new Date());
 
 loadTickerTapes();
+loadHomeData();
 </script>
 </body>
 </html>
