@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787069127,
-  "generatedAt": "2026-08-18 16:05 UTC",
-  "accountValue": 1673.75,
-  "withdrawable": 227.97,
-  "portfolioValue": 1673.75,
-  "totalUnrealizedPnl": 149.63,
-  "totalMarginUsed": 1296.16,
-  "availableCash": 227.97,
+  "timestamp": 1787069425,
+  "generatedAt": "2026-08-18 16:10 UTC",
+  "accountValue": 1675.25,
+  "withdrawable": 228.47,
+  "portfolioValue": 1675.25,
+  "totalUnrealizedPnl": 150.38,
+  "totalMarginUsed": 1296.41,
+  "availableCash": 228.47,
   "positions": [
     {
       "symbol": "NVDA",
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.33,
       "entryPrice": 4130.63,
-      "currentPrice": 4370.3,
-      "unrealizedPnl": 79.09,
-      "pnlPercent": 17.4,
-      "marginUsed": 480.73,
+      "currentPrice": 4372.6,
+      "unrealizedPnl": 79.85,
+      "pnlPercent": 17.6,
+      "marginUsed": 480.99,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1442.2,
+      "positionValue": 1442.96,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -44,13 +44,13 @@
       "side": "LONG",
       "size": 0.115,
       "entryPrice": 7650.33,
-      "currentPrice": 7701.4,
-      "unrealizedPnl": 5.87,
+      "currentPrice": 7701.3,
+      "unrealizedPnl": 5.86,
       "pnlPercent": 3.3,
       "marginUsed": 177.13,
       "leverage": 5,
       "marginType": "cross",
-      "positionValue": 885.66,
+      "positionValue": 885.65,
       "tvSymbol": "SP:SPX"
     }
   ],
@@ -61,15 +61,15 @@
     },
     {
       "label": "GOLD",
-      "value": 1442.2
+      "value": 1442.96
     },
     {
       "label": "SP500",
-      "value": 885.66
+      "value": 885.65
     },
     {
       "label": "Cash",
-      "value": 227.97
+      "value": 228.47
     }
   ],
   "pieMarginSlices": [
@@ -79,7 +79,7 @@
     },
     {
       "label": "GOLD",
-      "value": 480.73
+      "value": 480.99
     },
     {
       "label": "SP500",
@@ -87,7 +87,7 @@
     },
     {
       "label": "Available",
-      "value": 227.97
+      "value": 228.47
     }
   ]
 }
