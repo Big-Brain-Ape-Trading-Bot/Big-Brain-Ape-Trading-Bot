@@ -1,5 +1,5 @@
 {
-  "date": "August 18, 2026 02:05 UTC",
+  "date": "August 18, 2026 02:10 UTC",
   "assets": {
     "S&P 500": {
       "price": 7745.06,
@@ -89,20 +89,20 @@
       ]
     },
     "BTC": {
-      "price": 64200.0,
-      "change_pct": 1.88,
+      "price": 64210.9,
+      "change_pct": 1.86,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1900.62,
-      "change_pct": 0.63,
+      "price": 1901.23,
+      "change_pct": 0.66,
       "support": 1820.61,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 75.54,
-      "change_pct": 0.63,
+      "price": 75.59,
+      "change_pct": 0.73,
       "support": 70.51,
       "resistance": 78.87
     }
@@ -165,17 +165,17 @@
       "color": "green"
     },
     "oil": {
-      "value": "$84.89",
+      "value": "$84.93",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4465",
+      "value": "$4464",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$65.71",
+      "value": "$65.74",
       "label": "SILVER",
       "color": "yellow"
     }
@@ -190,27 +190,22 @@
       "label": "CAUTION",
       "text": "Yields rising \u2014 risk off",
       "type": "caution"
-    },
-    {
-      "label": "BULLISH",
-      "text": "Gold up 1.9% \u2014 safe haven bid",
-      "type": "bullish"
     }
   ],
-  "btc_funding": 4.893e-05,
+  "btc_funding": 4.865e-05,
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 21.11,
+    "daily_inflow": 21.1,
     "daily_avg": 17.68,
     "daily_pct": 19.4,
-    "weekly_inflow": 123.76,
+    "weekly_inflow": 123.75,
     "weekly_avg": 149.33,
     "weekly_pct": -17.1,
-    "monthly_inflow": 640.0,
-    "monthly_avg": 802.66,
+    "monthly_inflow": 639.99,
+    "monthly_avg": 802.65,
     "monthly_pct": -20.3,
-    "large_tx_count": 741581
+    "large_tx_count": 731819
   },
   "history": {
     "vix": [
@@ -283,7 +278,8 @@
       83.27,
       81.25,
       82.4,
-      84.89
+      NaN,
+      84.93
     ],
     "gold": [
       4012.7,
@@ -307,7 +303,8 @@
       4408.9,
       4363.6,
       4380.4,
-      4464.7
+      NaN,
+      4464.2
     ],
     "silver": [
       56.04,
@@ -331,7 +328,8 @@
       65.56,
       64.87,
       64.99,
-      65.71
+      NaN,
+      65.74
     ],
     "dxy": [
       100.75,
@@ -355,7 +353,7 @@
       100.01,
       99.96,
       99.67,
-      99.57
+      99.58
     ],
     "sp500": [
       7443.28,
