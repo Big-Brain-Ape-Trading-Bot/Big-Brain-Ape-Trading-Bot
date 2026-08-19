@@ -388,8 +388,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <!-- SNAPSHOT VIEW -->
 <div id="view-snapshot" class="view">
-<div class="header"><h1>Market <span>Snapshot</span> 🦍</h1></div>
-<div id="snapshotContent"><div class="loading"><div class="spinner"></div>Loading market data...</div></div>
+<div class="header"><h1>Daily <span>Snapshot</span> 📈</h1></div>
+<div id="snapshotContent"><div class="loading"><div class="spinner"></div>Loading daily snapshot...</div></div>
 </div>
 
 <!-- PRICING VIEW -->
@@ -459,19 +459,19 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <!-- NAV -->
 <nav class="nav">
 <button class="nav-btn active" data-view="home" onclick="switchView('home')">
-<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3l9-8z"/></svg>Home
+<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3l9-8z"/></svg>🔍Analyze
 </button>
 <button class="nav-btn" data-view="snapshot" onclick="switchView('snapshot')">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>Market
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>📈Snapshot
 </button>
 <button class="nav-btn" data-view="briefing" onclick="switchView('briefing')">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4zM8 4v16M4 8h4M4 12h4M4 16h4"/></svg>Brief
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4zM8 4v16M4 8h4M4 12h4M4 16h4"/></svg>📝Briefing
 </button>
 <button class="nav-btn" data-view="trading" onclick="switchView('trading')">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-7M14 8h7v7"/></svg>Trades
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-7M14 8h7v7"/></svg>📊Trading
 </button>
 <button class="nav-btn" data-view="pricing" onclick="switchView('pricing')">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9h4.5a2 2 0 010 4H9"/></svg>Pricing
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9h4.5a2 2 0 010 4H9"/></svg>💰Pricing
 </button>
 </nav>
 
@@ -494,6 +494,7 @@ var SNAPSHOT_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trad
 var STOCK_DATA_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/stock-data.json";
 var NEWS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/news.json";
 var TRADING_POSTS_URL="https://big-brain-ape-trading-bot.github.io/Big-Brain-Ape-Trading-Bot/trading-posts.json";
+var SNAPSHOT_IMAGE_URL="https://raw.githubusercontent.com/Big-Brain-Ape-Trading-Bot/Big-Brain-Ape-Trading-Bot/main/daily-snapshot.png";
 
 var CRYPTO_MAP={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",XRP:"ripple",DOGE:"dogecoin",ADA:"cardano",AVAX:"avalanche-2",DOT:"polkadot",LINK:"chainlink"};
 var CRYPTO_REVERSE={};for(var k in CRYPTO_MAP)CRYPTO_REVERSE[CRYPTO_MAP[k]]=k;
@@ -2167,56 +2168,74 @@ document.body.style.overflow='hidden';
 // ==============================
 function loadSnapshot(){
 var out=document.getElementById('snapshotContent');
+
+// Show the daily snapshot image
+var html='';
+html+='<div style="text-align:center;margin-bottom:12px">';
+html+='<div style="font-size:13px;color:var(--text2);margin-bottom:10px">Today\'s Daily Market Snapshot — posted on X (@Big_Brain_Ape)</div>';
+html+='<img src="'+SNAPSHOT_IMAGE_URL+'?t='+Date.now()+'" style="width:100%;border-radius:12px;border:1px solid var(--border)" ';
+html+='onerror="this.style.display=\'none\';document.getElementById(\'snapFallback\').style.display=\'block\'" ';
+html+='onload="this.style.opacity=1" ';
+html+='style="width:100%;border-radius:12px;border:1px solid var(--border);opacity:0;transition:opacity .3s" />';
+html+='</div>';
+
+// Fallback if image hasn't been uploaded yet
+html+='<div id="snapFallback" style="display:none;text-align:center;padding:40px 20px">';
+html+='<div style="font-size:40px;margin-bottom:12px">📈</div>';
+html+='<div style="font-size:15px;color:var(--text2)">Today\'s snapshot image will appear here after the 7 AM posting.</div>';
+html+='<div style="font-size:12px;color:var(--text2);margin-top:8px">Follow @Big_Brain_Ape on X to see it daily.</div>';
+html+='</div>';
+
+// Also show key market data below the image
+out.innerHTML=html;
+
+// Fetch snapshot data for the text section below the image
 sameDomainGet(SNAPSHOT_URL)
 .then(function(snap){
-var html='';
+var dataHtml='<div style="margin-top:16px">';
 
 // Fear & Greed
 var fgObj=snap.fear_greed||snap.fearGreed||{};
 var fgVal=typeof fgObj==='object'?(fgObj.value||50):fgObj;
 var fgLabel=fgVal>70?'Extreme Greed':fgVal>55?'Greed':fgVal>45?'Neutral':fgVal>30?'Fear':'Extreme Fear';
 var fgColor=fgVal>55?'#3fb950':fgVal>45?'#d29922':'#f85149';
-html+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
-html+='<div class="fg-value" style="color:'+fgColor+'">'+fgVal+'</div>';
-html+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
-html+='<div class="fg-bar"></div></div>';
+dataHtml+='<div class="fg-container"><div class="fg-label">Fear & Greed Index</div>';
+dataHtml+='<div class="fg-value" style="color:'+fgColor+'">'+fgVal+'</div>';
+dataHtml+='<div class="fg-status" style="color:'+fgColor+'">'+fgLabel+'</div>';
+dataHtml+='<div class="fg-bar"></div></div>';
 
 // Risk Score
 var rs=snap.risk_score||0;
 var rb=snap.risk_bias||'';
 var rsColor=rs>=50?'#3fb950':rs<30?'#f85149':'#d29922';
-html+='<div class="briefing-card" style="margin-top:12px">';
-html+='<div class="snap-row"><span class="label">Risk Score</span><span class="val" style="color:'+rsColor+'">'+rs+' '+rb+'</span></div>';
+dataHtml+='<div class="briefing-card" style="margin-top:12px">';
+dataHtml+='<div class="snap-row"><span class="label">Risk Appetite</span><span class="val" style="color:'+rsColor+'">'+rs+' '+rb+'</span></div>';
 
 // Metrics
 var m=snap.metrics||{};
-var vix=m.vix?m.vix.value:(snap.vix||'N/A');
-var yld=m.yield_10y?m.yield_10y.value:(snap.yield_10y||'N/A');
-var oil=m.oil?m.oil.value:(snap.oil||'N/A');
-var silv=m.silver?m.silver.value:(snap.silver||'N/A');
-var gold=m.gold?m.gold.value:(snap.gold||'N/A');
-html+='<div class="snap-row"><span class="label">VIX</span><span class="val">'+vix+'</span></div>';
-html+='<div class="snap-row"><span class="label">10Y Yield</span><span class="val">'+yld+'</span></div>';
-html+='<div class="snap-row"><span class="label">Oil</span><span class="val">'+oil+'</span></div>';
-html+='<div class="snap-row"><span class="label">Silver</span><span class="val">'+silv+'</span></div>';
-html+='<div class="snap-row"><span class="label">Gold</span><span class="val">'+gold+'</span></div>';
-html+='</div>';
+if(m.vix)dataHtml+='<div class="snap-row"><span class="label">VIX</span><span class="val">'+m.vix.value+'</span></div>';
+if(m.yield_10y)dataHtml+='<div class="snap-row"><span class="label">10Y Yield</span><span class="val">'+m.yield_10y.value+'</span></div>';
+if(m.oil)dataHtml+='<div class="snap-row"><span class="label">Oil</span><span class="val">'+m.oil.value+'</span></div>';
+if(m.silver)dataHtml+='<div class="snap-row"><span class="label">Silver</span><span class="val">'+m.silver.value+'</span></div>';
+if(m.gold)dataHtml+='<div class="snap-row"><span class="label">Gold</span><span class="val">'+m.gold.value+'</span></div>';
+dataHtml+='</div>';
 
 // Signals
 var sigs=snap.signals||[];
 if(sigs.length>0){
-html+='<div class="section-title">Key Signals</div>';
-html+='<div class="briefing-card">';
+dataHtml+='<div class="section-title">Key Signals</div>';
+dataHtml+='<div class="briefing-card">';
 for(var i=0;i<sigs.length;i++){
 var s=sigs[i];
 var st=s.type||'bullish';
 var dot=st==='bullish'?'🟢':st==='bearish'?'🔴':'🟡';
-html+='<div class="snap-row"><span class="label">'+dot+' '+(s.text||s.label||'')+'</span></div>';
+dataHtml+='<div class="snap-row"><span class="label">'+dot+' '+(s.text||s.label||'')+'</span></div>';
 }
-html+='</div>';
+dataHtml+='</div>';
 }
 
-out.innerHTML=html;
+dataHtml+='</div>';
+out.innerHTML=out.innerHTML+dataHtml;
 
 // Also fetch markets for indices and crypto
 return sameDomainGet(MARKETS_URL);
@@ -2225,29 +2244,30 @@ return sameDomainGet(MARKETS_URL);
 if(!mkt)return;
 var out=document.getElementById('snapshotContent');
 var html=out.innerHTML;
+var addHtml='';
 
 if(mkt.indices&&mkt.indices.length>0){
-var idxHtml='<div class="section-title">Indices</div><div class="briefing-card">';
+addHtml+='<div class="section-title">Indices</div><div class="briefing-card">';
 for(var i=0;i<mkt.indices.length;i++){
 var idx=mkt.indices[i];
-idxHtml+='<div class="snap-row"><span class="label">'+(idx.name||idx.symbol)+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
+addHtml+='<div class="snap-row"><span class="label">'+(idx.name||idx.symbol)+'</span><span class="val">$'+fmtNum(idx.price)+' ('+fmtPct(idx.changePercentage)+')</span></div>';
 }
-idxHtml+='</div>';
-out.innerHTML=idxHtml+html;
+addHtml+='</div>';
 }
 
 if(mkt.crypto&&mkt.crypto.length>0){
-var crypHtml='<div class="section-title">Crypto</div><div class="briefing-card">';
+addHtml+='<div class="section-title">Crypto</div><div class="briefing-card">';
 for(var i=0;i<Math.min(mkt.crypto.length,10);i++){
 var c=mkt.crypto[i];
-crypHtml+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
+addHtml+='<div class="snap-row"><span class="label">'+c.symbol+'</span><span class="val">$'+fmtCrypto(c.price)+' ('+fmtPct(c.change24h)+')</span></div>';
 }
-crypHtml+='</div>';
-out.innerHTML=out.innerHTML+crypHtml;
+addHtml+='</div>';
 }
+
+out.innerHTML=html+addHtml;
 })
 .catch(function(){
-out.innerHTML='<div class="briefing-card"><p>Unable to load market data.</p></div>';
+out.innerHTML='<div class="briefing-card"><p>Unable to load snapshot data.</p></div>';
 });
 }
 
