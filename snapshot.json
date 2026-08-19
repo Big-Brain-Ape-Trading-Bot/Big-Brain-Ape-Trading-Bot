@@ -1,9 +1,9 @@
 {
-  "date": "August 19, 2026 14:30 UTC",
+  "date": "August 19, 2026 14:35 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7720.25,
-      "change_pct": 0.37,
+      "price": 7723.95,
+      "change_pct": 0.42,
       "support": 7313.92,
       "resistance": 7816.7,
       "history": [
@@ -29,12 +29,12 @@
         7785.76,
         7745.06,
         7691.76,
-        7720.24
+        7723.95
       ]
     },
     "NASDAQ": {
-      "price": 26284.02,
-      "change_pct": -0.02,
+      "price": 26300.23,
+      "change_pct": 0.04,
       "support": 24425.34,
       "resistance": 26875.52,
       "history": [
@@ -60,12 +60,12 @@
         26729.16,
         26644.91,
         26289.71,
-        26284.02
+        26300.23
       ]
     },
     "Dow Jones": {
-      "price": 53600.2,
-      "change_pct": 0.48,
+      "price": 53639.29,
+      "change_pct": 0.55,
       "support": 51542.06,
       "resistance": 54744.33,
       "history": [
@@ -91,24 +91,24 @@
         53732.41,
         53459.78,
         53343.4,
-        53600.2
+        53639.29
       ]
     },
     "BTC": {
-      "price": 65376.7,
-      "change_pct": 0.64,
+      "price": 65353.4,
+      "change_pct": 0.89,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1935.21,
-      "change_pct": 0.92,
+      "price": 1934.74,
+      "change_pct": 1.09,
       "support": 1820.61,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 78.46,
-      "change_pct": 1.92,
+      "price": 78.49,
+      "change_pct": 2.04,
       "support": 70.51,
       "resistance": 78.87
     }
@@ -156,12 +156,12 @@
   "whale_flow": "NEUTRAL",
   "metrics": {
     "vix": {
-      "value": "15.4",
+      "value": "15.3",
       "label": "VIX",
       "color": "green"
     },
     "yield_10y": {
-      "value": "4.64%",
+      "value": "4.65%",
       "label": "10Y YIELD",
       "color": "blue"
     },
@@ -171,17 +171,17 @@
       "color": "green"
     },
     "oil": {
-      "value": "$84.69",
+      "value": "$84.73",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4532",
+      "value": "$4538",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$65.42",
+      "value": "$65.39",
       "label": "SILVER",
       "color": "yellow"
     }
@@ -204,24 +204,24 @@
     },
     {
       "label": "BULLISH",
-      "text": "Gold up 3.8% \u2014 safe haven bid",
+      "text": "Gold up 3.9% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
-  "btc_funding": 6.638e-05,
+  "btc_funding": 6.586e-05,
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 18.97,
-    "daily_avg": 16.83,
-    "daily_pct": 12.8,
-    "weekly_inflow": 117.78,
-    "weekly_avg": 145.5,
-    "weekly_pct": -19.1,
-    "monthly_inflow": 623.58,
-    "monthly_avg": 799.1,
+    "daily_inflow": 18.75,
+    "daily_avg": 16.79,
+    "daily_pct": 11.7,
+    "weekly_inflow": 117.56,
+    "weekly_avg": 145.45,
+    "weekly_pct": -19.2,
+    "monthly_inflow": 623.36,
+    "monthly_avg": 799.03,
     "monthly_pct": -22.0,
-    "large_tx_count": 546661
+    "large_tx_count": 541524
   },
   "history": {
     "vix": [
@@ -247,7 +247,7 @@
       14.25,
       15.19,
       15.84,
-      15.4
+      15.29
     ],
     "yield_10y": [
       4.6,
@@ -272,7 +272,7 @@
       4.7,
       4.72,
       4.71,
-      4.64
+      4.65
     ],
     "oil": [
       83.23,
@@ -297,7 +297,7 @@
       82.4,
       84.5,
       84.94,
-      84.7
+      84.73
     ],
     "gold": [
       4010.3,
@@ -322,7 +322,7 @@
       4380.4,
       4417.8,
       4366.0,
-      4532.3
+      4537.7
     ],
     "silver": [
       56.8,
@@ -347,7 +347,7 @@
       64.99,
       66.12,
       63.94,
-      65.42
+      65.38
     ],
     "dxy": [
       100.99,
@@ -372,7 +372,7 @@
       99.67,
       99.64,
       99.65,
-      98.87
+      98.88
     ],
     "sp500": [
       7443.28,
@@ -397,7 +397,7 @@
       7785.76,
       7745.06,
       7691.76,
-      7720.24
+      7723.95
     ],
     "nasdaq": [
       25508.07,
@@ -422,7 +422,7 @@
       26729.16,
       26644.91,
       26289.71,
-      26284.02
+      26300.23
     ]
   }
 }
