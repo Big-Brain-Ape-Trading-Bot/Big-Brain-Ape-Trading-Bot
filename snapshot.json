@@ -1,5 +1,5 @@
 {
-  "date": "August 19, 2026 09:05 UTC",
+  "date": "August 19, 2026 09:10 UTC",
   "assets": {
     "S&P 500": {
       "price": 7691.76,
@@ -92,26 +92,26 @@
       ]
     },
     "BTC": {
-      "price": 64432.0,
-      "change_pct": 0.34,
+      "price": 64390.8,
+      "change_pct": 0.29,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1922.97,
-      "change_pct": 1.31,
+      "price": 1921.45,
+      "change_pct": 1.25,
       "support": 1820.61,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 77.41,
-      "change_pct": 1.8,
+      "price": 77.38,
+      "change_pct": 1.75,
       "support": 70.51,
       "resistance": 78.87
     }
   },
-  "risk_score": 50,
-  "risk_bias": "NEUTRAL",
+  "risk_score": 42,
+  "risk_bias": "RISK-OFF",
   "fear_greed": {
     "value": 46,
     "classification": "Fear",
@@ -163,44 +163,34 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "99.4",
+      "value": "99.5",
       "label": "DXY",
       "color": "green"
     },
     "oil": {
-      "value": "$84.64",
+      "value": "$85.01",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4412",
+      "value": "$4410",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$63.20",
+      "value": "$63.15",
       "label": "SILVER",
       "color": "yellow"
     }
   },
   "signals": [
     {
-      "label": "BULLISH",
-      "text": "Dollar weakening \u2014 risk asset fuel",
-      "type": "bullish"
-    },
-    {
       "label": "CAUTION",
       "text": "S&P 500 down -0.7%",
       "type": "caution"
-    },
-    {
-      "label": "BULLISH",
-      "text": "Gold up 1.1% \u2014 safe haven bid",
-      "type": "bullish"
     }
   ],
-  "btc_funding": 4.895e-05,
+  "btc_funding": 4.905e-05,
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
@@ -239,7 +229,7 @@
       14.25,
       15.19,
       15.84,
-      15.8
+      15.81
     ],
     "yield_10y": [
       4.6,
@@ -288,7 +278,7 @@
       82.4,
       84.5,
       84.94,
-      84.64
+      85.01
     ],
     "gold": [
       4010.3,
@@ -313,7 +303,7 @@
       4380.4,
       4417.8,
       4366.0,
-      4412.2
+      4409.6
     ],
     "silver": [
       56.8,
@@ -338,7 +328,7 @@
       64.99,
       66.12,
       63.94,
-      63.2
+      63.15
     ],
     "dxy": [
       100.99,
@@ -363,7 +353,7 @@
       99.67,
       99.64,
       99.65,
-      99.44
+      99.46
     ],
     "sp500": [
       7443.28,
