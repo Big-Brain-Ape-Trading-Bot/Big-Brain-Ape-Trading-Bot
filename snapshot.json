@@ -1,5 +1,5 @@
 {
-  "date": "August 19, 2026 02:05 UTC",
+  "date": "August 19, 2026 02:10 UTC",
   "assets": {
     "S&P 500": {
       "price": 7691.76,
@@ -92,20 +92,20 @@
       ]
     },
     "BTC": {
-      "price": 64341.4,
-      "change_pct": 0.22,
+      "price": 64330.0,
+      "change_pct": 0.19,
       "support": 62228.8,
       "resistance": 66924.1
     },
     "ETH": {
-      "price": 1911.09,
-      "change_pct": 0.55,
+      "price": 1910.32,
+      "change_pct": 0.48,
       "support": 1820.61,
       "resistance": 1982.0
     },
     "SOL": {
-      "price": 76.72,
-      "change_pct": 1.55,
+      "price": 76.7,
+      "change_pct": 1.47,
       "support": 70.51,
       "resistance": 78.87
     }
@@ -165,7 +165,7 @@
     "dxy": {
       "value": "99.6",
       "label": "DXY",
-      "color": "red"
+      "color": "green"
     },
     "oil": {
       "value": "$85.00",
@@ -173,12 +173,12 @@
       "color": "yellow"
     },
     "gold": {
-      "value": "$4408",
+      "value": "$4410",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$63.18",
+      "value": "$63.27",
       "label": "SILVER",
       "color": "yellow"
     }
@@ -190,20 +190,20 @@
       "type": "caution"
     }
   ],
-  "btc_funding": 1.488e-05,
+  "btc_funding": 1.559e-05,
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 17.97,
+    "daily_inflow": 17.95,
     "daily_avg": 16.68,
-    "daily_pct": 7.7,
-    "weekly_inflow": 116.78,
-    "weekly_avg": 145.27,
+    "daily_pct": 7.6,
+    "weekly_inflow": 116.76,
+    "weekly_avg": 145.26,
     "weekly_pct": -19.6,
-    "monthly_inflow": 622.58,
+    "monthly_inflow": 622.56,
     "monthly_avg": 798.77,
     "monthly_pct": -22.1,
-    "large_tx_count": 696069
+    "large_tx_count": 691943
   },
   "history": {
     "vix": [
@@ -276,6 +276,7 @@
       81.25,
       82.4,
       84.5,
+      NaN,
       85.0
     ],
     "gold": [
@@ -300,7 +301,8 @@
       4363.6,
       4380.4,
       4417.8,
-      4407.5
+      NaN,
+      4410.3
     ],
     "silver": [
       56.8,
@@ -324,7 +326,8 @@
       64.87,
       64.99,
       66.12,
-      63.18
+      NaN,
+      63.27
     ],
     "dxy": [
       100.99,
@@ -348,7 +351,8 @@
       99.96,
       99.67,
       99.64,
-      99.64
+      99.65,
+      99.63
     ],
     "sp500": [
       7443.28,
