@@ -2166,17 +2166,51 @@ document.body.style.overflow='hidden';
 // ==============================
 // SNAPSHOT
 // ==============================
+// Full screen snapshot image viewer
+function openSnapshotFullScreen(imgUrl){
+var overlay=document.createElement('div');
+overlay.id='snapFullScreen';
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0d1117;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch';
+
+var header=document.createElement('div');
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#161b22;border-bottom:1px solid #30363d;flex-shrink:0;position:sticky;top:0;z-index:100';
+var title=document.createElement('div');
+title.style.cssText='font-size:16px;font-weight:700;color:#58a6ff';
+title.textContent='📈 Daily Market Snapshot';
+var closeBtn=document.createElement('div');
+closeBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f85149;font-size:22px;cursor:pointer;font-weight:bold;flex-shrink:0';
+closeBtn.textContent='✕';
+closeBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';};
+header.appendChild(title);
+header.appendChild(closeBtn);
+overlay.appendChild(header);
+
+var imgBox=document.createElement('div');
+imgBox.style.cssText='flex:1;display:flex;align-items:flex-start;justify-content:center;padding:8px;min-height:0';
+var img=document.createElement('img');
+img.src=imgUrl;
+img.style.cssText='max-width:100%;width:100%;height:auto;border-radius:8px;object-fit:contain';
+imgBox.appendChild(img);
+overlay.appendChild(imgBox);
+
+document.body.appendChild(overlay);
+document.body.style.overflow='hidden';
+}
+
 function loadSnapshot(){
 var out=document.getElementById('snapshotContent');
 
-// Show the daily snapshot image
+// Show the daily snapshot image (clickable for full screen)
 var html='';
 html+='<div style="text-align:center;margin-bottom:12px">';
 html+='<div style="font-size:13px;color:var(--text2);margin-bottom:10px">Today\'s Daily Market Snapshot — posted on X (@Big_Brain_Ape)</div>';
-html+='<img src="'+SNAPSHOT_IMAGE_URL+'?t='+Date.now()+'" style="width:100%;border-radius:12px;border:1px solid var(--border)" ';
-html+='onerror="this.style.display=\'none\';document.getElementById(\'snapFallback\').style.display=\'block\'" ';
+html+='<div style="position:relative;cursor:pointer" onclick="openSnapshotFullScreen(\''+SNAPSHOT_IMAGE_URL+'?t='+Date.now()+'\')">';
+html+='<img src="'+SNAPSHOT_IMAGE_URL+'?t='+Date.now()+'" ';
+html+='onerror="this.parentElement.style.display=\'none\';document.getElementById(\'snapFallback\').style.display=\'block\'" ';
 html+='onload="this.style.opacity=1" ';
 html+='style="width:100%;border-radius:12px;border:1px solid var(--border);opacity:0;transition:opacity .3s" />';
+html+='<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);color:#58a6ff;font-size:11px;padding:4px 10px;border-radius:8px;pointer-events:none">⛶ Tap to enlarge</div>';
+html+='</div>';
 html+='</div>';
 
 // Fallback if image hasn't been uploaded yet
