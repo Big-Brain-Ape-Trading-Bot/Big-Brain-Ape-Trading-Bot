@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787123440,
-  "generatedAt": "2026-08-19 07:10 UTC",
-  "accountValue": 1647.25,
-  "withdrawable": 218.72,
-  "portfolioValue": 1647.25,
-  "totalUnrealizedPnl": 136.58,
-  "totalMarginUsed": 1291.96,
-  "availableCash": 218.72,
+  "timestamp": 1787123739,
+  "generatedAt": "2026-08-19 07:15 UTC",
+  "accountValue": 1644.89,
+  "withdrawable": 217.98,
+  "portfolioValue": 1644.89,
+  "totalUnrealizedPnl": 135.32,
+  "totalMarginUsed": 1291.54,
+  "availableCash": 217.98,
   "positions": [
     {
       "symbol": "NVDA",
@@ -29,13 +29,13 @@
       "side": "LONG",
       "size": 0.33,
       "entryPrice": 4130.63,
-      "currentPrice": 4354.9,
-      "unrealizedPnl": 74.01,
-      "pnlPercent": 16.3,
-      "marginUsed": 479.04,
+      "currentPrice": 4351.0,
+      "unrealizedPnl": 72.72,
+      "pnlPercent": 16.0,
+      "marginUsed": 478.61,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1437.12,
+      "positionValue": 1435.83,
       "tvSymbol": "TVC:GOLD"
     },
     {
@@ -44,13 +44,13 @@
       "side": "LONG",
       "size": 0.115,
       "entryPrice": 7650.33,
-      "currentPrice": 7691.1,
-      "unrealizedPnl": 4.69,
+      "currentPrice": 7691.4,
+      "unrealizedPnl": 4.72,
       "pnlPercent": 2.7,
       "marginUsed": 176.9,
       "leverage": 5,
       "marginType": "cross",
-      "positionValue": 884.48,
+      "positionValue": 884.51,
       "tvSymbol": "SP:SPX"
     }
   ],
@@ -61,15 +61,15 @@
     },
     {
       "label": "GOLD",
-      "value": 1437.12
+      "value": 1435.83
     },
     {
       "label": "SP500",
-      "value": 884.48
+      "value": 884.51
     },
     {
       "label": "Cash",
-      "value": 218.72
+      "value": 217.98
     }
   ],
   "pieMarginSlices": [
@@ -79,7 +79,7 @@
     },
     {
       "label": "GOLD",
-      "value": 479.04
+      "value": 478.61
     },
     {
       "label": "SP500",
@@ -87,7 +87,7 @@
     },
     {
       "label": "Available",
-      "value": 218.72
+      "value": 217.98
     }
   ]
 }
