@@ -2166,14 +2166,14 @@ document.body.style.overflow='hidden';
 // ==============================
 // SNAPSHOT
 // ==============================
-// Full screen snapshot image viewer
+// Full screen snapshot image viewer — pinch zoom + pan
 function openSnapshotFullScreen(imgUrl){
 var overlay=document.createElement('div');
 overlay.id='snapFullScreen';
-overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0d1117;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch';
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0d1117;overflow:hidden;touch-action:none';
 
 var header=document.createElement('div');
-header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#161b22;border-bottom:1px solid #30363d;flex-shrink:0;position:sticky;top:0;z-index:100';
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#161b22;border-bottom:1px solid #30363d;flex-shrink:0;position:absolute;top:0;left:0;right:0;z-index:100';
 var title=document.createElement('div');
 title.style.cssText='font-size:16px;font-weight:700;color:#58a6ff';
 title.textContent='📈 Daily Market Snapshot';
@@ -2185,16 +2185,88 @@ header.appendChild(title);
 header.appendChild(closeBtn);
 overlay.appendChild(header);
 
-var imgBox=document.createElement('div');
-imgBox.style.cssText='flex:1;display:flex;align-items:flex-start;justify-content:center;padding:8px;min-height:0';
+// Scrollable container that fills screen below header
+var scrollBox=document.createElement('div');
+scrollBox.style.cssText='position:absolute;top:60px;left:0;right:0;bottom:0;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;align-items:flex-start;justify-content:center';
+
 var img=document.createElement('img');
 img.src=imgUrl;
-img.style.cssText='max-width:100%;width:100%;height:auto;border-radius:8px;object-fit:contain';
-imgBox.appendChild(img);
-overlay.appendChild(imgBox);
+img.style.cssText='width:100%;height:auto;display:block;min-height:100%;object-fit:contain';
+img.draggable=false;
+scrollBox.appendChild(img);
+overlay.appendChild(scrollBox);
 
 document.body.appendChild(overlay);
 document.body.style.overflow='hidden';
+
+// Pinch-to-zoom + pan using touch events
+var scale=1;var lastScale=1;
+var startX=0,startY=0;var lastX=0,lastY=0;
+var isPanning=false;var isPinching=false;
+var initialDist=0;var imgLeft=0;var imgTop=0;
+
+function getDist(t1,t2){
+var dx=t1.clientX-t2.clientX;var dy=t1.clientY-t2.clientY;
+return Math.sqrt(dx*dx+dy*dy);
+}
+
+function applyTransform(){
+img.style.transform='translate('+imgLeft+'px,'+imgTop+'px) scale('+scale+')';
+img.style.transformOrigin='center center';
+img.style.width='100%';
+img.style.height='auto';
+img.style.minHeight=(scale>1?'auto':'100%');
+}
+
+overlay.addEventListener('touchstart',function(e){
+if(e.touches.length===2){
+e.preventDefault();
+isPinching=true;isPanning=false;
+initialDist=getDist(e.touches[0],e.touches[1]);
+lastScale=scale;
+}else if(e.touches.length===1&&scale>1){
+isPanning=true;isPinching=false;
+startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+lastX=imgLeft;lastY=imgTop;
+}
+},{passive:false});
+
+overlay.addEventListener('touchmove',function(e){
+if(e.touches.length===2&&isPinching){
+e.preventDefault();
+var d=getDist(e.touches[0],e.touches[1]);
+scale=lastScale*(d/initialDist);
+if(scale<1)scale=1;
+if(scale>5)scale=5;
+if(scale===1){imgLeft=0;imgTop=0;}
+applyTransform();
+}else if(e.touches.length===1&&isPanning){
+e.preventDefault();
+imgLeft=lastX+(e.touches[0].clientX-startX);
+imgTop=lastY+(e.touches[0].clientY-startY);
+applyTransform();
+}
+},{passive:false});
+
+overlay.addEventListener('touchend',function(e){
+if(e.touches.length===0){isPanning=false;isPinching=false;}
+if(e.touches.length===1){isPinching=false;}
+},{passive:false});
+
+// Double tap to zoom
+var lastTap=0;
+overlay.addEventListener('touchend',function(e){
+var now=Date.now();
+if(now-lastTap<300){
+if(scale>1){
+scale=1;imgLeft=0;imgTop=0;
+}else{
+scale=2.5;
+}
+applyTransform();
+}
+lastTap=now;
+},{passive:false});
 }
 
 function loadSnapshot(){
