@@ -257,20 +257,20 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div class="tape-track"><div class="tape-content" id="tapeXYZ"></div></div>
 </div>
 
-<!-- 6 SQUARES: S&P500, NASDAQ, Dow, BTC, ETH, SOL with support/resistance -->
+<!-- 6 SQUARES: SPY, QQQ, DIA, BTC, ETH, SOL with support/resistance -->
 <div class="six-grid" id="sixGrid">
 <div class="sq6" onclick="confirmTickerAnalysis('SPY')">
-<div class="sq6-name">S&P 500</div>
+<div class="sq6-name">SPY</div>
 <div class="sq6-price" id="sq6-SP500">—</div>
 <div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
 </div>
 <div class="sq6" onclick="confirmTickerAnalysis('QQQ')">
-<div class="sq6-name">NASDAQ</div>
+<div class="sq6-name">QQQ</div>
 <div class="sq6-price" id="sq6-NASDAQ">—</div>
 <div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
 </div>
 <div class="sq6" onclick="confirmTickerAnalysis('DIA')">
-<div class="sq6-name">DOW</div>
+<div class="sq6-name">DIA</div>
 <div class="sq6-price" id="sq6-DOW">—</div>
 <div class="sq6-sr"><span class="sup">S: —</span><span class="res">R: —</span></div>
 </div>
@@ -1225,21 +1225,21 @@ renderTape('tapeXYZ',sdXyz);
 renderTape('tapeXYZ',xyz);
 }
 
-// Index boxes
+// Index boxes — use ETF versions (SPY, QQQ, DIA)
 if(mkt.indices){
 for(var i=0;i<mkt.indices.length;i++){
 var idx=mkt.indices[i];
-if(idx.symbol==='GSPC'||idx.symbol==='SPY'){
+if(idx.symbol==='SPY'||idx.symbol==='GSPC'){
 document.getElementById('idxSP500').textContent='$'+fmtNum(idx.price);
 document.getElementById('chgSP500').textContent=fmtPct(idx.changePercentage);
 document.getElementById('chgSP500').className='index-change '+(idx.changePercentage>=0?'up':'down');
 }
-if(idx.symbol==='IXIC'||idx.symbol==='QQQ'){
+if(idx.symbol==='QQQ'||idx.symbol==='IXIC'){
 document.getElementById('idxNASDAQ').textContent='$'+fmtNum(idx.price);
 document.getElementById('chgNASDAQ').textContent=fmtPct(idx.changePercentage);
 document.getElementById('chgNASDAQ').className='index-change '+(idx.changePercentage>=0?'up':'down');
 }
-if(idx.symbol==='DJI'||idx.symbol==='DIA'){
+if(idx.symbol==='DIA'||idx.symbol==='DJI'){
 document.getElementById('idxDOW').textContent='$'+fmtNum(idx.price);
 document.getElementById('chgDOW').textContent=fmtPct(idx.changePercentage);
 document.getElementById('chgDOW').className='index-change '+(idx.changePercentage>=0?'up':'down');
@@ -1263,9 +1263,9 @@ var idxList=mkt.indices||[];
 var cryList=mkt.crypto||[];
 
 // Indices
-var sp500=findItem(idxList,'GSPC')||findItem(idxList,'SPY')||findItem(idxList,'^GSPC');
-var nasdaq=findItem(idxList,'IXIC')||findItem(idxList,'QQQ')||findItem(idxList,'^IXIC');
-var dow=findItem(idxList,'DJI')||findItem(idxList,'DIA')||findItem(idxList,'^DJI');
+var sp500=findItem(idxList,'SPY')||findItem(idxList,'GSPC')||findItem(idxList,'^GSPC');
+var nasdaq=findItem(idxList,'QQQ')||findItem(idxList,'IXIC')||findItem(idxList,'^IXIC');
+var dow=findItem(idxList,'DIA')||findItem(idxList,'DJI')||findItem(idxList,'^DJI');
 
 if(sp500)setSq6('SP500',sp500.price,sp500.changePercentage,getSR(sp500));
 if(nasdaq)setSq6('NASDAQ',nasdaq.price,nasdaq.changePercentage,getSR(nasdaq));
@@ -1972,13 +1972,15 @@ html+='</div>';
 
 if(pos.positions&&pos.positions.length>0){
 html+='<div class="section-title">Open Positions</div>';
+html+='<div style="font-size:11px;color:var(--text2);margin-bottom:8px">Tap any position for live chart + latest news</div>';
 for(var i=0;i<pos.positions.length;i++){
 var p=pos.positions[i];
 var pnl=p.unrealizedPnl||p.pnl||0;
 var pnlPct=p.pnlPercent||0;
 var pnlClass=pnl>=0?'up':'down';
-html+='<div class="pos-card">';
-html+='<div class="pos-header"><span class="pos-symbol">'+p.symbol+'</span><span class="pos-side '+(p.side||'long')+'">'+(p.side||'LONG').toUpperCase()+'</span></div>';
+var tvSym=p.tvSymbol||('NASDAQ:'+p.symbol);
+html+='<div class="pos-card" style="cursor:pointer" onclick="showPositionDetail(\''+p.symbol+'\',\''+tvSym+'\')">';
+html+='<div class="pos-header"><span class="pos-symbol">'+p.symbol+' 📈</span><span class="pos-side '+(p.side||'long')+'">'+(p.side||'LONG').toUpperCase()+'</span></div>';
 html+='<div class="pos-grid">';
 html+='<div><span class="label">Size: </span>'+fmtNum(p.size)+' units</div>';
 html+='<div><span class="label">Entry: </span>$'+fmtNum(p.entryPrice)+'</div>';
@@ -2004,17 +2006,160 @@ if(!tp||!tp.posts||tp.posts.length===0)return;
 var out=document.getElementById('tradingContent');
 var html=out.innerHTML;
 html+='<div class="section-title">Recent Trade Rationale</div>';
-for(var i=0;i<Math.min(tp.posts.length,3);i++){
+html+='<div style="font-size:11px;color:var(--text2);margin-bottom:8px">Tap any post to read the full report</div>';
+for(var i=0;i<Math.min(tp.posts.length,5);i++){
 var post=tp.posts[i];
-var title=post.title||post.token||'Trade Update';
-var content=post.content||post.reason||post.body||'';
-html+='<div class="briefing-card"><h3>'+title+'</h3><p>'+content.substring(0,300)+'...</p></div>';
+var title=post.title||'Trade Update';
+var dateStr=post.date||'';
+var content=post.content||'';
+var preview=content.substring(0,150).replace(/\n/g,' ');
+html+='<div class="briefing-card" style="cursor:pointer" onclick="showFullPost('+i+')">';
+html+='<h3>'+title.substring(0,60)+'</h3>';
+if(dateStr)html+='<div style="font-size:11px;color:var(--text2);margin-bottom:6px">'+dateStr+'</div>';
+html+='<p>'+preview+'...</p>';
+html+='</div>';
 }
+// Store posts globally for full view
+window._tradingPosts=tp.posts;
 out.innerHTML=html;
 })
 .catch(function(){
 out.innerHTML='<div class="briefing-card"><h3>Trading Desk</h3><p>Unable to load positions. Please try again later.</p></div>';
 });
+}
+
+// Position detail modal — chart + news
+function showPositionDetail(symbol,tvSymbol){
+var overlay=document.createElement('div');
+overlay.id='posDetailOverlay';
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0d1117;display:flex;flex-direction:column;overflow-y:auto';
+
+// Header
+var header=document.createElement('div');
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#161b22;border-bottom:1px solid #30363d;flex-shrink:0;position:sticky;top:0;z-index:100';
+var title=document.createElement('div');
+title.style.cssText='font-size:18px;font-weight:700;color:#58a6ff';
+title.textContent='📈 '+symbol;
+var closeBtn=document.createElement('div');
+closeBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f85149;font-size:22px;cursor:pointer;font-weight:bold';
+closeBtn.textContent='✕';
+closeBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';};
+header.appendChild(title);
+header.appendChild(closeBtn);
+overlay.appendChild(header);
+
+// Chart container
+var chartBox=document.createElement('div');
+chartBox.style.cssText='padding:12px;flex-shrink:0';
+var chartLabel=document.createElement('div');
+chartLabel.style.cssText='font-size:13px;color:#8b949e;margin-bottom:8px;font-weight:600';
+chartLabel.textContent='Live Interactive Chart';
+chartBox.appendChild(chartLabel);
+
+var chartContainer=document.createElement('div');
+chartContainer.id='posTVChart';
+chartContainer.style.cssText='height:350px;width:100%;border-radius:12px;overflow:hidden;background:#131722';
+chartBox.appendChild(chartContainer);
+overlay.appendChild(chartBox);
+
+// News section
+var newsBox=document.createElement('div');
+newsBox.style.cssText='padding:12px;padding-bottom:40px';
+var newsLabel=document.createElement('div');
+newsLabel.style.cssText='font-size:13px;color:#8b949e;margin-bottom:10px;font-weight:600';
+newsLabel.textContent='📰 Latest News';
+newsBox.appendChild(newsLabel);
+
+var newsList=document.createElement('div');
+newsList.id='posNewsList';
+newsList.innerHTML='<div style="color:#8b949e;padding:20px;text-align:center">Loading news...</div>';
+newsBox.appendChild(newsList);
+overlay.appendChild(newsBox);
+
+document.body.appendChild(overlay);
+document.body.style.overflow='hidden';
+
+// Load TradingView chart
+setTimeout(function(){
+loadTradingViewChart(chartContainer,tvSymbol);
+},100);
+
+// Fetch news from Finnhub
+var finnhubKey=FINNHUB_KEY;
+var today=new Date();
+var to=today.toISOString().split('T')[0];
+var fromD=new Date(today.getTime()-7*24*60*60*1000);
+var from=fromD.toISOString().split('T')[0];
+
+fetch('https://finnhub.io/api/v1/company-news?symbol='+symbol+'&from='+from+'&to='+to+'&token='+finnhubKey)
+.then(function(r){return r.json()})
+.then(function(articles){
+var list=document.getElementById('posNewsList');
+if(!articles||articles.length===0){
+list.innerHTML='<div style="color:#8b949e;padding:16px">No recent news for '+symbol+'</div>';
+return;
+}
+var html='';
+for(var i=0;i<Math.min(4,articles.length);i++){
+var a=articles[i];
+var d=new Date(a.datetime*1000);
+var dStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+var url=a.url||'';
+var headline=a.headline||'';
+var source=a.source||'';
+var summary=a.summary||'';
+html+='<div style="background:#161b22;border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer" onclick="window.open(\''+url.replace(/'/g,"\\'")+'\',\'_blank\')">';
+html+='<div style="font-size:14px;font-weight:600;color:#e6edf3;line-height:1.4;margin-bottom:4px">'+headline+'</div>';
+html+='<div style="font-size:11px;color:#8b949e">'+source+' · '+dStr+'</div>';
+if(summary)html+='<div style="font-size:12px;color:#8b949e;margin-top:6px;line-height:1.4">'+summary.substring(0,120)+'</div>';
+html+='</div>';
+}
+list.innerHTML=html;
+})
+.catch(function(){
+document.getElementById('posNewsList').innerHTML='<div style="color:#8b949e;padding:16px">Could not load news.</div>';
+});
+}
+
+// Full trade post modal
+function showFullPost(idx){
+if(!window._tradingPosts||!window._tradingPosts[idx])return;
+var post=window._tradingPosts[idx];
+var overlay=document.createElement('div');
+overlay.id='fullPostOverlay';
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0d1117;display:flex;flex-direction:column;overflow-y:auto';
+
+var header=document.createElement('div');
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#161b22;border-bottom:1px solid #30363d;flex-shrink:0;position:sticky;top:0;z-index:100';
+var title=document.createElement('div');
+title.style.cssText='font-size:16px;font-weight:700;color:#58a6ff;flex:1;margin-right:12px';
+title.textContent=(post.title||'Trade Report').substring(0,50);
+var closeBtn=document.createElement('div');
+closeBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f85149;font-size:22px;cursor:pointer;font-weight:bold;flex-shrink:0';
+closeBtn.textContent='✕';
+closeBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';};
+header.appendChild(title);
+header.appendChild(closeBtn);
+overlay.appendChild(header);
+
+var body=document.createElement('div');
+body.style.cssText='padding:16px;max-width:600px;margin:0 auto;width:100%';
+
+if(post.date){
+var dateDiv=document.createElement('div');
+dateDiv.style.cssText='font-size:12px;color:#8b949e;margin-bottom:12px';
+dateDiv.textContent=post.date;
+body.appendChild(dateDiv);
+}
+
+var contentDiv=document.createElement('div');
+contentDiv.style.cssText='font-size:14px;color:#e6edf3;line-height:1.6;white-space:pre-wrap';
+contentDiv.textContent=post.content||'No content available.';
+body.appendChild(contentDiv);
+
+overlay.appendChild(body);
+document.body.appendChild(overlay);
+document.body.style.overflow='hidden';
 }
 
 // ==============================
