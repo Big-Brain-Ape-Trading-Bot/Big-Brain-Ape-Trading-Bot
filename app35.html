@@ -1397,10 +1397,13 @@ if(sym==='ADA')return 'BINANCE:ADAUSDT';
 if(sym==='AVAX')return 'BINANCE:AVAXUSDT';
 if(sym==='DOT')return 'BINANCE:DOTUSDT';
 if(sym==='LINK')return 'BINANCE:LINKUSDT';
-// Indices
-if(sym==='SPY'||sym==='GSPC'||sym==='%5EGSPC')return 'SP:SPX';
-if(sym==='QQQ'||sym==='IXIC'||sym==='%5EIXIC')return 'NASDAQ:IXIC';
-if(sym==='DIA'||sym==='DJI'||sym==='%5EDJI')return 'DJ:DJI';
+// Indices — show the actual ETF chart, not the index
+if(sym==='SPY')return 'AMEX:SPY';
+if(sym==='QQQ')return 'NASDAQ:QQQ';
+if(sym==='DIA')return 'NYSE:ARCA:DIA';
+if(sym==='GSPC'||sym==='%5EGSPC')return 'SP:SPX';
+if(sym==='IXIC'||sym==='%5EIXIC')return 'NASDAQ:IXIC';
+if(sym==='DJI'||sym==='%5EDJI')return 'DJ:DJI';
 // Commodities
 if(sym==='GOLD'||sym==='GC=F')return 'TVC:GOLD';
 if(sym==='SILVER'||sym==='SI=F')return 'TVC:SILVER';
