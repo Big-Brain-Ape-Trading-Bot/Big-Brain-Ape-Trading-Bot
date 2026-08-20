@@ -717,8 +717,15 @@ var apeRating=bigBrainRating({strongBuy:d.strongBuy,buy:d.buy,hold:d.hold,sell:d
 
 var html='';
 
-// === SECTION 0: BIG BRAIN APE'S RECOMMENDATION (FIRST thing they see) ===
-html+='<div class="section-title" style="margin-top:0">🦍 Big Brain Ape\'s Recommendation</div>';
+// === SECTION 1: ASSET NAME + PRICE + CHANGE (TOP) ===
+html+='<div class="analysis-header">';
+if(d.logo)html+='<img class="analysis-logo" src="'+d.logo+'" onerror="this.style.display=\'none\'">';
+html+='<div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><div class="analysis-symbol">'+sym+(d.exchange?' · '+d.exchange:'')+'</div></div></div>';
+html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
+html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
+
+// === SECTION 2: BIG BRAIN APE'S RECOMMENDATION ===
+html+='<div class="section-title" style="margin-top:16px">🦍 Big Brain Ape\'s Recommendation</div>';
 html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+apeRating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
 html+='<div style="font-size:32px;font-weight:800;color:'+apeRating.color+';margin-bottom:8px">'+apeRating.label+'</div>';
 if(apeRating.reasons.length>0){
@@ -730,7 +737,7 @@ html+='</div>';
 }
 html+='</div>';
 
-// === SECTION 1: ANALYST RATINGS GRAPH ===
+// === SECTION 3: ANALYST RATINGS & PRICE TARGETS ===
 html+='<div class="section-title">📊 Analyst Ratings & Price Targets</div>';
 
 // Rating consensus box
@@ -762,13 +769,6 @@ if(d.targetAvg)html+=dataCell("Target Avg",'$'+fmtNum(d.targetAvg));
 if(d.targetLow)html+=dataCell("Target Low",'$'+fmtNum(d.targetLow));
 html+='</div>';
 }
-
-// === HEADER with price ===
-html+='<div class="analysis-header">';
-if(d.logo)html+='<img class="analysis-logo" src="'+d.logo+'" onerror="this.style.display=\'none\'">';
-html+='<div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><div class="analysis-symbol">'+sym+(d.exchange?' · '+d.exchange:'')+'</div></div></div>';
-html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
-html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
 
 // === SECTION 2: INTERACTIVE TRADINGVIEW CHART ===
 html+='<div class="section-title">📈 Live Trading Chart</div>';
@@ -1131,14 +1131,7 @@ var rating=calcCryptoRating(m);
 
 var html='';
 
-// === SECTION 0: BIG BRAIN APE'S RECOMMENDATION ===
-html+='<div class="section-title" style="margin-top:0">🦍 Big Brain Ape\'s Recommendation</div>';
-html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+rating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
-html+='<div style="font-size:32px;font-weight:800;color:'+rating.color+';margin-bottom:8px">'+rating.label+'</div>';
-html+='<div style="font-size:12px;color:var(--text2);margin-top:4px">'+rating.reason+'</div>';
-html+='</div>';
-
-// === HEADER with price ===
+// === SECTION 1: ASSET NAME + PRICE + CHANGE (TOP) ===
 html+='<div class="analysis-header">';
 if(data.image&&data.image.small)html+='<img class="analysis-logo" src="'+data.image.small+'">';
 html+='<div><div class="analysis-name">'+data.name+'</div><div class="analysis-symbol">'+symbol+'</div></div></div>';
@@ -1146,6 +1139,14 @@ html+='<div><div class="analysis-name">'+data.name+'</div><div class="analysis-s
 html+='<div class="analysis-price">$'+fmtCrypto(m.current_price.usd)+'</div>';
 html+='<div class="analysis-change '+changeClass+'">'+(m.price_change_percentage_24h>=0?'▲':'▼')+' '+fmtNum(Math.abs(m.price_change_percentage_24h))+'% (24h)</div>';
 
+// === SECTION 2: BIG BRAIN APE'S RECOMMENDATION ===
+html+='<div class="section-title" style="margin-top:16px">🦍 Big Brain Ape\'s Recommendation</div>';
+html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+rating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
+html+='<div style="font-size:32px;font-weight:800;color:'+rating.color+';margin-bottom:8px">'+rating.label+'</div>';
+html+='<div style="font-size:12px;color:var(--text2);margin-top:4px">'+rating.reason+'</div>';
+html+='</div>';
+
+// === SECTION 3: TECHNICAL SIGNAL ===
 html+='<div class="rating-box"><div class="rating-label">Technical Signal</div>';
 html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
 html+='<p style="font-size:12px;color:var(--text2);margin-top:6px">'+rating.reason+'</p></div>';
