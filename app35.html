@@ -713,11 +713,25 @@ function renderStockAnalysisFull(sym,d,out){
 var changeClass=d.change>=0?'up':'down';
 var changeArrow=d.change>=0?'▲':'▼';
 var rating=calcRating({strongBuy:d.strongBuy,buy:d.buy,hold:d.hold,sell:d.sell,strongSell:d.strongSell},d);
+var apeRating=bigBrainRating({strongBuy:d.strongBuy,buy:d.buy,hold:d.hold,sell:d.sell,strongSell:d.strongSell},d);
 
 var html='';
 
-// === SECTION 1: ANALYST RATINGS GRAPH (FIRST thing they see) ===
-html+='<div class="section-title" style="margin-top:0">📊 Analyst Ratings & Price Targets</div>';
+// === SECTION 0: BIG BRAIN APE'S RECOMMENDATION (FIRST thing they see) ===
+html+='<div class="section-title" style="margin-top:0">🦍 Big Brain Ape\'s Recommendation</div>';
+html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+apeRating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
+html+='<div style="font-size:32px;font-weight:800;color:'+apeRating.color+';margin-bottom:8px">'+apeRating.label+'</div>';
+if(apeRating.reasons.length>0){
+html+='<div style="font-size:12px;color:var(--text2);text-align:left;margin-top:8px">';
+for(var ri=0;ri<apeRating.reasons.length;ri++){
+html+='<div style="padding:3px 0">• '+apeRating.reasons[ri]+'</div>';
+}
+html+='</div>';
+}
+html+='</div>';
+
+// === SECTION 1: ANALYST RATINGS GRAPH ===
+html+='<div class="section-title">📊 Analyst Ratings & Price Targets</div>';
 
 // Rating consensus box
 html+='<div class="rating-box"><div class="rating-label">Analyst Consensus</div>';
@@ -1115,7 +1129,17 @@ var m=data.market_data;
 var changeClass=m.price_change_percentage_24h>=0?'up':'down';
 var rating=calcCryptoRating(m);
 
-var html='<div class="analysis-header">';
+var html='';
+
+// === SECTION 0: BIG BRAIN APE'S RECOMMENDATION ===
+html+='<div class="section-title" style="margin-top:0">🦍 Big Brain Ape\'s Recommendation</div>';
+html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+rating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
+html+='<div style="font-size:32px;font-weight:800;color:'+rating.color+';margin-bottom:8px">'+rating.label+'</div>';
+html+='<div style="font-size:12px;color:var(--text2);margin-top:4px">'+rating.reason+'</div>';
+html+='</div>';
+
+// === HEADER with price ===
+html+='<div class="analysis-header">';
 if(data.image&&data.image.small)html+='<img class="analysis-logo" src="'+data.image.small+'">';
 html+='<div><div class="analysis-name">'+data.name+'</div><div class="analysis-symbol">'+symbol+'</div></div></div>';
 
@@ -1185,31 +1209,97 @@ if(pct>=0.3)return{label:'Sell',color:'#f0883e'};
 return{label:'Strong Sell',color:'#f85149'};
 }
 
+// Big Brain Ape's own rating — combines analyst consensus + momentum + valuation
+function bigBrainRating(rec,q){
+var score=0;
+var reasons=[];
+
+// Analyst consensus (weight: 40%)
+if(rec){
+var total=rec.strongBuy+rec.buy+rec.hold+rec.sell+rec.strongSell;
+if(total>0){
+var bull=rec.strongBuy+rec.buy;
+var bear=rec.sell+rec.strongSell;
+var bullPct=bull/total;
+if(bullPct>=0.7){score+=3;reasons.push('Strong analyst consensus ('+Math.round(bullPct*100)+'% bullish)')}
+else if(bullPct>=0.55){score+=2;reasons.push('Positive analyst consensus ('+Math.round(bullPct*100)+'% bullish)')}
+else if(bullPct>=0.45){score+=0;reasons.push('Mixed analyst views')}
+else if(bullPct>=0.3){score-=2;reasons.push('Negative analyst consensus ('+Math.round(bear/total*100)+'% bearish)')}
+else{score-=3;reasons.push('Very bearish analyst consensus ('+Math.round(bear/total*100)+'% bearish)')}
+}
+}
+
+// Price momentum (weight: 30%)
+if(q&&q.changePercentage!==undefined){
+var chg=q.changePercentage;
+if(chg>5){score+=2;reasons.push('Strong upward momentum (+'+fmtNum(chg)+'% today)')}
+else if(chg>1){score+=1;reasons.push('Positive momentum (+'+fmtNum(chg)+'% today)')}
+else if(chg<-5){score-=2;reasons.push('Sharp decline ('+fmtNum(chg)+'% today)')}
+else if(chg<-1){score-=1;reasons.push('Downward pressure ('+fmtNum(chg)+'% today)')}
+}
+
+// Distance from 52-week high (weight: 15%)
+if(q&&q.yearHigh&&q.price){
+var fromHigh=((q.price-q.yearHigh)/q.yearHigh)*100;
+if(fromHigh>-5){score+=1;reasons.push('Near 52-week high ('+fmtNum(fromHigh)+'%)')}
+else if(fromHigh<-25){score-=1;reasons.push('Far below 52-week high ('+fmtNum(fromHigh)+'%)')}
+}
+
+// PE ratio / valuation (weight: 15%)
+if(q&&q.pe){
+if(q.pe<15&&q.pe>0){score+=1;reasons.push('Attractive valuation (P/E '+fmtNum(q.pe)+')')}
+else if(q.pe>50){score-=1;reasons.push('High valuation (P/E '+fmtNum(q.pe)+')')}
+}
+
+// Map to 5-point scale
+var label,color;
+if(score>=5){label='Strong Buy';color='#3fb950'}
+else if(score>=2){label='Buy';color='#5cb85c'}
+else if(score>=-1){label='Hold';color='#d29922'}
+else if(score>=-4){label='Sell';color='#f0883e'}
+else{label='Strong Sell';color='#f85149'}
+
+return{label:label,color:color,score:score,reasons:reasons};
+}
+
 function calcCryptoRating(m){
-var r={label:'Neutral',color:'#d29922',reason:''};
+var r={label:'Hold',color:'#d29922',reason:''};
+var score=0;
 var signals=0;
-var bullish=0;
 
-if(m.price_change_percentage_24h>2){bullish++;signals++}
-else if(m.price_change_percentage_24h<-2){signals++}
+// 24h momentum
+if(m.price_change_percentage_24h>5){score+=2;signals++}
+else if(m.price_change_percentage_24h>2){score+=1;signals++}
+else if(m.price_change_percentage_24h<-5){score-=2;signals++}
+else if(m.price_change_percentage_24h<-2){score-=1;signals++}
 
-if(m.price_change_percentage_7d>5){bullish++;signals++}
-else if(m.price_change_percentage_7d<-5){signals++}
+// 7d momentum
+if(m.price_change_percentage_7d>10){score+=2;signals++}
+else if(m.price_change_percentage_7d>5){score+=1;signals++}
+else if(m.price_change_percentage_7d<-10){score-=2;signals++}
+else if(m.price_change_percentage_7d<-5){score-=1;signals++}
 
-if(m.price_change_percentage_30d>10){bullish++;signals++}
-else if(m.price_change_percentage_30d<-10){signals++}
+// 30d momentum
+if(m.price_change_percentage_30d>20){score+=2;signals++}
+else if(m.price_change_percentage_30d>10){score+=1;signals++}
+else if(m.price_change_percentage_30d<-20){score-=2;signals++}
+else if(m.price_change_percentage_30d<-10){score-=1;signals++}
 
+// Distance from ATH
 var price=m.current_price.usd;
 var ath=m.ath.usd;
-var fromAth=pct(price,ath);
-if(fromAth>-20){bullish++;signals++}
+var fromAth=((price-ath)/ath)*100;
+if(fromAth>-10){score+=1;signals++}
+else if(fromAth<-60){score-=1;signals++}
 
-if(signals===0){r.label='Neutral';r.color='#d29922'}
-else if(bullish>=signals*0.7){r.label='Bullish';r.color='#3fb950'}
-else if(bullish<=signals*0.3){r.label='Bearish';r.color='#f85149'}
-else{r.label='Mixed';r.color='#d29922'}
+// Map score to 5-point rating
+if(score>=5){r.label='Strong Buy';r.color='#3fb950'}
+else if(score>=2){r.label='Buy';r.color='#5cb85c'}
+else if(score>=-1){r.label='Hold';r.color='#d29922'}
+else if(score>=-4){r.label='Sell';r.color='#f0883e'}
+else{r.label='Strong Sell';r.color='#f85149'}
 
-r.reason=bullish+'/'+signals+' bullish signals';
+r.reason=score>0?score+' bullish signals':score<0?Math.abs(score)+' bearish signals':'neutral signals';
 return r;
 }
 
