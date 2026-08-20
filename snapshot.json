@@ -1,9 +1,9 @@
 {
-  "date": "August 20, 2026 14:00 UTC",
+  "date": "August 20, 2026 14:05 UTC",
   "assets": {
     "S&P 500": {
-      "price": 7685.97,
-      "change_pct": -0.29,
+      "price": 7679.79,
+      "change_pct": -0.37,
       "support": 7313.92,
       "resistance": 7816.7,
       "history": [
@@ -30,12 +30,12 @@
         7745.06,
         7691.76,
         7707.98,
-        7686.04
+        7679.95
       ]
     },
     "NASDAQ": {
-      "price": 26183.84,
-      "change_pct": -0.56,
+      "price": 26142.54,
+      "change_pct": -0.72,
       "support": 24425.34,
       "resistance": 26875.52,
       "history": [
@@ -62,12 +62,12 @@
         26644.91,
         26289.71,
         26331.09,
-        26183.84
+        26142.54
       ]
     },
     "Dow Jones": {
-      "price": 53119.16,
-      "change_pct": -0.64,
+      "price": 53087.93,
+      "change_pct": -0.7,
       "support": 51542.06,
       "resistance": 54744.33,
       "history": [
@@ -94,30 +94,30 @@
         53459.78,
         53343.4,
         53463.05,
-        53119.16
+        53087.93
       ]
     },
     "BTC": {
-      "price": 71609.1,
-      "change_pct": 10.2,
+      "price": 71714.1,
+      "change_pct": 10.14,
       "support": 62228.8,
       "resistance": 72487.5
     },
     "ETH": {
-      "price": 2275.56,
-      "change_pct": 17.8,
+      "price": 2281.04,
+      "change_pct": 17.87,
       "support": 1820.61,
       "resistance": 2336.82
     },
     "SOL": {
-      "price": 86.49,
-      "change_pct": 10.36,
+      "price": 86.55,
+      "change_pct": 10.23,
       "support": 70.51,
       "resistance": 88.12
     }
   },
-  "risk_score": 50,
-  "risk_bias": "NEUTRAL",
+  "risk_score": 42,
+  "risk_bias": "RISK-OFF",
   "fear_greed": {
     "value": 62,
     "classification": "Greed",
@@ -159,7 +159,7 @@
   "whale_flow": "NEUTRAL",
   "metrics": {
     "vix": {
-      "value": "15.5",
+      "value": "15.6",
       "label": "VIX",
       "color": "green"
     },
@@ -171,10 +171,10 @@
     "dxy": {
       "value": "98.8",
       "label": "DXY",
-      "color": "red"
+      "color": "green"
     },
     "oil": {
-      "value": "$86.41",
+      "value": "$86.42",
       "label": "WTI OIL",
       "color": "yellow"
     },
@@ -184,15 +184,20 @@
       "color": "yellow"
     },
     "silver": {
-      "value": "$67.36",
+      "value": "$67.39",
       "label": "SILVER",
       "color": "yellow"
     }
   },
   "signals": [
     {
+      "label": "CAUTION",
+      "text": "S&P 500 down -0.4%",
+      "type": "caution"
+    },
+    {
       "label": "BULLISH",
-      "text": "BTC up 10.2% \u2014 momentum",
+      "text": "BTC up 10.1% \u2014 momentum",
       "type": "bullish"
     },
     {
@@ -210,14 +215,14 @@
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 66.92,
-    "daily_avg": 27.25,
-    "daily_pct": 145.6,
-    "weekly_inflow": 190.77,
-    "weekly_avg": 159.73,
-    "weekly_pct": 19.4,
-    "monthly_inflow": 684.57,
-    "monthly_avg": 820.55,
+    "daily_inflow": 66.65,
+    "daily_avg": 27.21,
+    "daily_pct": 144.9,
+    "weekly_inflow": 190.49,
+    "weekly_avg": 159.67,
+    "weekly_pct": 19.3,
+    "monthly_inflow": 684.3,
+    "monthly_avg": 820.46,
     "monthly_pct": -16.6,
     "large_tx_count": 610106
   },
@@ -246,7 +251,7 @@
       15.19,
       15.84,
       14.89,
-      15.54
+      15.62
     ],
     "yield_10y": [
       4.6,
@@ -298,7 +303,7 @@
       84.5,
       84.94,
       85.83,
-      86.41
+      86.42
     ],
     "gold": [
       4010.3,
@@ -324,7 +329,7 @@
       4417.8,
       4366.0,
       4489.4,
-      4537.9
+      4538.4
     ],
     "silver": [
       56.8,
@@ -350,7 +355,7 @@
       66.12,
       63.94,
       65.73,
-      67.36
+      67.39
     ],
     "dxy": [
       100.99,
@@ -376,7 +381,7 @@
       99.64,
       99.65,
       98.83,
-      98.83
+      98.82
     ],
     "sp500": [
       7443.28,
@@ -402,7 +407,7 @@
       7745.06,
       7691.76,
       7707.98,
-      7686.04
+      7679.95
     ],
     "nasdaq": [
       25508.07,
@@ -428,7 +433,7 @@
       26644.91,
       26289.71,
       26331.09,
-      26183.84
+      26142.54
     ]
   }
 }
