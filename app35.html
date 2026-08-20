@@ -724,9 +724,9 @@ html+='<div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><di
 html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
 html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
 
-// === SECTION 2: BIG BRAIN APE'S RECOMMENDATION ===
+// === SECTION 2: BIG BRAIN APE'S RECOMMENDATION (clickable) ===
 html+='<div class="section-title" style="margin-top:16px">🦍 Big Brain Ape\'s Recommendation</div>';
-html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+apeRating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
+html+='<div onclick="showApeDetail(\''+sym+'\',\''+apeRating.label.replace(/'/g,'')+'\','+apeRating.score+')" style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+apeRating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;cursor:pointer">';
 html+='<div style="font-size:32px;font-weight:800;color:'+apeRating.color+';margin-bottom:8px">'+apeRating.label+'</div>';
 if(apeRating.reasons.length>0){
 html+='<div style="font-size:12px;color:var(--text2);text-align:left;margin-top:8px">';
@@ -737,11 +737,12 @@ html+='</div>';
 }
 html+='</div>';
 
-// === SECTION 3: ANALYST RATINGS & PRICE TARGETS ===
+// === SECTION 3: ANALYST RATINGS & PRICE TARGETS (with colored border) ===
 html+='<div class="section-title">📊 Analyst Ratings & Price Targets</div>';
+html+='<div style="border:2px solid '+rating.color+';border-radius:12px;padding:16px;margin-bottom:16px">';
 
 // Rating consensus box
-html+='<div class="rating-box"><div class="rating-label">Analyst Consensus</div>';
+html+='<div class="rating-box" style="border:none;padding:0;margin-bottom:12px"><div class="rating-label">Analyst Consensus</div>';
 html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
 var sb=d.strongBuy||0,b=d.buy||0,h=d.hold||0,s=d.sell||0,ss=d.strongSell||0;
 var total=sb+b+h+s+ss;
@@ -769,6 +770,7 @@ if(d.targetAvg)html+=dataCell("Target Avg",'$'+fmtNum(d.targetAvg));
 if(d.targetLow)html+=dataCell("Target Low",'$'+fmtNum(d.targetLow));
 html+='</div>';
 }
+html+='</div>';
 
 // === SECTION 2: INTERACTIVE TRADINGVIEW CHART ===
 html+='<div class="section-title">📈 Live Trading Chart</div>';
@@ -777,9 +779,10 @@ html+='<div class="tv-chart-container" id="tvChartContainer"></div>';
 // === SECTION 3: MORE CHARTS & GRAPHS ===
 html+='<div class="section-title">📊 Key Metrics Visualization</div>';
 
-// Earnings bar chart
+// Earnings bar chart — last 3 quarters with beat/miss
 if(d.earnings&&d.earnings.length>0){
-html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Earnings Per Share (4 Quarters)</div><canvas id="earningsChart" style="width:100%;height:160px"></canvas></div>';
+var eShow=d.earnings.slice(0,3);
+html+='<div class="chart-container"><div style="font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:600">Earnings: Last '+eShow.length+' Quarters</div><canvas id="earningsChart" style="width:100%;height:220px"></canvas></div>';
 }
 
 // Margin gauges
@@ -922,7 +925,7 @@ if(rc&&d.recTrend)drawRecTrendChart(rc,d.recTrend);
 
 // Earnings chart
 var ec=document.getElementById('earningsChart');
-if(ec&&d.earnings)drawEarningsChart(ec,d.earnings);
+if(ec&&d.earnings)drawEarningsChart(ec,d.earnings.slice(0,3));
 },50);
 }
 
@@ -1070,17 +1073,23 @@ ctx.fillText(gv,2,gy+3);
 
 function drawEarningsChart(canvas,earnings){
 var ctx=canvas.getContext('2d');
-var w=canvas.width=canvas.offsetWidth*2;
-var h=canvas.height=320;
-ctx.scale(2,2);
-var cw=canvas.offsetWidth,ch=160;
+var dpr=window.devicePixelRatio||2;
+var w=canvas.width=canvas.offsetWidth*dpr;
+var h=canvas.height=220*dpr;
+ctx.scale(dpr,dpr);
+var cw=canvas.offsetWidth,ch=220;
 var n=earnings.length;
-var barW=cw/n*0.5;
-var gap=cw/n;
+if(n===0)return;
 
-var allVals=earnings.map(function(e){return Math.max(e.estimate,e.actual)});
+var padTop=35,padBottom=35,padLeft=12,padRight=12;
+var chartW=cw-padLeft-padRight;
+var chartH=ch-padTop-padBottom;
+var barW=chartW/n*0.3;
+var gap=chartW/n;
+
+var allVals=earnings.map(function(e){return Math.max(Math.abs(e.estimate),Math.abs(e.actual))});
 var maxVal=Math.max.apply(null,allVals);
-if(maxVal===0)return;
+if(maxVal===0)maxVal=1;
 
 ctx.fillStyle='#161b22';
 ctx.fillRect(0,0,cw,ch);
@@ -1088,31 +1097,41 @@ ctx.fillRect(0,0,cw,ch);
 // Grid
 ctx.strokeStyle='#30363d';
 ctx.lineWidth=0.5;
-for(var i=0;i<3;i++){var y=(i/2)*ch;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke()}
+for(var i=0;i<=3;i++){var y=padTop+(i/3)*chartH;ctx.beginPath();ctx.moveTo(padLeft,y);ctx.lineTo(padLeft+chartW,y);ctx.stroke()}
+
+// Legend
+ctx.font='10px sans-serif';
+ctx.textAlign='left';
+ctx.fillStyle='#58a6ff';ctx.fillRect(padLeft,padTop-20,10,10);ctx.fillStyle='#8b949e';ctx.fillText('Estimate',padLeft+14,padTop-11);
+ctx.fillStyle='#3fb950';ctx.fillRect(padLeft+70,padTop-20,10,10);ctx.fillStyle='#8b949e';ctx.fillText('Actual',padLeft+84,padTop-11);
 
 for(var i=0;i<n;i++){
 var e=earnings[i];
-var x=i*gap+gap/2;
+var x=padLeft+i*gap+gap/2;
+var beat=e.actual>=e.estimate;
 // Estimate bar (blue)
-var ebh=(e.estimate/maxVal)*ch;
+var ebh=(Math.abs(e.estimate)/maxVal)*chartH;
 ctx.fillStyle='#58a6ff';
-ctx.fillRect(x-barW-2,ch-ebh,barW,ebh);
-// Actual bar (green or red)
-var abh=(e.actual/maxVal)*ch;
-ctx.fillStyle=e.actual>=e.estimate?'#3fb950':'#f85149';
-ctx.fillRect(x+2,ch-abh,barW,abh);
+ctx.fillRect(x-barW-2,padTop+chartH-ebh,barW,ebh);
+// Actual bar (green=beat, red=miss)
+var abh=(Math.abs(e.actual)/maxVal)*chartH;
+ctx.fillStyle=beat?'#3fb950':'#f85149';
+ctx.fillRect(x+2,padTop+chartH-abh,barW,abh);
+// Values above bars
+ctx.fillStyle='#8b949e';
+ctx.font='bold 9px sans-serif';
+ctx.textAlign='center';
+ctx.fillText('$'+fmtNum(e.estimate),x-barW-2+barW/2,padTop+chartH-ebh-4);
+ctx.fillText('$'+fmtNum(e.actual),x+2+barW/2,padTop+chartH-abh-4);
+// Beat/Miss label
+ctx.font='bold 10px sans-serif';
+ctx.fillStyle=beat?'#3fb950':'#f85149';
+ctx.fillText(beat?'BEAT':'MISS',x,padTop+chartH+14);
 // Period label
 ctx.fillStyle='#8b949e';
-ctx.font='8px sans-serif';
-ctx.textAlign='center';
-ctx.fillText(e.period.split('-').slice(0,2).join('/'),x,ch-2);
-}
-
-// Legend
 ctx.font='9px sans-serif';
-ctx.textAlign='left';
-ctx.fillStyle='#58a6ff';ctx.fillText('■ Estimate',4,12);
-ctx.fillStyle='#3fb950';ctx.fillText('■ Actual',80,12);
+ctx.fillText(e.period.split('-').slice(0,2).join('/'),x,padTop+chartH+28);
+}
 }
 
 function analyzeCrypto(symbol,out){
@@ -1190,6 +1209,321 @@ if(tvC)loadTradingViewChart(tvC,getTVSymbol(symbol));
 .catch(function(err){
 out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br>'+err.message+'</div>';
 });
+}
+
+// ==============================
+// BIG BRAIN APE RECOMMENDATION DETAIL OVERLAY
+// ==============================
+function showApeDetail(sym,label,score){
+var isBullish=label==='Strong Buy'||label==='Buy';
+var overlay=document.createElement('div');
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:9999;overflow-y:auto;display:flex;flex-direction:column';
+
+var header=document.createElement('div');
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0d1117;border-bottom:1px solid #30363d;flex-shrink:0;position:sticky;top:0;z-index:100';
+
+var backBtn=document.createElement('div');
+backBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#58a6ff;font-size:20px;cursor:pointer;font-weight:bold;flex-shrink:0';
+backBtn.textContent='←';
+backBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';switchView('home');};
+
+var title=document.createElement('div');
+title.style.cssText='font-size:16px;font-weight:700;color:#58a6ff;flex:1;margin-left:12px';
+title.textContent='🦍 Big Brain Ape: '+sym+' Rating Breakdown';
+
+var closeBtn=document.createElement('div');
+closeBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f85149;font-size:22px;cursor:pointer;font-weight:bold;flex-shrink:0';
+closeBtn.textContent='✕';
+closeBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';};
+
+header.appendChild(backBtn);
+header.appendChild(title);
+header.appendChild(closeBtn);
+overlay.appendChild(header);
+
+var body=document.createElement('div');
+body.style.cssText='padding:16px;flex:1;overflow-y:auto';
+
+// How the rating works
+var explain=document.createElement('div');
+explain.style.cssText='background:#0d1117;border:1px solid #30363d;border-radius:12px;padding:16px;margin-bottom:16px';
+explain.innerHTML='<div style="font-size:16px;font-weight:700;color:#58a6ff;margin-bottom:10px">How Big Brain Ape Rates '+sym+'</div>';
+explain.innerHTML+='<div style="font-size:13px;color:#c9d1d9;line-height:1.6">Big Brain Ape combines 4 factors to produce a rating:</div>';
+explain.innerHTML+='<div style="font-size:12px;color:#8b949e;line-height:1.8;margin-top:8px">';
+explain.innerHTML+='<div><strong style="color:#c9d1d9">1. Analyst Consensus (40%)</strong> — What Wall Street analysts recommend</div>';
+explain.innerHTML+='<div><strong style="color:#c9d1d9">2. Price Momentum (30%)</strong> — Recent price movement and direction</div>';
+explain.innerHTML+='<div><strong style="color:#c9d1d9">3. Position vs 52-Week High (15%)</strong> — How far from yearly high</div>';
+explain.innerHTML+='<div><strong style="color:#c9d1d9">4. Valuation/P/E (15%)</strong> — Price relative to earnings</div>';
+explain.innerHTML+='</div>';
+explain.innerHTML+='<div style="font-size:13px;color:#c9d1d9;margin-top:10px">Final score: <strong style="color:'+(isBullish?'#3fb950':'#f85149')+'">'+score+'</strong> → <strong style="color:'+(isBullish?'#3fb950':'#f85149')+'">'+label+'</strong></div>';
+body.appendChild(explain);
+
+// 3 Charts
+var chartTitle=document.createElement('div');
+chartTitle.style.cssText='font-size:16px;font-weight:700;color:#c9d1d9;margin-bottom:12px';
+chartTitle.textContent=isBullish?'📈 Bullish Factors — Why '+sym+' is a '+label:'📉 Bearish Factors — Why '+sym+' is a '+label;
+body.appendChild(chartTitle);
+
+// Chart 1: Column Chart — Rating score breakdown
+var colDiv=document.createElement('div');
+colDiv.style.cssText='background:#161b22;border-radius:12px;padding:12px;margin-bottom:16px';
+colDiv.innerHTML='<div style="font-size:13px;color:#8b949e;margin-bottom:6px;font-weight:600">Rating Score Breakdown by Factor</div>';
+var colCanvas=document.createElement('canvas');
+colCanvas.style.cssText='width:100%;height:200px';
+colCanvas.id='apeColChart';
+colDiv.appendChild(colCanvas);
+body.appendChild(colDiv);
+
+// Chart 2: Pie Chart — Analyst distribution
+var pieDiv=document.createElement('div');
+pieDiv.style.cssText='background:#161b22;border-radius:12px;padding:12px;margin-bottom:16px';
+pieDiv.innerHTML='<div style="font-size:13px;color:#8b949e;margin-bottom:6px;font-weight:600">Analyst Recommendation Distribution</div>';
+var pieCanvas=document.createElement('canvas');
+pieCanvas.style.cssText='width:100%;height:220px';
+pieCanvas.id='apePieChart';
+pieDiv.appendChild(pieCanvas);
+body.appendChild(pieDiv);
+
+// Chart 3: Clustered Bar Chart — Price performance
+var barDiv=document.createElement('div');
+barDiv.style.cssText='background:#161b22;border-radius:12px;padding:12px;margin-bottom:16px';
+barDiv.innerHTML='<div style="font-size:13px;color:#8b949e;margin-bottom:6px;font-weight:600">Price Performance (24h / 7d / 30d vs Period High)</div>';
+var barCanvas=document.createElement('canvas');
+barCanvas.style.cssText='width:100%;height:200px';
+barCanvas.id='apeBarChart';
+barDiv.appendChild(barCanvas);
+body.appendChild(barDiv);
+
+overlay.appendChild(body);
+document.body.appendChild(overlay);
+document.body.style.overflow='hidden';
+
+// Draw charts after DOM is ready
+setTimeout(function(){
+// Fetch current data for the charts
+var stockData=null;
+// Try to get the data from the existing analysis
+// We'll fetch fresh data for the charts
+fhGetQ('quote?symbol='+sym).then(function(q){
+fhGetQ('stock/recommendation?symbol='+sym).then(function(r){
+var rec=r&&r[0]?r[0]:{strongBuy:0,buy:0,hold:0,sell:0,strongSell:0};
+drawApeColChart(colCanvas,score,q,rec,isBullish);
+drawApePieChart(pieCanvas,rec);
+drawApeBarChart(barCanvas,q,isBullish);
+}).catch(function(){
+drawApeColChart(colCanvas,score,null,null,isBullish);
+drawApeBarChart(barCanvas,null,isBullish);
+});
+}).catch(function(){
+// Crypto fallback — use CoinGecko
+var coinId=CRYPTO_MAP[sym];
+if(coinId){
+fetch('https://api.coingecko.com/api/v3/coins/'+coinId+'?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false')
+.then(function(r){return r.json()})
+.then(function(data){
+var m=data.market_data;
+drawApeColChart(colCanvas,score,{changePercentage:m.price_change_percentage_24h},null,isBullish);
+drawApePieChart(pieCanvas,null,m);
+drawApeBarChart(barCanvas,{changePercentage:m.price_change_percentage_24h,price:m.current_price.usd,yearHigh:m.ath.usd},isBullish);
+});
+}else{
+drawApeColChart(colCanvas,score,null,null,isBullish);
+drawApeBarChart(barCanvas,null,isBullish);
+}
+});
+},100);
+}
+
+// Column chart — score breakdown
+function drawApeColChart(canvas,score,q,rec,isBullish){
+var ctx=canvas.getContext('2d');
+var dpr=window.devicePixelRatio||2;
+canvas.width=canvas.offsetWidth*dpr;
+canvas.height=200*dpr;
+ctx.scale(dpr,dpr);
+var cw=canvas.offsetWidth,ch=200;
+
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+var padT=30,padB=35,padL=30,padR=12;
+var chartW=cw-padL-padR,chartH=ch-padT-padB;
+var factors=['Analyst\nConsensus','Price\nMomentum','52wk\nPosition','Valuation\n(P/E)'];
+var weights=[40,30,15,15];
+var colors=isBullish?['#3fb950','#5cb85c','#3fb950','#5cb85c']:['#f85149','#f0883e','#f85149','#f0883e'];
+
+// Compute scores per factor
+var scores=[];
+if(rec){
+var total=rec.strongBuy+rec.buy+rec.hold+rec.sell+rec.strongSell;
+var bull=rec.strongBuy+rec.buy;
+var bullPct=total>0?bull/total:0.5;
+scores.push(Math.round(bullPct*weights[0]*(isBullish?1:-1)+weights[0]*(isBullish?1:0)));
+}else{scores.push(Math.round(weights[0]*0.6))}
+if(q&&q.changePercentage!==undefined){
+var c=q.changePercentage;
+scores.push(c>5?weights[1]:c>1?Math.round(weights[1]*0.7):c<-5?0:Math.round(weights[1]*0.4));
+}else{scores.push(Math.round(weights[1]*0.5))}
+if(q&&q.yearHigh&&q.price){
+var fh=((q.price-q.yearHigh)/q.yearHigh)*100;
+scores.push(fh>-5?weights[2]:fh<-25?0:Math.round(weights[2]*0.5));
+}else{scores.push(Math.round(weights[2]*0.5))}
+if(q&&q.pe){
+scores.push(q.pe<15&&q.pe>0?weights[3]:q.pe>50?0:Math.round(weights[3]*0.4));
+}else{scores.push(Math.round(weights[3]*0.5))}
+
+var maxW=Math.max.apply(null,weights);
+var barW=chartW/4*0.6;
+var gap=chartW/4;
+
+ctx.font='9px sans-serif';
+ctx.textAlign='center';
+for(var i=0;i<4;i++){
+var x=padL+i*gap+gap/2;
+var bh=(scores[i]/maxW)*chartH;
+ctx.fillStyle=colors[i];
+ctx.fillRect(x-barW/2,padT+chartH-bh,barW,bh);
+// Value on top
+ctx.fillStyle='#c9d1d9';
+ctx.font='bold 10px sans-serif';
+ctx.fillText(scores[i]+'/'+weights[i],x,padT+chartH-bh-4);
+// Label
+ctx.fillStyle='#8b949e';
+ctx.font='9px sans-serif';
+var lines=factors[i].split('\n');
+for(var l=0;l<lines.length;l++){
+ctx.fillText(lines[l],x,padT+chartH+12+l*11);
+}
+}
+}
+
+// Pie chart — analyst distribution
+function drawApePieChart(canvas,rec,cryptoM){
+var ctx=canvas.getContext('2d');
+var dpr=window.devicePixelRatio||2;
+canvas.width=canvas.offsetWidth*dpr;
+canvas.height=220*dpr;
+ctx.scale(dpr,dpr);
+var cw=canvas.offsetWidth,ch=220;
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+var cx=cw/2,cy=ch/2-5,radius=Math.min(cw,ch)/2-30;
+var data,labels,colors;
+
+if(rec){
+var sb=rec.strongBuy||0,b=rec.buy||0,h=rec.hold||0,s=rec.sell||0,ss=rec.strongSell||0;
+data=[sb,b,h,s,ss];
+labels=['Strong Buy ('+sb+')','Buy ('+b+')','Hold ('+h+')','Sell ('+s+')','Strong Sell ('+ss+')'];
+colors=['#3fb950','#5cb85c','#d29922','#f0883e','#f85149'];
+}else if(cryptoM){
+// For crypto, show momentum breakdown
+var c24=Math.abs(Math.round(cryptoM.price_change_percentage_24h||0));
+var c7=Math.abs(Math.round(cryptoM.price_change_percentage_7d||0));
+var c30=Math.abs(Math.round(cryptoM.price_change_percentage_30d||0));
+var fromAth=Math.abs(Math.round(((cryptoM.current_price.usd-cryptoM.ath.usd)/cryptoM.ath.usd)*100));
+data=[c24,c7,c30,fromAth];
+labels=['24h ('+c24+'%)','7d ('+c7+'%)','30d ('+c30+'%)','From ATH ('+fromAth+'%)'];
+colors=['#3fb950','#5cb85c','#d29922','#f0883e'];
+}else{
+ctx.fillStyle='#8b949e';
+ctx.font='13px sans-serif';
+ctx.textAlign='center';
+ctx.fillText('No analyst data available',cw/2,ch/2);
+return;
+}
+
+var total=data.reduce(function(a,b){return a+b},0);
+if(total===0){
+ctx.fillStyle='#8b949e';
+ctx.font='13px sans-serif';
+ctx.textAlign='center';
+ctx.fillText('No data available',cw/2,ch/2);
+return;
+}
+
+var start=-Math.PI/2;
+var legendY=10;
+for(var i=0;i<data.length;i++){
+if(data[i]===0)continue;
+var angle=(data[i]/total)*Math.PI*2;
+ctx.beginPath();
+ctx.moveTo(cx,cy);
+ctx.arc(cx,cy,radius,start,start+angle);
+ctx.closePath();
+ctx.fillStyle=colors[i];
+ctx.fill();
+start+=angle;
+// Legend
+ctx.fillRect(8,legendY,10,10);
+ctx.fillStyle='#8b949e';
+ctx.font='10px sans-serif';
+ctx.textAlign='left';
+ctx.fillText(labels[i],24,legendY+9);
+legendY+=18;
+}
+}
+
+// Clustered bar chart — performance
+function drawApeBarChart(canvas,q,isBullish){
+var ctx=canvas.getContext('2d');
+var dpr=window.devicePixelRatio||2;
+canvas.width=canvas.offsetWidth*dpr;
+canvas.height=200*dpr;
+ctx.scale(dpr,dpr);
+var cw=canvas.offsetWidth,ch=200;
+ctx.fillStyle='#161b22';
+ctx.fillRect(0,0,cw,ch);
+
+var padT=25,padB=35,padL=25,padR=12;
+var chartW=cw-padL-padR,chartH=ch-padT-padB;
+
+var metrics=[
+{label:'24h\nChange',value:q&&q.changePercentage!==undefined?q.changePercentage:0},
+{label:'7d\nChange',value:q&&q.changePct7d?q.changePct7d:0},
+{label:'30d\nChange',value:q&&q.changePct30d?q.changePct30d:0},
+{label:'From\n52wk High',value:q&&q.yearHigh&&q.price?((q.price-q.yearHigh)/q.yearHigh)*100:0}
+];
+
+var maxAbs=Math.max.apply(null,metrics.map(function(m){return Math.abs(m.value)}));
+if(maxAbs===0)maxAbs=1;
+
+var barW=chartW/4*0.25;
+var gap=chartW/4;
+var zeroY=padT+chartH/2;
+
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+ctx.beginPath();
+ctx.moveTo(padL,zeroY);
+ctx.lineTo(padL+chartW,zeroY);
+ctx.stroke();
+
+ctx.font='9px sans-serif';
+ctx.textAlign='center';
+for(var i=0;i<4;i++){
+var x=padL+i*gap+gap/2;
+var m=metrics[i];
+var bh=(Math.abs(m.value)/maxAbs)*(chartH/2);
+var color=m.value>=0?'#3fb950':'#f85149';
+ctx.fillStyle=color;
+if(m.value>=0){
+ctx.fillRect(x-barW/2,zeroY-bh,barW,bh);
+}else{
+ctx.fillRect(x-barW/2,zeroY,barW,bh);
+}
+// Value
+ctx.fillStyle='#c9d1d9';
+ctx.font='bold 9px sans-serif';
+ctx.fillText((m.value>=0?'+':'')+fmtNum(m.value)+'%',x,m.value>=0?zeroY-bh-4:zeroY+bh+10);
+// Label
+ctx.fillStyle='#8b949e';
+ctx.font='9px sans-serif';
+var lines=m.label.split('\n');
+for(var l=0;l<lines.length;l++){
+ctx.fillText(lines[l],x,padT+chartH+12+l*11);
+}
+}
 }
 
 // ==============================
