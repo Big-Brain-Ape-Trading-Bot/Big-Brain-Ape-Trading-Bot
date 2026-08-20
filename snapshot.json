@@ -1,5 +1,5 @@
 {
-  "date": "August 20, 2026 09:20 UTC",
+  "date": "August 20, 2026 09:25 UTC",
   "assets": {
     "S&P 500": {
       "price": 7707.98,
@@ -95,25 +95,25 @@
       ]
     },
     "BTC": {
-      "price": 71868.7,
-      "change_pct": 11.62,
+      "price": 71996.8,
+      "change_pct": 11.85,
       "support": 62228.8,
       "resistance": 72081.7
     },
     "ETH": {
-      "price": 2290.9,
-      "change_pct": 19.15,
+      "price": 2293.39,
+      "change_pct": 19.36,
       "support": 1820.61,
       "resistance": 2336.82
     },
     "SOL": {
-      "price": 87.62,
-      "change_pct": 13.2,
+      "price": 87.68,
+      "change_pct": 13.41,
       "support": 70.51,
       "resistance": 87.99
     }
   },
-  "risk_score": 60,
+  "risk_score": 68,
   "risk_bias": "RISK-ON",
   "fear_greed": {
     "value": 62,
@@ -156,7 +156,7 @@
   "whale_flow": "NEUTRAL",
   "metrics": {
     "vix": {
-      "value": "15.2",
+      "value": "15.1",
       "label": "VIX",
       "color": "green"
     },
@@ -166,22 +166,22 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "98.7",
+      "value": "98.6",
       "label": "DXY",
       "color": "green"
     },
     "oil": {
-      "value": "$86.47",
+      "value": "$86.41",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4550",
+      "value": "$4549",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$66.87",
+      "value": "$66.86",
       "label": "SILVER",
       "color": "yellow"
     }
@@ -189,7 +189,12 @@
   "signals": [
     {
       "label": "BULLISH",
-      "text": "BTC up 11.6% \u2014 momentum",
+      "text": "Dollar weakening \u2014 risk asset fuel",
+      "type": "bullish"
+    },
+    {
+      "label": "BULLISH",
+      "text": "BTC up 11.8% \u2014 momentum",
       "type": "bullish"
     },
     {
@@ -199,7 +204,7 @@
     },
     {
       "label": "BULLISH",
-      "text": "Gold up 1.4% \u2014 safe haven bid",
+      "text": "Gold up 1.3% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
@@ -207,16 +212,16 @@
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 0,
-    "daily_avg": 0,
-    "daily_pct": 0,
-    "weekly_inflow": 0,
-    "weekly_avg": 0,
-    "weekly_pct": 0,
-    "monthly_inflow": 0,
-    "monthly_avg": 0,
-    "monthly_pct": 0,
-    "large_tx_count": 0
+    "daily_inflow": 60.19,
+    "daily_avg": 26.29,
+    "daily_pct": 128.9,
+    "weekly_inflow": 184.04,
+    "weekly_avg": 158.16,
+    "weekly_pct": 16.4,
+    "monthly_inflow": 677.84,
+    "monthly_avg": 818.33,
+    "monthly_pct": -17.2,
+    "large_tx_count": 523210
   },
   "history": {
     "vix": [
@@ -243,7 +248,7 @@
       15.19,
       15.84,
       14.89,
-      15.18
+      15.12
     ],
     "yield_10y": [
       4.6,
@@ -294,7 +299,7 @@
       84.5,
       84.94,
       85.83,
-      86.47
+      86.41
     ],
     "gold": [
       4010.3,
@@ -320,7 +325,7 @@
       4417.8,
       4366.0,
       4489.4,
-      4550.5
+      4549.0
     ],
     "silver": [
       56.8,
@@ -346,7 +351,7 @@
       66.12,
       63.94,
       65.73,
-      66.87
+      66.86
     ],
     "dxy": [
       100.99,
@@ -372,7 +377,7 @@
       99.64,
       99.65,
       98.83,
-      98.65
+      98.63
     ],
     "sp500": [
       7443.28,
