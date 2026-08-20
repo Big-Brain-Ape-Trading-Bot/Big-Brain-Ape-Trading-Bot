@@ -737,7 +737,7 @@ html+='<div class="rating-count">'+total+' analysts covering</div></div>';
 
 // Recommendation trend chart (4 periods)
 if(d.recTrend&&d.recTrend.length>0){
-html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Recommendation Trend (4 months)</div><canvas id="recTrendChart" style="width:100%;height:140px"></canvas></div>';
+html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Recommendation Trend (4 months)</div><canvas id="recTrendChart" style="width:100%;height:300px"></canvas></div>';
 }
 
 // Price target info
@@ -970,40 +970,87 @@ ctx.fillText(history[history.length-1].date,cw-4,ch-4);
 
 function drawRecTrendChart(canvas,recs){
 var ctx=canvas.getContext('2d');
-var w=canvas.width=canvas.offsetWidth*2;
-var h=canvas.height=280;
-ctx.scale(2,2);
-var cw=canvas.offsetWidth,ch=140;
+var dpr=window.devicePixelRatio||2;
+var w=canvas.width=canvas.offsetWidth*dpr;
+var h=canvas.height=300*dpr;
+ctx.scale(dpr,dpr);
+var cw=canvas.offsetWidth,ch=300;
 var n=recs.length;
-var barW=cw/n*0.6;
-var gap=cw/n;
+if(n===0)return;
+
+var padLeft=12,padRight=12,padTop=30,padBottom=40;
+var chartW=cw-padLeft-padRight;
+var chartH=ch-padTop-padBottom;
+var barW=chartW/n*0.55;
+var gap=chartW/n;
+
 var maxVal=0;
 for(var i=0;i<n;i++){var t=recs[i].sb+recs[i].b+recs[i].h+recs[i].s+recs[i].ss;if(t>maxVal)maxVal=t}
 if(maxVal===0)return;
 
+// Background
 ctx.fillStyle='#161b22';
 ctx.fillRect(0,0,cw,ch);
 
 var colors=['#3fb950','#5cb85c','#d29922','#f0883e','#f85149'];
-var labels=['SB','B','H','S','SS'];
+var fullLabels=['Strong Buy','Buy','Hold','Sell','Strong Sell'];
 
+// Legend at top
+ctx.font='10px sans-serif';
+ctx.textAlign='left';
+var lx=padLeft;
+for(var k=0;k<5;k++){
+ctx.fillStyle=colors[k];
+ctx.fillRect(lx,padTop-18,10,10);
+ctx.fillStyle='#8b949e';
+ctx.fillText(fullLabels[k],lx+14,padTop-9);
+lx+=ctx.measureText(fullLabels[k]).width+30;
+}
+
+// Draw stacked columns
 for(var i=0;i<n;i++){
 var r=recs[i];
 var vals=[r.sb,r.b,r.h,r.s,r.ss];
-var x=i*gap+gap/2-barW/2;
-var y=ch;
+var x=padLeft+i*gap+gap/2-barW/2;
+var y=padTop+chartH;
+
 for(var j=0;j<5;j++){
-var bh=(vals[j]/maxVal)*ch;
+if(vals[j]===0)continue;
+var bh=(vals[j]/maxVal)*chartH;
 ctx.fillStyle=colors[j];
 ctx.fillRect(x,y-bh,barW,bh);
+// Label inside segment if big enough
+if(bh>16){
+ctx.fillStyle='#fff';
+ctx.font='bold 10px sans-serif';
+ctx.textAlign='center';
+ctx.fillText(vals[j],x+barW/2,y-bh/2+3);
+}
 y-=bh;
 }
-// Period label
+
+// Period label at bottom
 ctx.fillStyle='#8b949e';
-ctx.font='8px sans-serif';
+ctx.font='10px sans-serif';
 ctx.textAlign='center';
 var period=r.period.split('-').slice(0,2).join('/');
-ctx.fillText(period,x+barW/2,ch-2);
+ctx.fillText(period,x+barW/2,padTop+chartH+16);
+}
+
+// Y-axis grid lines
+ctx.strokeStyle='#30363d';
+ctx.lineWidth=0.5;
+ctx.font='9px sans-serif';
+ctx.fillStyle='#8b949e';
+ctx.textAlign='left';
+for(var g=0;g<=4;g++){
+var gy=padTop+chartH-(g/4)*chartH;
+ctx.beginPath();
+ctx.moveTo(padLeft,gy);
+ctx.lineTo(padLeft+chartW,gy);
+ctx.stroke();
+var gv=Math.round((g/4)*maxVal);
+ctx.fillText(gv,2,gy+3);
 }
 }
 
