@@ -544,6 +544,70 @@ return r.json();
 .catch(function(e){throw e});
 }
 
+// Fetch 3 latest news articles for a stock ticker
+function fetchStockNews(symbol){
+var today=new Date();
+var to=today.toISOString().split('T')[0];
+var from=new Date(today.getTime()-7*86400000).toISOString().split('T')[0];
+return fhGetQ("company-news?symbol="+symbol+"&from="+from+"&to="+to)
+.then(function(articles){
+if(!articles||!articles.length)return[];
+return articles.slice(0,3).map(function(a){
+return{
+headline:a.headline,
+source:a.source,
+url:a.url,
+date:new Date(a.datetime*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+summary:(a.summary||'').substring(0,120)
+};
+});
+})
+.catch(function(){return[];});
+}
+
+// Fetch 3 latest news articles for crypto
+function fetchCryptoNews(symbol){
+return fhGetQ("news?category=crypto")
+.then(function(articles){
+if(!articles||!articles.length)return[];
+var coinName=symbol.toLowerCase();
+// Filter articles mentioning the coin, or just take latest
+var filtered=articles.filter(function(a){
+var h=(a.headline||'').toLowerCase();
+var s=(a.summary||'').toLowerCase();
+return h.indexOf(coinName)>=0||s.indexOf(coinName)>=0;
+});
+var picks=filtered.length>=3?filtered:articles;
+return picks.slice(0,3).map(function(a){
+return{
+headline:a.headline,
+source:a.source,
+url:a.url,
+date:new Date(a.datetime*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+summary:(a.summary||'').substring(0,120)
+};
+});
+})
+.catch(function(){return[];});
+}
+
+// Render news section HTML
+function renderNewsSection(articles){
+if(!articles||articles.length===0)return'';
+var html='<div class="section-title">📰 Latest News</div>';
+html+='<div class="briefing-card">';
+for(var i=0;i<articles.length;i++){
+var a=articles[i];
+html+='<div style="padding:10px 0;border-bottom:'+(i<articles.length-1?'1px solid var(--border)':'none')+'">';
+html+='<a href="'+a.url+'" target="_blank" style="color:var(--blue);font-size:14px;font-weight:600;text-decoration:none;display:block;margin-bottom:4px">'+a.headline+'</a>';
+html+='<div style="font-size:11px;color:var(--text2)">'+a.source+' · '+a.date+'</div>';
+if(a.summary)html+='<div style="font-size:12px;color:var(--text2);margin-top:4px">'+a.summary+'...</div>';
+html+='</div>';
+}
+html+='</div>';
+return html;
+}
+
 function sameDomainGet(url){
 return fetch(url+"?t="+Date.now())
 .then(function(r){return r.json()})
@@ -796,7 +860,30 @@ html+='</div>';
 }
 }
 
-// === SECTION 6: COMPANY INFO ===
+// === SECTION 6: LATEST NEWS ===
+// Fetch and render after initial layout
+fetchStockNews(sym).then(function(articles){
+if(articles.length>0){
+var newsHtml=renderNewsSection(articles);
+var aboutSection=out.querySelector('.section-title');
+// Insert before "About" section if it exists, otherwise append
+var allTitles=out.querySelectorAll('.section-title');
+var insertBefore=null;
+for(var t=0;t<allTitles.length;t++){
+if(allTitles[t].textContent.indexOf('About')>=0){
+insertBefore=allTitles[t];
+break;
+}
+}
+if(insertBefore){
+insertBefore.insertAdjacentHTML('beforebegin',newsHtml);
+}else{
+out.innerHTML+=newsHtml;
+}
+}
+});
+
+// === SECTION 7: COMPANY INFO ===
 if(d.companyName||d.name){
 html+='<div class="section-title">About</div>';
 html+='<div class="briefing-card"><h3>'+(d.companyName||d.name||sym)+'</h3>';
@@ -1016,6 +1103,15 @@ html+='<div class="briefing-card"><h3>'+data.name+'</h3><p>'+desc+'...</p></div>
 }
 
 out.innerHTML=html;
+
+// Fetch latest crypto news and append after render
+fetchCryptoNews(symbol).then(function(articles){
+if(articles.length>0){
+var newsDiv=document.createElement('div');
+newsDiv.innerHTML=renderNewsSection(articles);
+out.appendChild(newsDiv);
+}
+});
 var tvC=document.getElementById('tvChartContainer');
 if(tvC)loadTradingViewChart(tvC,getTVSymbol(symbol));
 })
