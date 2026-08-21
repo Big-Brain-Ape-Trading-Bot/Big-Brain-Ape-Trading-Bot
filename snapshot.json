@@ -1,5 +1,5 @@
 {
-  "date": "August 21, 2026 04:05 UTC",
+  "date": "August 21, 2026 04:10 UTC",
   "assets": {
     "S&P 500": {
       "price": 7641.16,
@@ -95,20 +95,20 @@
       ]
     },
     "BTC": {
-      "price": 74676.9,
-      "change_pct": 7.8,
+      "price": 74800.2,
+      "change_pct": 7.87,
       "support": 62228.8,
       "resistance": 75767.5
     },
     "ETH": {
-      "price": 2343.06,
-      "change_pct": 4.03,
+      "price": 2347.03,
+      "change_pct": 3.96,
       "support": 1820.61,
       "resistance": 2381.52
     },
     "SOL": {
-      "price": 89.26,
-      "change_pct": 5.53,
+      "price": 89.2,
+      "change_pct": 5.31,
       "support": 70.51,
       "resistance": 90.2
     }
@@ -166,22 +166,22 @@
       "color": "blue"
     },
     "dxy": {
-      "value": "98.9",
+      "value": "98.8",
       "label": "DXY",
-      "color": "red"
+      "color": "green"
     },
     "oil": {
-      "value": "$87.83",
+      "value": "$86.50",
       "label": "WTI OIL",
       "color": "yellow"
     },
     "gold": {
-      "value": "$4516",
+      "value": "$4593",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$68.03",
+      "value": "$68.96",
       "label": "SILVER",
       "color": "yellow"
     }
@@ -199,28 +199,33 @@
     },
     {
       "label": "BULLISH",
-      "text": "BTC up 7.8% \u2014 momentum",
+      "text": "BTC up 7.9% \u2014 momentum",
       "type": "bullish"
     },
     {
       "label": "CAUTION",
       "text": "Yields rising \u2014 risk off",
       "type": "caution"
+    },
+    {
+      "label": "BULLISH",
+      "text": "Gold up 1.7% \u2014 safe haven bid",
+      "type": "bullish"
     }
   ],
-  "btc_funding": 8.744e-05,
+  "btc_funding": 8.604e-05,
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 60.04,
-    "daily_avg": 31.23,
-    "daily_pct": 92.2,
-    "weekly_inflow": 218.6,
-    "weekly_avg": 164.15,
-    "weekly_pct": 33.2,
-    "monthly_inflow": 703.5,
-    "monthly_avg": 827.0,
-    "monthly_pct": -14.9,
+    "daily_inflow": 57.53,
+    "daily_avg": 30.87,
+    "daily_pct": 86.4,
+    "weekly_inflow": 216.09,
+    "weekly_avg": 163.57,
+    "weekly_pct": 32.1,
+    "monthly_inflow": 701.0,
+    "monthly_avg": 826.18,
+    "monthly_pct": -15.2,
     "large_tx_count": 536830
   },
   "history": {
@@ -299,7 +304,8 @@
       84.5,
       84.94,
       85.83,
-      87.83
+      87.83,
+      86.5
     ],
     "gold": [
       4071.1,
@@ -324,7 +330,8 @@
       4417.8,
       4366.0,
       4489.4,
-      4516.3
+      4516.3,
+      4592.6
     ],
     "silver": [
       58.83,
@@ -349,7 +356,8 @@
       66.12,
       63.94,
       65.73,
-      68.03
+      68.03,
+      68.96
     ],
     "dxy": [
       101.18,
@@ -374,7 +382,8 @@
       99.64,
       99.65,
       98.83,
-      98.9
+      98.9,
+      98.75
     ],
     "sp500": [
       7509.2,
