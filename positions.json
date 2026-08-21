@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787271362,
-  "generatedAt": "2026-08-21 00:16 UTC",
-  "accountValue": 1707.82,
-  "withdrawable": 313.69,
-  "portfolioValue": 1707.82,
-  "totalUnrealizedPnl": 167.81,
-  "totalMarginUsed": 1226.32,
-  "availableCash": 313.69,
+  "timestamp": 1787271666,
+  "generatedAt": "2026-08-21 00:21 UTC",
+  "accountValue": 1708.88,
+  "withdrawable": 314.04,
+  "portfolioValue": 1708.88,
+  "totalUnrealizedPnl": 168.34,
+  "totalMarginUsed": 1226.5,
+  "availableCash": 314.04,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 217.21,
-      "unrealizedPnl": 39.52,
+      "currentPrice": 217.23,
+      "unrealizedPnl": 39.7,
       "pnlPercent": 6.4,
-      "marginUsed": 629.91,
+      "marginUsed": 629.97,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1889.72,
+      "positionValue": 1889.9,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4518.3,
-      "unrealizedPnl": 128.29,
+      "currentPrice": 4519.2,
+      "unrealizedPnl": 128.64,
       "pnlPercent": 23.2,
-      "marginUsed": 596.42,
+      "marginUsed": 596.53,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1789.24,
+      "positionValue": 1789.6,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1889.72
+      "value": 1889.9
     },
     {
       "label": "GOLD",
-      "value": 1789.24
+      "value": 1789.6
     },
     {
       "label": "Cash",
-      "value": 313.69
+      "value": 314.04
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 629.91
+      "value": 629.97
     },
     {
       "label": "GOLD",
-      "value": 596.42
+      "value": 596.53
     },
     {
       "label": "Available",
-      "value": 313.69
+      "value": 314.04
     }
   ]
 }
