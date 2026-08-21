@@ -1,5 +1,5 @@
 {
-  "date": "August 21, 2026 13:00 UTC",
+  "date": "August 21, 2026 13:05 UTC",
   "assets": {
     "S&P 500": {
       "price": 7641.16,
@@ -95,20 +95,20 @@
       ]
     },
     "BTC": {
-      "price": 77213.0,
-      "change_pct": 7.39,
+      "price": 77300.4,
+      "change_pct": 7.38,
       "support": 62228.8,
       "resistance": 79555.5
     },
     "ETH": {
-      "price": 2387.66,
-      "change_pct": 4.35,
+      "price": 2389.68,
+      "change_pct": 4.38,
       "support": 1820.61,
       "resistance": 2449.47
     },
     "SOL": {
-      "price": 90.85,
-      "change_pct": 4.39,
+      "price": 90.86,
+      "change_pct": 4.16,
       "support": 70.51,
       "resistance": 93.42
     }
@@ -161,7 +161,7 @@
       "color": "green"
     },
     "yield_10y": {
-      "value": "4.69%",
+      "value": "4.70%",
       "label": "10Y YIELD",
       "color": "blue"
     },
@@ -176,12 +176,12 @@
       "color": "yellow"
     },
     "gold": {
-      "value": "$4636",
+      "value": "$4637",
       "label": "GOLD",
       "color": "yellow"
     },
     "silver": {
-      "value": "$69.50",
+      "value": "$69.52",
       "label": "SILVER",
       "color": "yellow"
     }
@@ -204,7 +204,7 @@
     },
     {
       "label": "BULLISH",
-      "text": "Gold up 2.6% \u2014 safe haven bid",
+      "text": "Gold up 2.7% \u2014 safe haven bid",
       "type": "bullish"
     }
   ],
@@ -212,16 +212,16 @@
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 68.68,
-    "daily_avg": 32.46,
-    "daily_pct": 111.6,
-    "weekly_inflow": 227.24,
-    "weekly_avg": 166.17,
-    "weekly_pct": 36.8,
-    "monthly_inflow": 712.14,
-    "monthly_avg": 829.85,
+    "daily_inflow": 68.39,
+    "daily_avg": 32.42,
+    "daily_pct": 110.9,
+    "weekly_inflow": 226.95,
+    "weekly_avg": 166.1,
+    "weekly_pct": 36.6,
+    "monthly_inflow": 711.86,
+    "monthly_avg": 829.76,
     "monthly_pct": -14.2,
-    "large_tx_count": 518938
+    "large_tx_count": 513909
   },
   "history": {
     "vix": [
@@ -248,7 +248,7 @@
       15.84,
       14.89,
       16.01,
-      15.41
+      15.42
     ],
     "yield_10y": [
       4.63,
@@ -274,7 +274,7 @@
       4.71,
       4.65,
       4.7,
-      4.69
+      4.7
     ],
     "oil": [
       84.91,
@@ -326,7 +326,7 @@
       4366.0,
       4489.4,
       4516.3,
-      4636.3
+      4637.1
     ],
     "silver": [
       58.83,
@@ -352,7 +352,7 @@
       63.94,
       65.73,
       68.03,
-      69.5
+      69.52
     ],
     "dxy": [
       101.18,
@@ -430,28 +430,5 @@
       26331.09,
       26067.17
     ]
-  },
-  "econ_events": [
-    {
-      "label": "FLASH MFG PMI",
-      "time": "7:45 AM MT",
-      "forecast": "54.0",
-      "previous": "53.8",
-      "actual": null
-    },
-    {
-      "label": "FLASH SVC PMI",
-      "time": "7:45 AM MT",
-      "forecast": "53.9",
-      "previous": "53.6",
-      "actual": null
-    },
-    {
-      "label": "FED BARKIN",
-      "time": "Speech Today",
-      "forecast": "\u2014",
-      "previous": "\u2014",
-      "actual": null
-    }
-  ]
+  }
 }
