@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787302809,
-  "generatedAt": "2026-08-21 09:00 UTC",
-  "accountValue": 1781.55,
-  "withdrawable": 338.1,
-  "portfolioValue": 1781.55,
-  "totalUnrealizedPnl": 204.79,
-  "totalMarginUsed": 1238.65,
-  "availableCash": 338.1,
+  "timestamp": 1787303110,
+  "generatedAt": "2026-08-21 09:05 UTC",
+  "accountValue": 1742.78,
+  "withdrawable": 325.18,
+  "portfolioValue": 1742.78,
+  "totalUnrealizedPnl": 185.4,
+  "totalMarginUsed": 1232.19,
+  "availableCash": 325.18,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 218.32,
-      "unrealizedPnl": 49.18,
-      "pnlPercent": 8.0,
-      "marginUsed": 633.13,
+      "currentPrice": 216.06,
+      "unrealizedPnl": 29.52,
+      "pnlPercent": 4.8,
+      "marginUsed": 626.57,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1899.38,
+      "positionValue": 1879.72,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4587.3,
-      "unrealizedPnl": 155.61,
-      "pnlPercent": 28.1,
-      "marginUsed": 605.52,
+      "currentPrice": 4588.0,
+      "unrealizedPnl": 155.89,
+      "pnlPercent": 28.2,
+      "marginUsed": 605.62,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1816.57,
+      "positionValue": 1816.85,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1899.38
+      "value": 1879.72
     },
     {
       "label": "GOLD",
-      "value": 1816.57
+      "value": 1816.85
     },
     {
       "label": "Cash",
-      "value": 338.1
+      "value": 325.18
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 633.13
+      "value": 626.57
     },
     {
       "label": "GOLD",
-      "value": 605.52
+      "value": 605.62
     },
     {
       "label": "Available",
-      "value": 338.1
+      "value": 325.18
     }
   ]
 }
