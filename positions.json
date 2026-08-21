@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787339718,
-  "generatedAt": "2026-08-21 19:15 UTC",
-  "accountValue": 1748.97,
-  "withdrawable": 327.2,
-  "portfolioValue": 1748.97,
-  "totalUnrealizedPnl": 188.54,
-  "totalMarginUsed": 1233.24,
-  "availableCash": 327.2,
+  "timestamp": 1787340020,
+  "generatedAt": "2026-08-21 19:20 UTC",
+  "accountValue": 1750.0,
+  "withdrawable": 327.54,
+  "portfolioValue": 1750.0,
+  "totalUnrealizedPnl": 189.05,
+  "totalMarginUsed": 1233.41,
+  "availableCash": 327.54,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 214.85,
-      "unrealizedPnl": 18.99,
+      "currentPrice": 214.9,
+      "unrealizedPnl": 19.43,
       "pnlPercent": 3.1,
-      "marginUsed": 623.07,
+      "marginUsed": 623.21,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1869.19,
+      "positionValue": 1869.63,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4622.5,
-      "unrealizedPnl": 169.55,
+      "currentPrice": 4622.7,
+      "unrealizedPnl": 169.63,
       "pnlPercent": 30.6,
-      "marginUsed": 610.17,
+      "marginUsed": 610.2,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1830.51,
+      "positionValue": 1830.59,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1869.19
+      "value": 1869.63
     },
     {
       "label": "GOLD",
-      "value": 1830.51
+      "value": 1830.59
     },
     {
       "label": "Cash",
-      "value": 327.2
+      "value": 327.54
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 623.07
+      "value": 623.21
     },
     {
       "label": "GOLD",
-      "value": 610.17
+      "value": 610.2
     },
     {
       "label": "Available",
-      "value": 327.2
+      "value": 327.54
     }
   ]
 }
