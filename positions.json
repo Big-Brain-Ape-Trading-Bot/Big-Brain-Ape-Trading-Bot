@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787337318,
-  "generatedAt": "2026-08-21 18:35 UTC",
-  "accountValue": 1754.6,
-  "withdrawable": 329.09,
-  "portfolioValue": 1754.6,
-  "totalUnrealizedPnl": 191.34,
-  "totalMarginUsed": 1234.17,
-  "availableCash": 329.09,
+  "timestamp": 1787337618,
+  "generatedAt": "2026-08-21 18:40 UTC",
+  "accountValue": 1753.05,
+  "withdrawable": 328.57,
+  "portfolioValue": 1753.05,
+  "totalUnrealizedPnl": 190.56,
+  "totalMarginUsed": 1233.91,
+  "availableCash": 328.57,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.14,
-      "unrealizedPnl": 21.51,
+      "currentPrice": 215.16,
+      "unrealizedPnl": 21.69,
       "pnlPercent": 3.5,
-      "marginUsed": 623.91,
+      "marginUsed": 623.96,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1871.72,
+      "positionValue": 1871.89,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4623.2,
-      "unrealizedPnl": 169.83,
-      "pnlPercent": 30.7,
-      "marginUsed": 610.26,
+      "currentPrice": 4620.8,
+      "unrealizedPnl": 168.88,
+      "pnlPercent": 30.5,
+      "marginUsed": 609.95,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1830.79,
+      "positionValue": 1829.83,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1871.72
+      "value": 1871.89
     },
     {
       "label": "GOLD",
-      "value": 1830.79
+      "value": 1829.83
     },
     {
       "label": "Cash",
-      "value": 329.09
+      "value": 328.57
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 623.91
+      "value": 623.96
     },
     {
       "label": "GOLD",
-      "value": 610.26
+      "value": 609.95
     },
     {
       "label": "Available",
-      "value": 329.09
+      "value": 328.57
     }
   ]
 }
