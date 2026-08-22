@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787402433,
-  "generatedAt": "2026-08-22 12:40 UTC",
-  "accountValue": 1748.59,
-  "withdrawable": 326.91,
-  "portfolioValue": 1748.59,
-  "totalUnrealizedPnl": 188.47,
-  "totalMarginUsed": 1233.21,
-  "availableCash": 326.91,
+  "timestamp": 1787402733,
+  "generatedAt": "2026-08-22 12:45 UTC",
+  "accountValue": 1748.39,
+  "withdrawable": 326.84,
+  "portfolioValue": 1748.39,
+  "totalUnrealizedPnl": 188.36,
+  "totalMarginUsed": 1233.18,
+  "availableCash": 326.84,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.57,
-      "unrealizedPnl": 25.25,
+      "currentPrice": 215.54,
+      "unrealizedPnl": 24.99,
       "pnlPercent": 4.1,
-      "marginUsed": 625.15,
+      "marginUsed": 625.07,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1875.46,
+      "positionValue": 1875.2,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4606.5,
-      "unrealizedPnl": 163.21,
+      "currentPrice": 4606.9,
+      "unrealizedPnl": 163.37,
       "pnlPercent": 29.5,
-      "marginUsed": 608.06,
+      "marginUsed": 608.11,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.17,
+      "positionValue": 1824.33,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1875.46
+      "value": 1875.2
     },
     {
       "label": "GOLD",
-      "value": 1824.17
+      "value": 1824.33
     },
     {
       "label": "Cash",
-      "value": 326.91
+      "value": 326.84
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 625.15
+      "value": 625.07
     },
     {
       "label": "GOLD",
-      "value": 608.06
+      "value": 608.11
     },
     {
       "label": "Available",
-      "value": 326.91
+      "value": 326.84
     }
   ]
 }
