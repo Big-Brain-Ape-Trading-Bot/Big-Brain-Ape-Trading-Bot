@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787423739,
-  "generatedAt": "2026-08-22 18:35 UTC",
-  "accountValue": 1747.5,
-  "withdrawable": 326.44,
-  "portfolioValue": 1747.5,
-  "totalUnrealizedPnl": 188.0,
-  "totalMarginUsed": 1233.06,
-  "availableCash": 326.44,
+  "timestamp": 1787424038,
+  "generatedAt": "2026-08-22 18:40 UTC",
+  "accountValue": 1747.61,
+  "withdrawable": 326.48,
+  "portfolioValue": 1747.61,
+  "totalUnrealizedPnl": 188.06,
+  "totalMarginUsed": 1233.07,
+  "availableCash": 326.48,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.43,
-      "unrealizedPnl": 24.04,
+      "currentPrice": 215.45,
+      "unrealizedPnl": 24.21,
       "pnlPercent": 3.9,
-      "marginUsed": 624.75,
+      "marginUsed": 624.8,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1874.24,
+      "positionValue": 1874.41,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.4,
-      "unrealizedPnl": 163.97,
+      "currentPrice": 4608.1,
+      "unrealizedPnl": 163.85,
       "pnlPercent": 29.6,
-      "marginUsed": 608.31,
+      "marginUsed": 608.27,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.92,
+      "positionValue": 1824.81,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1874.24
+      "value": 1874.41
     },
     {
       "label": "GOLD",
-      "value": 1824.92
+      "value": 1824.81
     },
     {
       "label": "Cash",
-      "value": 326.44
+      "value": 326.48
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.75
+      "value": 624.8
     },
     {
       "label": "GOLD",
-      "value": 608.31
+      "value": 608.27
     },
     {
       "label": "Available",
-      "value": 326.44
+      "value": 326.48
     }
   ]
 }
