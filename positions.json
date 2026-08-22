@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787398832,
-  "generatedAt": "2026-08-22 11:40 UTC",
-  "accountValue": 1741.31,
-  "withdrawable": 324.5,
-  "portfolioValue": 1741.31,
-  "totalUnrealizedPnl": 184.81,
-  "totalMarginUsed": 1231.99,
-  "availableCash": 324.5,
+  "timestamp": 1787399133,
+  "generatedAt": "2026-08-22 11:45 UTC",
+  "accountValue": 1742.24,
+  "withdrawable": 324.81,
+  "portfolioValue": 1742.24,
+  "totalUnrealizedPnl": 185.28,
+  "totalMarginUsed": 1232.15,
+  "availableCash": 324.81,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.2,
-      "unrealizedPnl": 22.04,
+      "currentPrice": 215.24,
+      "unrealizedPnl": 22.38,
       "pnlPercent": 3.6,
-      "marginUsed": 624.08,
+      "marginUsed": 624.2,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1872.24,
+      "positionValue": 1872.59,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4605.4,
-      "unrealizedPnl": 162.78,
+      "currentPrice": 4605.7,
+      "unrealizedPnl": 162.9,
       "pnlPercent": 29.4,
-      "marginUsed": 607.91,
+      "marginUsed": 607.95,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1823.74,
+      "positionValue": 1823.86,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1872.24
+      "value": 1872.59
     },
     {
       "label": "GOLD",
-      "value": 1823.74
+      "value": 1823.86
     },
     {
       "label": "Cash",
-      "value": 324.5
+      "value": 324.81
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.08
+      "value": 624.2
     },
     {
       "label": "GOLD",
-      "value": 607.91
+      "value": 607.95
     },
     {
       "label": "Available",
-      "value": 324.5
+      "value": 324.81
     }
   ]
 }
