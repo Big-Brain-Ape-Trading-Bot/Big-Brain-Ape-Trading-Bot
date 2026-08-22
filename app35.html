@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Big Brain Ape</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--orange:#f0883e;--yellow:#d29922}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -234,6 +235,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tv-chart-container{position:relative}
 .tv-click-overlay{position:absolute;top:4px;right:4px;background:rgba(88,166,255,0.9);color:#fff;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;z-index:10;pointer-events:auto}
 .tv-click-overlay:active{background:rgba(88,166,255,1)}
+
+/* GROK-STYLE ANALYSIS GRID (mobile responsive) */
+@media(max-width:500px){
+.grid-2{grid-template-columns:1fr!important}
+.grid-4{grid-template-columns:repeat(2,1fr)!important}
+.sr-grid{grid-template-columns:1fr!important}
+}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 </style>
 </head>
 <body>
@@ -720,219 +731,271 @@ var changeArrow=d.change>=0?'▲':'▼';
 var rating=calcRating({strongBuy:d.strongBuy,buy:d.buy,hold:d.hold,sell:d.sell,strongSell:d.strongSell},d);
 var apeRating=bigBrainRating({strongBuy:d.strongBuy,buy:d.buy,hold:d.hold,sell:d.sell,strongSell:d.strongSell},d);
 
+// Compute ape score 0-10
+var apeScore=Math.max(0,Math.min(10,(apeRating.score+5)*0.8+2));
+var scorePct=apeScore*10;
+var scoreColor=apeRating.color;
+
 var html='';
 
-// === SECTION 1: ASSET NAME + PRICE + CHANGE (TOP) ===
-html+='<div class="analysis-header">';
-if(d.logo)html+='<img class="analysis-logo" src="'+d.logo+'" onerror="this.style.display=\'none\'">';
-html+='<div><div class="analysis-name">'+(d.companyName||d.name||sym)+'</div><div class="analysis-symbol">'+sym+(d.exchange?' · '+d.exchange:'')+'</div></div></div>';
-html+='<div class="analysis-price">$'+fmtNum(d.price)+'</div>';
-html+='<div class="analysis-change '+changeClass+'">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
+// === HEADER ===
+html+='<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">';
+html+='<div style="display:flex;align-items:center;gap:12px">';
+if(d.logo)html+='<img src="'+d.logo+'" style="width:48px;height:48px;border-radius:12px" onerror="this.style.display=\'none\'">';
+html+='<div><div style="font-size:20px;font-weight:700">'+(d.companyName||d.name||sym)+'</div>';
+html+='<div style="color:var(--text2);font-size:13px">'+sym+(d.exchange?' · '+d.exchange:'')+'</div></div></div>';
+html+='<div style="text-align:right">';
+html+='<div style="font-size:28px;font-weight:800">$'+fmtNum(d.price)+'</div>';
+html+='<div class="analysis-change '+changeClass+'" style="font-size:15px">'+changeArrow+' $'+fmtNum(Math.abs(d.change||0))+' ('+fmtNum(Math.abs(d.changePercentage||0))+'%)</div>';
+html+='</div></div>';
 
-// === SECTION 2: BIG BRAIN APE'S RECOMMENDATION (clickable) ===
-html+='<div class="section-title" style="margin-top:16px">🦍 Big Brain Ape\'s Recommendation</div>';
-html+='<div onclick="showApeDetail(\''+sym+'\',\''+apeRating.label.replace(/'/g,'')+'\','+apeRating.score+')" style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+apeRating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;cursor:pointer">';
-html+='<div style="font-size:32px;font-weight:800;color:'+apeRating.color+';margin-bottom:8px">'+apeRating.label+'</div>';
+// === BIG BRAIN APE RATING (score circle + badge) ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Big Brain Ape Rating</span></div>';
+html+='<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">';
+// Score circle
+html+='<div style="width:110px;height:110px;border-radius:50%;background:conic-gradient('+scoreColor+' calc('+scorePct+'% * 3.6), var(--border) 0);display:flex;align-items:center;justify-content:center;position:relative">';
+html+='<div style="position:absolute;inset:10px;border-radius:50%;background:var(--card)"></div>';
+html+='<div style="position:relative;text-align:center;z-index:1"><div style="font-size:28px;font-weight:800">'+apeScore.toFixed(1)+'</div><div style="font-size:11px;color:var(--text2)">/ 10</div></div>';
+html+='</div>';
+// Badge + reasons
+html+='<div>';
+var badgeBg=apeRating.label.indexOf('Buy')>=0?'rgba(63,185,80,0.15)':apeRating.label.indexOf('Sell')>=0?'rgba(248,81,73,0.15)':'rgba(210,153,34,0.15)';
+var badgeBorder=apeRating.label.indexOf('Buy')>=0?'rgba(63,185,80,0.4)':apeRating.label.indexOf('Sell')>=0?'rgba(248,81,73,0.4)':'rgba(210,153,34,0.4)';
+html+='<span style="display:inline-block;padding:8px 18px;border-radius:999px;font-weight:700;font-size:16px;background:'+badgeBg+';color:'+apeRating.color+';border:1px solid '+badgeBorder+'">'+apeRating.label+'</span>';
 if(apeRating.reasons.length>0){
-html+='<div style="font-size:12px;color:var(--text2);text-align:left;margin-top:8px">';
+html+='<div style="margin-top:10px;max-width:320px;color:var(--text2);font-size:13px">';
 for(var ri=0;ri<apeRating.reasons.length;ri++){
-html+='<div style="padding:3px 0">• '+apeRating.reasons[ri]+'</div>';
+html+='<div style="padding:2px 0">• '+apeRating.reasons[ri]+'</div>';
 }
 html+='</div>';
 }
-html+='</div>';
+html+='</div></div></div>';
 
-// === SECTION 3: ANALYST RATINGS & PRICE TARGETS (with colored border, clickable) ===
-html+='<div class="section-title">📊 Analyst Ratings & Price Targets</div>';
-html+='<div style="border:2px solid '+rating.color+';border-radius:12px;padding:16px;margin-bottom:16px;cursor:pointer" onclick="showAnalystConsensus(\''+sym+'\')">';
-
-// Rating consensus box
-html+='<div class="rating-box" style="border:none;padding:0;margin-bottom:12px"><div class="rating-label">Analyst Consensus Rating</div>';
-html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
+// === ANALYST RATINGS BREAKDOWN (bar chart) ===
 var sb=d.strongBuy||0,b=d.buy||0,h=d.hold||0,s=d.sell||0,ss=d.strongSell||0;
 var total=sb+b+h+s+ss;
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Analyst Ratings Breakdown</span></div>';
+html+='<div style="height:240px;position:relative"><canvas id="ratingsChart"></canvas></div>';
 if(total>0){
-html+='<div class="rating-bars">';
-html+='<div class="rating-bar sb" style="width:'+(sb/total*100)+'%">'+sb+'</div>';
-html+='<div class="rating-bar b" style="width:'+(b/total*100)+'%">'+b+'</div>';
-html+='<div class="rating-bar h" style="width:'+(h/total*100)+'%">'+h+'</div>';
-html+='<div class="rating-bar s" style="width:'+(s/total*100)+'%">'+s+'</div>';
-html+='<div class="rating-bar ss" style="width:'+(ss/total*100)+'%">'+ss+'</div>';
-html+='</div>';
+var consensusLabel=rating.label;
+html+='<div style="text-align:center;margin-top:8px;font-size:13px;color:var(--text2)">'+total+' analysts · Consensus leans <strong style="color:'+rating.color+'">'+consensusLabel+'</strong></div>';
 }
-html+='<div class="rating-count">'+total+' analysts covering</div></div>';
-
-// Recommendation trend chart (4 periods)
-if(d.recTrend&&d.recTrend.length>0){
-html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Recommendation Trend (4 months)</div><canvas id="recTrendChart" style="width:100%;height:300px"></canvas></div>';
-}
-
-// Price target info
-if(d.targetAvg||d.targetHigh||d.targetLow){
-html+='<div class="data-grid" style="margin-bottom:12px">';
-if(d.targetHigh)html+=dataCell("Target High",'$'+fmtNum(d.targetHigh));
-if(d.targetAvg)html+=dataCell("Target Avg",'$'+fmtNum(d.targetAvg));
-if(d.targetLow)html+=dataCell("Target Low",'$'+fmtNum(d.targetLow));
-html+='</div>';
-}
-html+='<div style="font-size:11px;color:var(--blue);margin-top:8px;font-weight:600;text-align:center">Tap to view all analyst ratings & price targets →</div>';
 html+='</div>';
 
-// === SECTION 2: INTERACTIVE TRADINGVIEW CHART ===
-html+='<div class="section-title">📈 Live Trading Chart</div>';
-html+='<div class="tv-chart-container" id="tvChartContainer"></div>';
-
-// === SECTION 3: MORE CHARTS & GRAPHS ===
-html+='<div class="section-title">📊 Key Metrics Visualization</div>';
-
-// Earnings bar chart — last 3 quarters with beat/miss
+// === PRICE TARGET + EARNINGS (side by side) ===
+html+='<div class="grid-2">';
+// Price target
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:15px;font-weight:650">Price Target</span></div>';
+html+='<div style="height:200px;position:relative"><canvas id="targetChart"></canvas></div>';
+if(d.targetAvg){
+var upside=d.targetAvg>0?((d.targetAvg-d.price)/d.price*100):0;
+html+='<div style="text-align:center;margin-top:6px;font-size:13px"><strong>Avg: $'+fmtNum(d.targetAvg)+'</strong> · <span style="color:'+(upside>=0?'var(--green)':'var(--red)')+'">'+(upside>=0?'+':'')+fmtNum(upside)+'% upside</span></div>';
+}
+html+='</div>';
+// Earnings
 if(d.earnings&&d.earnings.length>0){
-var eShow=d.earnings.slice(0,3);
-html+='<div class="chart-container"><div style="font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:600">Earnings: Last '+eShow.length+' Quarters</div><canvas id="earningsChart" style="width:100%;height:220px"></canvas></div>';
-}
-
-// Margin gauges
-if(d.grossMargin||d.netMargin){
-html+='<div class="data-grid" style="margin-bottom:12px">';
-if(d.grossMargin)html+='<div class="data-cell"><div class="data-label">Gross Margin</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px"><div style="height:6px;background:var(--green);border-radius:3px;width:'+Math.min(100,d.grossMargin)+'%"></div></div><div class="data-value" style="font-size:12px;margin-top:2px">'+fmtNum(d.grossMargin)+'%</div></div>';
-if(d.netMargin)html+='<div class="data-cell"><div class="data-label">Net Margin</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px"><div style="height:6px;background:var(--blue);border-radius:3px;width:'+Math.min(100,Math.max(0,d.netMargin))+'%"></div></div><div class="data-value" style="font-size:12px;margin-top:2px">'+fmtNum(d.netMargin)+'%</div></div>';
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:15px;font-weight:650">Earnings (Actual vs Estimate)</span></div>';
+html+='<div style="height:200px;position:relative"><canvas id="earningsChart"></canvas></div>';
+html+='</div>';
+}else{
+// Fill with key stats if no earnings
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:15px;font-weight:650">Day Range</span></div>';
+html+='<div style="height:200px;position:relative"><canvas id="dayRangeChart"></canvas></div>';
 html+='</div>';
 }
-
-// ROE gauge
-if(d.roe){
-html+='<div class="data-grid" style="margin-bottom:12px">';
-html+='<div class="data-cell"><div class="data-label">Return on Equity (ROE)</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:4px"><div style="height:6px;background:var(--orange);border-radius:3px;width:'+Math.min(100,d.roe)+'%"></div></div><div class="data-value" style="font-size:12px;margin-top:2px">'+fmtNum(d.roe)+'%</div></div>';
 html+='</div>';
-}
 
-// 52-week range bar
+// === KEY METRICS CARDS ===
+html+='<div class="grid-4">';
+function metricCard(label,val,sub){
+var s='<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px">';
+s+='<div style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">'+label+'</div>';
+s+='<div style="font-size:18px;font-weight:700">'+val+'</div>';
+if(sub)s+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+sub+'</div>';
+s+='</div>';
+return s;
+}
+html+=metricCard("Market Cap",d.marketCap?'$'+fmtCap(d.marketCap/1e6):'—');
+html+=metricCard("P/E Ratio",d.pe?fmtNum(d.pe):'—',"Trailing");
+html+=metricCard("EPS (TTM)",d.eps?fmtNum(d.eps):'—');
+html+=metricCard("Dividend",d.dividendYield?fmtNum(d.dividendYield)+'%':'—',"Yield");
+html+=metricCard("52-Week Range",d.yearLow?'$'+fmtNum(d.yearLow)+' – $'+fmtNum(d.yearHigh):'—',"",true);
+html+=metricCard("Beta",d.beta?fmtNum(d.beta):'—');
+html+=metricCard("Avg Price Target",d.targetAvg?'$'+fmtNum(d.targetAvg):'—',d.targetAvg?'<span style="color:'+(d.targetAvg>d.price?'var(--green)':'var(--red)')+'">'+(d.targetAvg>d.price?'↑':'↓')+' '+fmtNum(Math.abs((d.targetAvg-d.price)/d.price*100))+'%</span>':'');
+if(d.upcomingEarnings&&d.upcomingEarnings.length>0){
+html+=metricCard("Next Earnings",d.upcomingEarnings[0].date,'Q'+d.upcomingEarnings[0].quarter);
+}else{
+html+=metricCard("50-Day Avg",d.priceAvg50?'$'+fmtNum(d.priceAvg50):'—');
+}
+html+='</div>';
+
+// === SUPPORT & RESISTANCE ===
 if(d.yearHigh&&d.yearLow){
 var range=d.yearHigh-d.yearLow;
 var pos=range>0?((d.price-d.yearLow)/range*100):50;
 pos=Math.max(0,Math.min(100,pos));
-html+='<div class="chart-container"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">52-Week Range</div>';
-html+='<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--red)">$'+fmtNum(d.yearLow)+'</span><span style="color:var(--green)">$'+fmtNum(d.yearHigh)+'</span></div>';
-html+='<div style="height:8px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green));border-radius:4px;position:relative">';
-html+='<div style="position:absolute;left:'+pos+'%;top:-4px;width:12px;height:16px;background:var(--text);border-radius:2px;transform:translateX(-50%)"></div></div>';
-html+='<div style="text-align:center;font-size:12px;margin-top:6px">Current: $'+fmtNum(d.price)+' ('+fmtNum(pos)+'% of range)</div></div>';
-}
-
-// === SECTION 4: KEY STATS GRID ===
-html+='<div class="section-title">📋 Key Statistics</div>';
-html+='<div class="data-grid">';
-html+=dataCell("Open",'$'+fmtNum(d.open||0));
-html+=dataCell("Prev Close",'$'+fmtNum(d.prevClose||0));
-html+=dataCell("Day High",'$'+fmtNum(d.high||0));
-html+=dataCell("Day Low",'$'+fmtNum(d.low||0));
-html+=dataCell("52wk High",'$'+fmtNum(d.yearHigh||0));
-html+=dataCell("52wk Low",'$'+fmtNum(d.yearLow||0));
-html+=dataCell("50-day Avg",'$'+fmtNum(d.priceAvg50||0));
-html+=dataCell("200-day Avg",'$'+fmtNum(d.priceAvg200||0));
-if(d.pe)html+=dataCell("P/E Ratio",fmtNum(d.pe));
-if(d.eps)html+=dataCell("EPS",fmtNum(d.eps));
-if(d.beta)html+=dataCell("Beta",fmtNum(d.beta));
-if(d.marketCap)html+=dataCell("Market Cap",'$'+fmtCap(d.marketCap/1e6));
-if(d.dividendYield)html+=dataCell("Div Yield",fmtNum(d.dividendYield)+"%");
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Support & Resistance Levels</span></div>';
+html+='<div class="sr-grid" style="margin-top:8px">';
+// Resistance
+html+='<div>';
+html+='<div style="font-size:12px;color:var(--red);font-weight:600;margin-bottom:8px">RESISTANCE</div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">Major (52W High)</span><span style="font-weight:700;color:#f87171">$'+fmtNum(d.yearHigh)+'</span></div>';
+if(d.targetHigh)html+='<div style="display:flex;justify-content:space-between;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">Analyst High Target</span><span style="font-weight:700;color:#f87171">$'+fmtNum(d.targetHigh)+'</span></div>';
+if(d.targetAvg)html+='<div style="display:flex;justify-content:space-between;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);border-radius:10px;padding:10px 14px"><span style="color:var(--text2)">Analyst Avg Target</span><span style="font-weight:700;color:#f87171">$'+fmtNum(d.targetAvg)+'</span></div>';
 html+='</div>';
-
-// === SECTION 5: EARNINGS REPORT & GUIDANCE ===
-if(d.earnings&&d.earnings.length>0||d.upcomingEarnings&&d.upcomingEarnings.length>0){
-html+='<div class="section-title">💰 Earnings Report & Future Guidance</div>';
-
-// Last earnings report
-if(d.earnings&&d.earnings.length>0){
-var le=d.earnings[0];
-var beat=le.actual>=le.estimate;
-html+='<div class="briefing-card"><h3>Latest Earnings Report</h3>';
-html+='<p style="margin-top:6px">📅 Period: '+le.period+' (Q'+le.quarter+')</p>';
-html+='<p style="margin-top:4px">EPS Estimate: $'+fmtNum(le.estimate)+'</p>';
-html+='<p style="margin-top:4px">EPS Actual: <strong style="color:'+(beat?'var(--green)':'var(--red)')+'">$'+fmtNum(le.actual)+'</strong></p>';
-if(le.surprisePct){
-html+='<p style="margin-top:4px">'+(beat?'▲ Beat':'▼ Missed')+' by $'+fmtNum(Math.abs(le.surprise||0))+' ('+fmtNum(Math.abs(le.surprisePct))+'%)</p>';
-}
+// Support
+html+='<div>';
+html+='<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">SUPPORT</div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">Near-term Support</span><span style="font-weight:700;color:#4ade80">$'+fmtNum(d.priceAvg50||d.price*0.95)+'</span></div>';
+if(d.targetLow)html+='<div style="display:flex;justify-content:space-between;background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">Analyst Low Target</span><span style="font-weight:700;color:#4ade80">$'+fmtNum(d.targetLow)+'</span></div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);border-radius:10px;padding:10px 14px"><span style="color:var(--text2)">Major (52W Low)</span><span style="font-weight:700;color:#4ade80">$'+fmtNum(d.yearLow)+'</span></div>';
 html+='</div>';
-}
-
-// Earnings history table
-if(d.earnings&&d.earnings.length>1){
-html+='<div class="briefing-card"><h3>Earnings History</h3>';
-html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;font-size:12px;margin-top:8px">';
-html+='<div style="color:var(--text2);font-weight:600">Period</div><div style="color:var(--text2);font-weight:600">Estimate</div><div style="color:var(--text2);font-weight:600">Actual</div><div style="color:var(--text2);font-weight:600">Surprise</div>';
-for(var i=0;i<d.earnings.length;i++){
-var e=d.earnings[i];
-var b=e.actual>=e.estimate;
-html+='<div>'+e.period.split('-').slice(0,2).join('/')+'</div>';
-html+='<div>$'+fmtNum(e.estimate)+'</div>';
-html+='<div style="color:'+(b?'var(--green)':'var(--red)')+'">$'+fmtNum(e.actual)+'</div>';
-html+='<div style="color:'+(b?'var(--green)':'var(--red)')+'">'+(e.surprisePct>=0?'+':'')+fmtNum(e.surprisePct)+'%</div>';
-}
 html+='</div></div>';
 }
 
-// Future guidance
-if(d.upcomingEarnings&&d.upcomingEarnings.length>0){
-html+='<div class="briefing-card"><h3>Future Earnings Guidance</h3>';
-for(var i=0;i<d.upcomingEarnings.length;i++){
-var ue=d.upcomingEarnings[i];
-html+='<p style="margin-top:8px;font-size:13px"><strong>📅 '+ue.date+'</strong> (Q'+ue.quarter+')</p>';
-if(ue.epsEstimate)html+='<p style="margin-top:2px">EPS Estimate: $'+fmtNum(ue.epsEstimate)+'</p>';
-if(ue.revenueEstimate)html+='<p style="margin-top:2px">Revenue Estimate: $'+fmtCap(ue.revenueEstimate/1e6)+'M</p>';
-}
+// === LIVE INTERACTIVE TRADINGVIEW CHART ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Live Interactive Chart</span></div>';
+html+='<div class="tv-chart-container" id="tvChartContainer" style="height:400px;border-radius:12px;overflow:hidden;background:#131722"></div>';
 html+='</div>';
-}
-}
 
-// === SECTION 6: LATEST NEWS ===
-// Fetch and render after initial layout
-fetchStockNews(sym).then(function(articles){
-if(articles.length>0){
-var newsHtml=renderNewsSection(articles);
-var aboutSection=out.querySelector('.section-title');
-// Insert before "About" section if it exists, otherwise append
-var allTitles=out.querySelectorAll('.section-title');
-var insertBefore=null;
-for(var t=0;t<allTitles.length;t++){
-if(allTitles[t].textContent.indexOf('About')>=0){
-insertBefore=allTitles[t];
-break;
-}
-}
-if(insertBefore){
-insertBefore.insertAdjacentHTML('beforebegin',newsHtml);
-}else{
-out.innerHTML+=newsHtml;
-}
-}
-});
+// === RECENT NEWS ===
+html+='<div id="newsContainer" style="margin-bottom:18px"></div>';
 
-// === SECTION 7: COMPANY INFO ===
-if(d.companyName||d.name){
-html+='<div class="section-title">About</div>';
-html+='<div class="briefing-card"><h3>'+(d.companyName||d.name||sym)+'</h3>';
-if(d.sector)html+='<p style="margin-top:4px">🏭 '+d.sector+'</p>';
-if(d.exchange)html+='<p style="margin-top:4px">🏢 '+d.exchange+'</p>';
-if(d.ipo)html+='<p style="margin-top:4px">📅 IPO: '+d.ipo+'</p>';
-if(d.country)html+='<p style="margin-top:4px">📍 '+d.country+'</p>';
+// === INDIVIDUAL ANALYST RATINGS & PRICE TARGETS ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Individual Analyst Ratings & Price Targets</span></div>';
+html+='<div id="analystList" style="display:flex;flex-direction:column;gap:0">';
+html+='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px"><div class="spinner" style="width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 8px"></div>Loading analyst ratings...</div>';
 html+='</div>';
-}
+html+='</div>';
 
 out.innerHTML=html;
 
-// === DRAW ALL CHARTS ===
-setTimeout(function(){
-// TradingView chart
-var tvContainer=document.getElementById('tvChartContainer');
-if(tvContainer)loadTradingViewChart(tvContainer,getTVSymbol(sym));
+// === FETCH ANALYST RATINGS ===
+sameDomainGet(ANALYST_RATINGS_URL).then(function(allData){
+var ad=allData[sym];
+var al=document.getElementById('analystList');
+if(!al)return;
+if(!ad||!ad.analysts||ad.analysts.length===0){
+al.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px">No individual analyst ratings available for '+sym+'.</div>';
+return;
+}
+var ratingColors={'Strong Buy':'#3fb950','Buy':'#5cb85c','Hold':'#d29922','Sell':'#f0883e','Strong Sell':'#f85149'};
+var badgeClasses={'Strong Buy':'badge-buy','Buy':'badge-buy','Hold':'badge-hold','Sell':'badge-hold','Strong Sell':'badge-hold'};
+var alHtml='<ul style="list-style:none;padding:0;margin:0">';
+for(var i=0;i<ad.analysts.length;i++){
+var a=ad.analysts[i];
+var rc=ratingColors[a.rating]||'#8b949e';
+alHtml+='<li style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap">';
+alHtml+='<div style="font-weight:600;font-size:13px">'+a.firm;
+if(a.analystName&&a.analystName!==a.firm)alHtml+='<span style="color:var(--text2);font-weight:400"> · '+a.analystName+'</span>';
+alHtml+='</div>';
+alHtml+='<div style="color:var(--text2);font-size:13px"><span style="display:inline-block;padding:3px 9px;border-radius:6px;font-size:12px;font-weight:600;background:'+rc+'22;color:'+rc+'">'+a.rating+'</span>';
+if(a.priceTarget&&a.priceTarget!=='n/a')alHtml+=' · PT '+a.priceTarget;
+if(a.upside&&a.upside!=='n/a')alHtml+=' · '+a.upside;
+alHtml+=' · '+a.date+'</div>';
+alHtml+='</li>';
+}
+alHtml+='</ul>';
+alHtml+='<div style="font-size:11px;color:var(--text2);margin-top:10px;text-align:center">Data from stockanalysis.com · Updated '+ad.fetchedAt+'</div>';
+al.innerHTML=alHtml;
+}).catch(function(){
+var al=document.getElementById('analystList');
+if(al)al.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px">Could not load analyst ratings.</div>';
+});
 
-// Recommendation trend chart
-var rc=document.getElementById('recTrendChart');
-if(rc&&d.recTrend)drawRecTrendChart(rc,d.recTrend);
+// === FETCH NEWS ===
+fetchStockNews(sym).then(function(articles){
+if(articles.length===0)return;
+var nc=document.getElementById('newsContainer');
+if(!nc)return;
+var nh='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+nh+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Recent News</span></div>';
+nh+='<div style="display:flex;flex-direction:column;gap:14px">';
+for(var i=0;i<articles.length;i++){
+var a=articles[i];
+nh+='<div style="background:#1a2236;border:1px solid var(--border);border-radius:12px;padding:14px 16px">';
+nh+='<div style="font-size:11px;color:var(--text2);margin-bottom:4px">'+a.source+' · '+a.date+'</div>';
+nh+='<a href="'+a.url+'" target="_blank" style="font-weight:600;font-size:15px;color:var(--text);text-decoration:none;display:block;margin-bottom:4px">'+a.headline+'</a>';
+if(a.summary)nh+='<div style="font-size:13px;color:var(--text2)">'+a.summary+'...</div>';
+nh+='</div>';
+}
+nh+='</div></div>';
+nc.innerHTML=nh;
+});
+
+// === DRAW CHARTS (Chart.js) ===
+setTimeout(function(){
+// Ratings bar chart
+var rc=document.getElementById('ratingsChart');
+if(rc&&typeof Chart!=='undefined'){
+new Chart(rc,{
+type:'bar',
+data:{labels:['Strong Buy','Buy','Hold','Sell','Strong Sell'],
+datasets:[{data:[sb,b,h,s,ss],backgroundColor:['#3fb950','#5cb85c','#d29922','#f0883e','#f85149'],borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+scales:{y:{beginAtZero:true,grid:{color:'rgba(48,54,61,0.6)'},ticks:{color:'#8b949e'}},
+x:{grid:{display:false},ticks:{color:'#e6edf3'}}}}
+});
+}
+
+// Price target chart
+var tc=document.getElementById('targetChart');
+if(tc&&typeof Chart!=='undefined'){
+var tl=d.targetLow||0,ta=d.targetAvg||0,th=d.targetHigh||0;
+new Chart(tc,{
+type:'bar',
+data:{labels:['Low','Avg','High'],datasets:[{data:[tl,ta,th],backgroundColor:['#64748b','#58a6ff','#3fb950'],borderRadius:8}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+scales:{x:{grid:{color:'rgba(48,54,61,0.6)'},ticks:{color:'#8b949e'}},
+y:{grid:{display:false},ticks:{color:'#e6edf3'}}}}
+});
+}
 
 // Earnings chart
 var ec=document.getElementById('earningsChart');
-if(ec&&d.earnings)drawEarningsChart(ec,d.earnings.slice(0,3));
-},50);
+if(ec&&d.earnings&&d.earnings.length>0&&typeof Chart!=='undefined'){
+var eShow=d.earnings.slice(0,4).reverse();
+var labels=[],estimates=[],actuals=[];
+for(var i=0;i<eShow.length;i++){
+labels.push(eShow[i].period.split('-').slice(0,2).join('/'));
+estimates.push(eShow[i].estimate);
+actuals.push(eShow[i].actual);
+}
+new Chart(ec,{
+type:'bar',
+data:{labels:labels,datasets:[
+{label:'Estimate',data:estimates,backgroundColor:'rgba(139,148,158,0.5)',borderRadius:6},
+{label:'Actual',data:actuals,backgroundColor:'#3fb950',borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e6edf3'}}},
+scales:{y:{beginAtZero:true,grid:{color:'rgba(48,54,61,0.6)'},ticks:{color:'#8b949e'}},
+x:{grid:{display:false},ticks:{color:'#e6edf3'}}}}
+});
+}
+
+// Day range chart (fallback if no earnings)
+var drc=document.getElementById('dayRangeChart');
+if(drc&&typeof Chart!=='undefined'){
+new Chart(drc,{
+type:'bar',
+data:{labels:['Low','Open','High'],datasets:[{data:[d.low||0,d.open||0,d.high||0],backgroundColor:['#f85149','#58a6ff','#3fb950'],borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+scales:{y:{beginAtZero:false,grid:{color:'rgba(48,54,61,0.6)'},ticks:{color:'#8b949e'}},
+x:{grid:{display:false},ticks:{color:'#e6edf3'}}}}
+});
+}
+
+// TradingView chart
+var tvContainer=document.getElementById('tvChartContainer');
+if(tvContainer)loadTradingViewChart(tvContainer,getTVSymbol(sym));
+},100);
 }
 
 function drawPriceChart(canvas,history){
@@ -1153,70 +1216,176 @@ fetch("https://api.coingecko.com/api/v3/coins/"+coinId+"?localization=false&tick
 var m=data.market_data;
 var changeClass=m.price_change_percentage_24h>=0?'up':'down';
 var rating=calcCryptoRating(m);
+currentCryptoData=data;
+
+// Compute ape score 0-10 from crypto signals
+var cryptoScore=Math.max(0,Math.min(10,(rating.label==='Strong Buy'?9:rating.label==='Buy'?7:rating.label==='Hold'?5:rating.label==='Sell'?3:1)));
+var scorePct=cryptoScore*10;
+var scoreColor=rating.color;
 
 var html='';
 
-// === SECTION 1: ASSET NAME + PRICE + CHANGE (TOP) ===
-html+='<div class="analysis-header">';
-if(data.image&&data.image.small)html+='<img class="analysis-logo" src="'+data.image.small+'">';
-html+='<div><div class="analysis-name">'+data.name+'</div><div class="analysis-symbol">'+symbol+'</div></div></div>';
-
-html+='<div class="analysis-price">$'+fmtCrypto(m.current_price.usd)+'</div>';
-html+='<div class="analysis-change '+changeClass+'">'+(m.price_change_percentage_24h>=0?'▲':'▼')+' '+fmtNum(Math.abs(m.price_change_percentage_24h))+'% (24h)</div>';
-
-// === SECTION 2: BIG BRAIN APE'S RECOMMENDATION ===
-html+='<div class="section-title" style="margin-top:16px">🦍 Big Brain Ape\'s Recommendation</div>';
-html+='<div style="background:linear-gradient(135deg,#0d1117,#161b22);border:2px solid '+rating.color+';border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">';
-html+='<div style="font-size:32px;font-weight:800;color:'+rating.color+';margin-bottom:8px">'+rating.label+'</div>';
-html+='<div style="font-size:12px;color:var(--text2);margin-top:4px">'+rating.reason+'</div>';
-html+='</div>';
-
-// === SECTION 3: ANALYSTS CONSENSUS RATING ===
-currentCryptoData=data;
-html+='<div class="section-title">📊 Analyst Ratings & Price Targets</div>';
-html+='<div style="border:2px solid var(--green);border-radius:12px;padding:16px;margin-bottom:16px;cursor:pointer" onclick="showAnalystConsensus(\''+symbol+'\')">';
-html+='<div class="rating-box" style="border:none;padding:0;margin-bottom:0;text-align:center">';
-html+='<div class="rating-label">Analyst Consensus Rating</div>';
-html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
-html+='<div style="font-size:12px;color:var(--text2);margin-top:6px">'+rating.reason+'</div>';
-html+='<div style="font-size:11px;color:var(--blue);margin-top:8px;font-weight:600">Tap to view all analyst ratings & price targets →</div>';
+// === HEADER ===
+html+='<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">';
+html+='<div style="display:flex;align-items:center;gap:12px">';
+if(data.image&&data.image.small)html+='<img src="'+data.image.small+'" style="width:48px;height:48px;border-radius:12px">';
+html+='<div><div style="font-size:20px;font-weight:700">'+data.name+'</div>';
+html+='<div style="color:var(--text2);font-size:13px">'+symbol+'</div></div></div>';
+html+='<div style="text-align:right">';
+html+='<div style="font-size:28px;font-weight:800">$'+fmtCrypto(m.current_price.usd)+'</div>';
+html+='<div class="analysis-change '+changeClass+'" style="font-size:15px">'+(m.price_change_percentage_24h>=0?'▲':'▼')+' '+fmtNum(Math.abs(m.price_change_percentage_24h))+'% (24h)</div>';
 html+='</div></div>';
 
-// TradingView chart
-html+='<div class="tv-chart-container" id="tvChartContainer"></div>';
+// === BIG BRAIN APE RATING ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Big Brain Ape Rating</span></div>';
+html+='<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">';
+html+='<div style="width:110px;height:110px;border-radius:50%;background:conic-gradient('+scoreColor+' calc('+scorePct+'% * 3.6), var(--border) 0);display:flex;align-items:center;justify-content:center;position:relative">';
+html+='<div style="position:absolute;inset:10px;border-radius:50%;background:var(--card)"></div>';
+html+='<div style="position:relative;text-align:center;z-index:1"><div style="font-size:28px;font-weight:800">'+cryptoScore.toFixed(1)+'</div><div style="font-size:11px;color:var(--text2)">/ 10</div></div>';
+html+='</div>';
+html+='<div>';
+var badgeBg=rating.label.indexOf('Buy')>=0?'rgba(63,185,80,0.15)':rating.label.indexOf('Sell')>=0?'rgba(248,81,73,0.15)':'rgba(210,153,34,0.15)';
+var badgeBorder=rating.label.indexOf('Buy')>=0?'rgba(63,185,80,0.4)':rating.label.indexOf('Sell')>=0?'rgba(248,81,73,0.4)':'rgba(210,153,34,0.4)';
+html+='<span style="display:inline-block;padding:8px 18px;border-radius:999px;font-weight:700;font-size:16px;background:'+badgeBg+';color:'+rating.color+';border:1px solid '+badgeBorder+'">'+rating.label+'</span>';
+html+='<div style="margin-top:10px;color:var(--text2);font-size:13px">'+rating.reason+'</div>';
+html+='</div></div></div>';
 
-html+='<div class="section-title">Key Stats</div>';
-html+='<div class="data-grid">';
-html+=dataCell("Market Cap",'$'+fmtCap(m.market_cap.usd/1e6));
-html+=dataCell("24h Volume",'$'+fmtCap(m.total_volume.usd/1e6));
-html+=dataCell("24h High",'$'+fmtCrypto(m.high_24h.usd));
-html+=dataCell("24h Low",'$'+fmtCrypto(m.low_24h.usd));
-html+=dataCell("7d Change",fmtPct(m.price_change_percentage_7d));
-html+=dataCell("30d Change",fmtPct(m.price_change_percentage_30d));
-html+=dataCell("ATH",'$'+fmtCrypto(m.ath.usd));
-html+=dataCell("ATH Date",m.ath_date.usd.split('T')[0]);
-html+=dataCell("From ATH",fmtPct(m.ath_change_percentage.usd));
-html+=dataCell("Circulating Supply",fmtNum(m.circulating_supply));
+// === ANALYST CONSENSUS RATING (clickable, green border) ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Analyst Consensus Rating</span></div>';
+html+='<div style="border:2px solid var(--green);border-radius:12px;padding:16px;cursor:pointer" onclick="showAnalystConsensus(\''+symbol+'\')">';
+html+='<div style="text-align:center"><div style="font-size:11px;color:var(--text2);margin-bottom:6px">Consensus Rating</div>';
+html+='<div style="font-size:24px;font-weight:800;color:'+rating.color+';margin-bottom:8px">'+rating.label+'</div>';
+html+='<div style="font-size:12px;color:var(--text2)">'+rating.reason+'</div>';
+html+='<div style="font-size:11px;color:var(--blue);margin-top:8px;font-weight:600">Tap to view all analyst ratings & price targets →</div>';
+html+='</div></div></div>';
+
+// === PRICE PERFORMANCE CHARTS (side by side) ===
+html+='<div class="grid-2">';
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:15px;font-weight:650">Price Changes</span></div>';
+html+='<div style="height:200px;position:relative"><canvas id="cryptoChangeChart"></canvas></div>';
+html+='</div>';
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:15px;font-weight:650">From All-Time High</span></div>';
+html+='<div style="height:200px;position:relative"><canvas id="cryptoAthChart"></canvas></div>';
+html+='</div>';
 html+='</div>';
 
-if(data.description&&data.description.en){
-var desc=data.description.en.replace(/<[^>]*>/g,'').substring(0,300);
-html+='<div class="section-title">About</div>';
-html+='<div class="briefing-card"><h3>'+data.name+'</h3><p>'+desc+'...</p></div>';
+// === KEY METRICS CARDS ===
+html+='<div class="grid-4">';
+function cMetricCard(label,val,sub){
+var s='<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px">';
+s+='<div style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">'+label+'</div>';
+s+='<div style="font-size:18px;font-weight:700">'+val+'</div>';
+if(sub)s+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+sub+'</div>';
+s+='</div>';
+return s;
 }
+html+=cMetricCard("Market Cap",'$'+fmtCap(m.market_cap.usd/1e6)+'M');
+html+=cMetricCard("24h Volume",'$'+fmtCap(m.total_volume.usd/1e6)+'M');
+html+=cMetricCard("24h High",'$'+fmtCrypto(m.high_24h.usd));
+html+=cMetricCard("24h Low",'$'+fmtCrypto(m.low_24h.usd));
+html+=cMetricCard("ATH",'$'+fmtCrypto(m.ath.usd));
+html+=cMetricCard("From ATH",fmtNum(m.ath_change_percentage.usd)+'%');
+html+=cMetricCard("Circulating Supply",fmtNum(m.circulating_supply));
+html+=cMetricCard("Market Cap Rank",'#'+(m.market_cap_rank||'—'));
+html+='</div>';
+
+// === SUPPORT & RESISTANCE ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Support & Resistance Levels</span></div>';
+html+='<div class="sr-grid" style="margin-top:8px">';
+html+='<div>';
+html+='<div style="font-size:12px;color:var(--red);font-weight:600;margin-bottom:8px">RESISTANCE</div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">All-Time High</span><span style="font-weight:700;color:#f87171">$'+fmtCrypto(m.ath.usd)+'</span></div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">24h High</span><span style="font-weight:700;color:#f87171">$'+fmtCrypto(m.high_24h.usd)+'</span></div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.25);border-radius:10px;padding:10px 14px"><span style="color:var(--text2)">Near-term</span><span style="font-weight:700;color:#f87171">$'+fmtCrypto(m.current_price.usd*1.05)+'</span></div>';
+html+='</div>';
+html+='<div>';
+html+='<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">SUPPORT</div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">Near-term</span><span style="font-weight:700;color:#4ade80">$'+fmtCrypto(m.current_price.usd*0.95)+'</span></div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);border-radius:10px;padding:10px 14px;margin-bottom:8px"><span style="color:var(--text2)">24h Low</span><span style="font-weight:700;color:#4ade80">$'+fmtCrypto(m.low_24h.usd)+'</span></div>';
+html+='<div style="display:flex;justify-content:space-between;background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.25);border-radius:10px;padding:10px 14px"><span style="color:var(--text2)">Major Support</span><span style="font-weight:700;color:#4ade80">$'+fmtCrypto(m.current_price.usd*0.85)+'</span></div>';
+html+='</div>';
+html+='</div></div>';
+
+// === LIVE TRADINGVIEW CHART ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Live Interactive Chart</span></div>';
+html+='<div class="tv-chart-container" id="tvChartContainer" style="height:400px;border-radius:12px;overflow:hidden;background:#131722"></div>';
+html+='</div>';
+
+// === RECENT NEWS ===
+html+='<div id="newsContainer" style="margin-bottom:18px"></div>';
+
+// === INDIVIDUAL ANALYST RATINGS (from analyst-ratings.json) ===
+html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Individual Analyst Ratings & Price Targets</span></div>';
+html+='<div id="analystList" style="display:flex;flex-direction:column;gap:0">';
+html+='<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px">No individual analyst ratings available for '+symbol+' (crypto not covered by stock analysts)</div>';
+html+='</div></div>';
 
 out.innerHTML=html;
 
-// Fetch latest crypto news and append after render
+// === FETCH NEWS ===
 fetchCryptoNews(symbol).then(function(articles){
-if(articles.length>0){
-var newsDiv=document.createElement('div');
-newsDiv.innerHTML=renderNewsSection(articles);
-out.appendChild(newsDiv);
+if(articles.length===0)return;
+var nc=document.getElementById('newsContainer');
+if(!nc)return;
+var nh='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px">';
+nh+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue)"></div><span style="font-size:16px;font-weight:650">Recent News</span></div>';
+nh+='<div style="display:flex;flex-direction:column;gap:14px">';
+for(var i=0;i<articles.length;i++){
+var a=articles[i];
+nh+='<div style="background:#1a2236;border:1px solid var(--border);border-radius:12px;padding:14px 16px">';
+nh+='<div style="font-size:11px;color:var(--text2);margin-bottom:4px">'+a.source+' · '+a.date+'</div>';
+nh+='<a href="'+a.url+'" target="_blank" style="font-weight:600;font-size:15px;color:var(--text);text-decoration:none;display:block;margin-bottom:4px">'+a.headline+'</a>';
+if(a.summary)nh+='<div style="font-size:13px;color:var(--text2)">'+a.summary+'...</div>';
+nh+='</div>';
 }
+nh+='</div></div>';
+nc.innerHTML=nh;
 });
+
+// === DRAW CHARTS ===
+setTimeout(function(){
+// Price changes chart
+var ccc=document.getElementById('cryptoChangeChart');
+if(ccc&&typeof Chart!=='undefined'){
+var c24=m.price_change_percentage_24h||0;
+var c7=m.price_change_percentage_7d||0;
+var c30=m.price_change_percentage_30d||0;
+var colors=[c24>=0?'#3fb950':'#f85149',c7>=0?'#3fb950':'#f85149',c30>=0?'#3fb950':'#f85149'];
+new Chart(ccc,{
+type:'bar',
+data:{labels:['24h','7d','30d'],datasets:[{data:[c24,c7,c30],backgroundColor:colors,borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+scales:{y:{grid:{color:'rgba(48,54,61,0.6)'},ticks:{color:'#8b949e',callback:function(v){return v+'%'}}},
+x:{grid:{display:false},ticks:{color:'#e6edf3'}}}}
+});
+}
+
+// ATH chart
+var ac=document.getElementById('cryptoAthChart');
+if(ac&&typeof Chart!=='undefined'){
+var price=m.current_price.usd;
+var ath=m.ath.usd;
+var fromAth=((price-ath)/ath*100);
+new Chart(ac,{
+type:'bar',
+data:{labels:['Current','ATH'],datasets:[{data:[price,ath],backgroundColor:['#58a6ff','#3fb950'],borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+scales:{y:{grid:{color:'rgba(48,54,61,0.6)'},ticks:{color:'#8b949e',callback:function(v){return '$'+v}}},
+x:{grid:{display:false},ticks:{color:'#e6edf3'}}}}
+});
+}
+
+// TradingView chart
 var tvC=document.getElementById('tvChartContainer');
 if(tvC)loadTradingViewChart(tvC,getTVSymbol(symbol));
+},100);
 })
 .catch(function(err){
 out.innerHTML='<div class="error-card">Could not analyze '+symbol+'.<br>'+err.message+'</div>';
