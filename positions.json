@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787367625,
-  "generatedAt": "2026-08-22 03:00 UTC",
-  "accountValue": 1754.01,
-  "withdrawable": 328.78,
-  "portfolioValue": 1754.01,
-  "totalUnrealizedPnl": 191.14,
-  "totalMarginUsed": 1234.1,
-  "availableCash": 328.78,
+  "timestamp": 1787367925,
+  "generatedAt": "2026-08-22 03:05 UTC",
+  "accountValue": 1754.34,
+  "withdrawable": 328.89,
+  "portfolioValue": 1754.34,
+  "totalUnrealizedPnl": 191.3,
+  "totalMarginUsed": 1234.16,
+  "availableCash": 328.89,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.69,
-      "unrealizedPnl": 26.3,
+      "currentPrice": 215.7,
+      "unrealizedPnl": 26.39,
       "pnlPercent": 4.3,
-      "marginUsed": 625.5,
+      "marginUsed": 625.53,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1876.5,
+      "positionValue": 1876.59,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4610.6,
-      "unrealizedPnl": 164.84,
+      "currentPrice": 4610.8,
+      "unrealizedPnl": 164.92,
       "pnlPercent": 29.8,
-      "marginUsed": 608.6,
+      "marginUsed": 608.63,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1825.8,
+      "positionValue": 1825.87,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1876.5
+      "value": 1876.59
     },
     {
       "label": "GOLD",
-      "value": 1825.8
+      "value": 1825.87
     },
     {
       "label": "Cash",
-      "value": 328.78
+      "value": 328.89
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 625.5
+      "value": 625.53
     },
     {
       "label": "GOLD",
-      "value": 608.6
+      "value": 608.63
     },
     {
       "label": "Available",
-      "value": 328.78
+      "value": 328.89
     }
   ]
 }
