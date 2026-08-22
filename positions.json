@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787387130,
-  "generatedAt": "2026-08-22 08:25 UTC",
-  "accountValue": 1744.69,
-  "withdrawable": 325.67,
-  "portfolioValue": 1744.69,
-  "totalUnrealizedPnl": 186.47,
-  "totalMarginUsed": 1232.55,
-  "availableCash": 325.67,
+  "timestamp": 1787387429,
+  "generatedAt": "2026-08-22 08:30 UTC",
+  "accountValue": 1743.92,
+  "withdrawable": 325.41,
+  "portfolioValue": 1743.92,
+  "totalUnrealizedPnl": 186.09,
+  "totalMarginUsed": 1232.42,
+  "availableCash": 325.41,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.3,
-      "unrealizedPnl": 22.91,
+      "currentPrice": 215.26,
+      "unrealizedPnl": 22.56,
       "pnlPercent": 3.7,
-      "marginUsed": 624.37,
+      "marginUsed": 624.25,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1873.11,
+      "positionValue": 1872.76,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4607.4,
-      "unrealizedPnl": 163.57,
+      "currentPrice": 4607.3,
+      "unrealizedPnl": 163.53,
       "pnlPercent": 29.5,
-      "marginUsed": 608.18,
+      "marginUsed": 608.16,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.53,
+      "positionValue": 1824.49,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1873.11
+      "value": 1872.76
     },
     {
       "label": "GOLD",
-      "value": 1824.53
+      "value": 1824.49
     },
     {
       "label": "Cash",
-      "value": 325.67
+      "value": 325.41
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.37
+      "value": 624.25
     },
     {
       "label": "GOLD",
-      "value": 608.18
+      "value": 608.16
     },
     {
       "label": "Available",
-      "value": 325.67
+      "value": 325.41
     }
   ]
 }
