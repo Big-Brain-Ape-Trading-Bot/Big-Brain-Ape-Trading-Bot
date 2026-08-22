@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787422538,
-  "generatedAt": "2026-08-22 18:15 UTC",
-  "accountValue": 1747.26,
-  "withdrawable": 326.37,
-  "portfolioValue": 1747.26,
+  "timestamp": 1787422838,
+  "generatedAt": "2026-08-22 18:20 UTC",
+  "accountValue": 1747.25,
+  "withdrawable": 326.36,
+  "portfolioValue": 1747.25,
   "totalUnrealizedPnl": 187.88,
-  "totalMarginUsed": 1233.02,
-  "availableCash": 326.37,
+  "totalMarginUsed": 1233.01,
+  "availableCash": 326.36,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.43,
-      "unrealizedPnl": 24.04,
+      "currentPrice": 215.42,
+      "unrealizedPnl": 23.95,
       "pnlPercent": 3.9,
-      "marginUsed": 624.75,
+      "marginUsed": 624.72,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1874.24,
+      "positionValue": 1874.15,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.1,
-      "unrealizedPnl": 163.85,
+      "currentPrice": 4608.3,
+      "unrealizedPnl": 163.93,
       "pnlPercent": 29.6,
-      "marginUsed": 608.27,
+      "marginUsed": 608.3,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.81,
+      "positionValue": 1824.88,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1874.24
+      "value": 1874.15
     },
     {
       "label": "GOLD",
-      "value": 1824.81
+      "value": 1824.88
     },
     {
       "label": "Cash",
-      "value": 326.37
+      "value": 326.36
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.75
+      "value": 624.72
     },
     {
       "label": "GOLD",
-      "value": 608.27
+      "value": 608.3
     },
     {
       "label": "Available",
-      "value": 326.37
+      "value": 326.36
     }
   ]
 }
