@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787419537,
-  "generatedAt": "2026-08-22 17:25 UTC",
-  "accountValue": 1748.02,
-  "withdrawable": 326.63,
-  "portfolioValue": 1748.02,
-  "totalUnrealizedPnl": 188.25,
-  "totalMarginUsed": 1233.14,
-  "availableCash": 326.63,
+  "timestamp": 1787419838,
+  "generatedAt": "2026-08-22 17:30 UTC",
+  "accountValue": 1746.94,
+  "withdrawable": 326.27,
+  "portfolioValue": 1746.94,
+  "totalUnrealizedPnl": 187.71,
+  "totalMarginUsed": 1232.96,
+  "availableCash": 326.27,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.44,
-      "unrealizedPnl": 24.12,
+      "currentPrice": 215.41,
+      "unrealizedPnl": 23.86,
       "pnlPercent": 3.9,
-      "marginUsed": 624.78,
+      "marginUsed": 624.69,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1874.33,
+      "positionValue": 1874.06,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.8,
-      "unrealizedPnl": 164.12,
+      "currentPrice": 4608.1,
+      "unrealizedPnl": 163.85,
       "pnlPercent": 29.6,
-      "marginUsed": 608.36,
+      "marginUsed": 608.27,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1825.08,
+      "positionValue": 1824.81,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1874.33
+      "value": 1874.06
     },
     {
       "label": "GOLD",
-      "value": 1825.08
+      "value": 1824.81
     },
     {
       "label": "Cash",
-      "value": 326.63
+      "value": 326.27
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.78
+      "value": 624.69
     },
     {
       "label": "GOLD",
-      "value": 608.36
+      "value": 608.27
     },
     {
       "label": "Available",
-      "value": 326.63
+      "value": 326.27
     }
   ]
 }
