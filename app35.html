@@ -10,10 +10,12 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent}
 .app{max-width:500px;margin:0 auto;padding-bottom:60px}
-.header{text-align:center;padding:16px 20px 10px}
+.header{text-align:center;padding:16px 20px 10px;position:relative}
 .header h1{font-size:28px;font-weight:700}
 .header h1 span{color:var(--blue)}
 .header p{color:var(--text2);font-size:12px;margin-top:4px}
+.back-btn{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:var(--card);border:1px solid var(--border);color:var(--blue);font-size:13px;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.back-btn:active{background:var(--border);opacity:.8}
 
 /* NAV */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0;z-index:100}
@@ -370,31 +372,32 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <!-- ANALYSIS VIEW -->
 <div id="view-analysis" class="view">
+<div style="position:relative;padding:10px 16px"><button class="back-btn" style="position:static;transform:none" onclick="switchView('home')">‹ Back</button></div>
 <div id="analysisOutput"></div>
 </div>
 
 <!-- BRIEFING VIEW -->
 <div id="view-briefing" class="view">
-<div class="header"><h1>Daily <span>Briefing</span> 🦍</h1></div>
+<div class="header"><button class="back-btn" onclick="switchView('home')">‹ Back</button><h1>Daily <span>Briefing</span> 🦍</h1></div>
 <div class="briefing-date" id="briefingDate"></div>
 <div id="briefingContent"><div class="loading"><div class="spinner"></div>Loading briefing...</div></div>
 </div>
 
 <!-- TRADING VIEW -->
 <div id="view-trading" class="view">
-<div class="header"><h1>Trading <span>Desk</span> 🦍</h1></div>
+<div class="header"><button class="back-btn" onclick="switchView('home')">‹ Back</button><h1>Trading <span>Desk</span> 🦍</h1></div>
 <div id="tradingContent"><div class="loading"><div class="spinner"></div>Loading positions...</div></div>
 </div>
 
 <!-- SNAPSHOT VIEW -->
 <div id="view-snapshot" class="view">
-<div class="header"><h1>Daily <span>Snapshot</span> 📈</h1></div>
+<div class="header"><button class="back-btn" onclick="switchView('home')">‹ Back</button><h1>Daily <span>Snapshot</span> 📈</h1></div>
 <div id="snapshotContent"><div class="loading"><div class="spinner"></div>Loading daily snapshot...</div></div>
 </div>
 
 <!-- PRICING VIEW -->
 <div id="view-pricing" class="view">
-<div class="header"><h1>Pricing <span>Plans</span> 🦍</h1></div>
+<div class="header"><button class="back-btn" onclick="switchView('home')">‹ Back</button><h1>Pricing <span>Plans</span> 🦍</h1></div>
 <div class="price-card">
 <h3>Single Analysis</h3>
 <div class="price-amount">$0.25</div>
@@ -436,7 +439,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <!-- PAY VIEW -->
 <div id="view-pay" class="view">
-<div class="header"><h1>Payment <span>Options</span> 🦍</h1></div>
+<div class="header"><button class="back-btn" onclick="switchView('home')">‹ Back</button><h1>Payment <span>Options</span> 🦍</h1></div>
 <div class="briefing-card">
 <h3>💳 Pay with Crypto</h3>
 <p>Send USDC on Base network to:</p>
@@ -498,6 +501,7 @@ var SNAPSHOT_IMAGE_URL="https://raw.githubusercontent.com/Big-Brain-Ape-Trading-
 
 var CRYPTO_MAP={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",XRP:"ripple",DOGE:"dogecoin",ADA:"cardano",AVAX:"avalanche-2",DOT:"polkadot",LINK:"chainlink"};
 var CRYPTO_REVERSE={};for(var k in CRYPTO_MAP)CRYPTO_REVERSE[CRYPTO_MAP[k]]=k;
+var currentCryptoData=null;
 
 var OWNER_ID=8503471418;
 var isOwner=(window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.initDataUnsafe&&window.Telegram.WebApp.initDataUnsafe.user&&window.Telegram.WebApp.initDataUnsafe.user.id===OWNER_ID);
@@ -1165,10 +1169,16 @@ html+='<div style="font-size:32px;font-weight:800;color:'+rating.color+';margin-
 html+='<div style="font-size:12px;color:var(--text2);margin-top:4px">'+rating.reason+'</div>';
 html+='</div>';
 
-// === SECTION 3: TECHNICAL SIGNAL ===
-html+='<div class="rating-box"><div class="rating-label">Technical Signal</div>';
+// === SECTION 3: ANALYSTS CONSENSUS RATING ===
+currentCryptoData=data;
+html+='<div class="section-title">📊 Analyst Ratings & Price Targets</div>';
+html+='<div style="border:2px solid var(--green);border-radius:12px;padding:16px;margin-bottom:16px;cursor:pointer" onclick="showCryptoConsensus(\''+symbol+'\')">';
+html+='<div class="rating-box" style="border:none;padding:0;margin-bottom:0;text-align:center">';
+html+='<div class="rating-label">Analyst Consensus Rating</div>';
 html+='<div class="rating-value" style="color:'+rating.color+'">'+rating.label+'</div>';
-html+='<p style="font-size:12px;color:var(--text2);margin-top:6px">'+rating.reason+'</p></div>';
+html+='<div style="font-size:12px;color:var(--text2);margin-top:6px">'+rating.reason+'</div>';
+html+='<div style="font-size:11px;color:var(--blue);margin-top:8px;font-weight:600">Tap to view all analyst ratings & price targets →</div>';
+html+='</div></div>';
 
 // TradingView chart
 html+='<div class="tv-chart-container" id="tvChartContainer"></div>';
@@ -1332,6 +1342,90 @@ drawApeBarChart(barCanvas,null,isBullish);
 }
 });
 },100);
+}
+
+// ==============================
+// CRYPTO ANALYST CONSENSUS DETAIL OVERLAY
+// ==============================
+function showCryptoConsensus(sym){
+var data=currentCryptoData;
+var m=data?data.market_data:null;
+var rating=m?calcCryptoRating(m):{label:'N/A',color:'#8b949e',reason:''};
+
+var overlay=document.createElement('div');
+overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:9999;overflow-y:auto;display:flex;flex-direction:column';
+
+// Header bar with back + close
+var header=document.createElement('div');
+header.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0d1117;border-bottom:1px solid #30363d;flex-shrink:0;position:sticky;top:0;z-index:100';
+
+var backBtn=document.createElement('div');
+backBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#58a6ff;font-size:20px;cursor:pointer;font-weight:bold;flex-shrink:0';
+backBtn.textContent='←';
+backBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';switchView('home');};
+
+var title=document.createElement('div');
+title.style.cssText='font-size:16px;font-weight:700;color:#58a6ff;flex:1;margin-left:12px';
+title.textContent='📊 '+sym+' Analyst Consensus Rating';
+
+var closeBtn=document.createElement('div');
+closeBtn.style.cssText='width:36px;height:36px;background:#21262d;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f85149;font-size:22px;cursor:pointer;font-weight:bold;flex-shrink:0';
+closeBtn.textContent='✕';
+closeBtn.onclick=function(){document.body.removeChild(overlay);document.body.style.overflow='';};
+
+header.appendChild(backBtn);
+header.appendChild(title);
+header.appendChild(closeBtn);
+overlay.appendChild(header);
+
+var body=document.createElement('div');
+body.style.cssText='padding:16px;flex:1;overflow-y:auto';
+
+// Consensus rating card
+var card=document.createElement('div');
+card.style.cssText='background:#161b22;border:2px solid '+rating.color+';border-radius:12px;padding:20px;text-align:center;margin-bottom:16px';
+card.innerHTML='<div style="font-size:11px;color:#8b949e;margin-bottom:6px">Consensus Rating</div>';
+card.innerHTML+='<div style="font-size:28px;font-weight:800;color:'+rating.color+';margin-bottom:8px">'+rating.label+'</div>';
+card.innerHTML+='<div style="font-size:13px;color:#8b949e">'+rating.reason+'</div>';
+body.appendChild(card);
+
+// Bullet-point list of all available ratings and price targets
+var list=document.createElement('div');
+list.style.cssText='background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px';
+list.innerHTML='<div style="font-size:14px;font-weight:700;color:#c9d1d9;margin-bottom:12px">All Analyst Ratings & Price Targets</div>';
+
+var items=[];
+items.push({label:'Current Price',value:'$'+fmtCrypto(m?m.current_price.usd:0),color:'#c9d1d9'});
+items.push({label:'24h Change',value:(m&&m.price_change_percentage_24h>=0?'+':'')+fmtNum(m?m.price_change_percentage_24h:0)+'%',color:(m&&m.price_change_percentage_24h>=0)?'#3fb950':'#f85149'});
+items.push({label:'7d Change',value:(m&&m.price_change_percentage_7d>=0?'+':'')+fmtNum(m?m.price_change_percentage_7d:0)+'%',color:(m&&m.price_change_percentage_7d>=0)?'#3fb950':'#f85149'});
+items.push({label:'30d Change',value:(m&&m.price_change_percentage_30d>=0?'+':'')+fmtNum(m?m.price_change_percentage_30d:0)+'%',color:(m&&m.price_change_percentage_30d>=0)?'#3fb950':'#f85149'});
+items.push({label:'Market Cap',value:'$'+fmtCap(m?m.market_cap.usd/1e6:0)+'M',color:'#c9d1d9'});
+items.push({label:'24h Volume',value:'$'+fmtCap(m?m.total_volume.usd/1e6:0)+'M',color:'#c9d1d9'});
+items.push({label:'24h High',value:'$'+fmtCrypto(m?m.high_24h.usd:0),color:'#3fb950'});
+items.push({label:'24h Low',value:'$'+fmtCrypto(m?m.low_24h.usd:0),color:'#f85149'});
+items.push({label:'All-Time High (ATH)',value:'$'+fmtCrypto(m?m.ath.usd:0),color:'#3fb950'});
+items.push({label:'ATH Date',value:(m?m.ath_date.usd.split('T')[0]:'—'),color:'#8b949e'});
+items.push({label:'From ATH',value:fmtNum(m?m.ath_change_percentage.usd:0)+'%',color:(m&&m.ath_change_percentage.usd>=0)?'#3fb950':'#f85149'});
+items.push({label:'Circulating Supply',value:fmtNum(m?m.circulating_supply:0),color:'#c9d1d9'});
+items.push({label:'Total Supply',value:fmtNum(m?m.total_supply:0)||'—',color:'#c9d1d9'});
+items.push({label:'Max Supply',value:fmtNum(m?m.max_supply:0)||'∞',color:'#c9d1d9'});
+items.push({label:'Market Cap Rank',value:'#'+(m?m.market_cap_rank:0),color:'#58a6ff'});
+
+list.innerHTML+='<ul style="list-style:none;padding:0;margin:0">';
+for(var i=0;i<items.length;i++){
+var it=items[i];
+list.innerHTML+='<li style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #30363d;font-size:13px">';
+list.innerHTML+='<span style="color:#8b949e">• '+it.label+'</span>';
+list.innerHTML+='<span style="color:'+it.color+';font-weight:600">'+it.value+'</span>';
+list.innerHTML+='</li>';
+}
+list.innerHTML+='</ul>';
+
+body.appendChild(list);
+
+overlay.appendChild(body);
+document.body.appendChild(overlay);
+document.body.style.overflow='hidden';
 }
 
 // Column chart — score breakdown
