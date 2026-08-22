@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787370327,
-  "generatedAt": "2026-08-22 03:45 UTC",
-  "accountValue": 1754.2,
-  "withdrawable": 328.84,
-  "portfolioValue": 1754.2,
-  "totalUnrealizedPnl": 191.23,
-  "totalMarginUsed": 1234.13,
-  "availableCash": 328.84,
+  "timestamp": 1787370625,
+  "generatedAt": "2026-08-22 03:50 UTC",
+  "accountValue": 1754.69,
+  "withdrawable": 329.0,
+  "portfolioValue": 1754.69,
+  "totalUnrealizedPnl": 191.47,
+  "totalMarginUsed": 1234.21,
+  "availableCash": 329.0,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.81,
-      "unrealizedPnl": 27.34,
+      "currentPrice": 215.82,
+      "unrealizedPnl": 27.43,
       "pnlPercent": 4.4,
-      "marginUsed": 625.85,
+      "marginUsed": 625.88,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1877.54,
+      "positionValue": 1877.63,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.2,
-      "unrealizedPnl": 163.89,
+      "currentPrice": 4608.6,
+      "unrealizedPnl": 164.05,
       "pnlPercent": 29.6,
-      "marginUsed": 608.28,
+      "marginUsed": 608.34,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.85,
+      "positionValue": 1825.0,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1877.54
+      "value": 1877.63
     },
     {
       "label": "GOLD",
-      "value": 1824.85
+      "value": 1825.0
     },
     {
       "label": "Cash",
-      "value": 328.84
+      "value": 329.0
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 625.85
+      "value": 625.88
     },
     {
       "label": "GOLD",
-      "value": 608.28
+      "value": 608.34
     },
     {
       "label": "Available",
-      "value": 328.84
+      "value": 329.0
     }
   ]
 }
