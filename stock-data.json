@@ -1,6 +1,6 @@
 {
-  "timestamp": 1787355913,
-  "generatedAt": "2026-08-21 23:45 UTC",
+  "timestamp": 1787356693,
+  "generatedAt": "2026-08-21 23:58 UTC",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -7393,29 +7393,7 @@
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/KO.png",
       "ipo": "1950-01-26",
-      "upcomingEarnings": [
-        {
-          "date": "2027-04-26",
-          "quarter": 1,
-          "epsEstimate": 0.9203,
-          "revenueEstimate": 12487224940,
-          "hour": ""
-        },
-        {
-          "date": "2027-02-08",
-          "quarter": 4,
-          "epsEstimate": 0.6135,
-          "revenueEstimate": 11322982373,
-          "hour": "amc"
-        },
-        {
-          "date": "2026-10-19",
-          "quarter": 3,
-          "epsEstimate": 0.9049,
-          "revenueEstimate": 13282417375,
-          "hour": "bmo"
-        }
-      ],
+      "upcomingEarnings": [],
       "pe": 0,
       "eps": 3.039,
       "revenuePerShare": 11.6228,
@@ -13972,7 +13950,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Energy",
       "industry": "Energy",
-      "marketCap": 406554437248.87494,
+      "marketCap": 405566570903.37213,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/CVX.png",
       "ipo": "1921-06-24",
@@ -14343,7 +14321,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Aerospace & Defense",
       "industry": "Aerospace & Defense",
-      "marketCap": 170008583614.74033,
+      "marketCap": 169297257758.20923,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/BA.png",
       "ipo": "1934-09-05",
@@ -14792,7 +14770,29 @@
           "surprisePct": 2.1753
         }
       ],
-      "upcomingEarnings": [],
+      "upcomingEarnings": [
+        {
+          "date": "2027-05-19",
+          "quarter": 1,
+          "epsEstimate": 0.7479,
+          "revenueEstimate": 187459013971,
+          "hour": ""
+        },
+        {
+          "date": "2027-02-18",
+          "quarter": 4,
+          "epsEstimate": 0.8208,
+          "revenueEstimate": 201592814853,
+          "hour": "amc"
+        },
+        {
+          "date": "2026-11-19",
+          "quarter": 3,
+          "epsEstimate": 0.6884,
+          "revenueEstimate": 190227435889,
+          "hour": ""
+        }
+      ],
       "pe": 0,
       "eps": 2.7291,
       "revenuePerShare": 90.6745,
@@ -15063,11 +15063,93 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Retail",
       "industry": "Retail",
-      "marketCap": 333525552896.4764,
+      "marketCap": 334642325654.51953,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/HD.png",
       "ipo": "1984-04-19",
-      "upcomingEarnings": [],
+      "strongBuy": 9,
+      "buy": 19,
+      "hold": 17,
+      "sell": 0,
+      "strongSell": 1,
+      "consensus": "Buy",
+      "recTrend": [
+        {
+          "period": "2026-08-01",
+          "sb": 9,
+          "b": 19,
+          "h": 17,
+          "s": 0,
+          "ss": 1
+        },
+        {
+          "period": "2026-07-01",
+          "sb": 9,
+          "b": 19,
+          "h": 17,
+          "s": 0,
+          "ss": 1
+        },
+        {
+          "period": "2026-06-01",
+          "sb": 10,
+          "b": 19,
+          "h": 16,
+          "s": 0,
+          "ss": 1
+        },
+        {
+          "period": "2026-05-01",
+          "sb": 10,
+          "b": 19,
+          "h": 16,
+          "s": 0,
+          "ss": 1
+        }
+      ],
+      "earnings": [
+        {
+          "period": "2026-09-30",
+          "quarter": 2,
+          "estimate": 4.8762,
+          "actual": 4.92,
+          "surprise": 0.0438,
+          "surprisePct": 0.8982
+        },
+        {
+          "period": "2026-06-30",
+          "quarter": 1,
+          "estimate": 3.5072,
+          "actual": 3.43,
+          "surprise": -0.0772,
+          "surprisePct": -2.2012
+        },
+        {
+          "period": "2026-03-31",
+          "quarter": 4,
+          "estimate": 2.6164,
+          "actual": 2.72,
+          "surprise": 0.1036,
+          "surprisePct": 3.9596
+        },
+        {
+          "period": "2025-12-31",
+          "quarter": 3,
+          "estimate": 3.9535,
+          "actual": 3.74,
+          "surprise": -0.2135,
+          "surprisePct": -5.4003
+        }
+      ],
+      "upcomingEarnings": [
+        {
+          "date": "2026-11-17",
+          "quarter": 3,
+          "epsEstimate": 4.0834,
+          "revenueEstimate": 44049696663,
+          "hour": ""
+        }
+      ],
       "pe": 0,
       "eps": 14.2271,
       "revenuePerShare": 167.261,
@@ -15338,11 +15420,107 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Health Care",
       "industry": "Health Care",
-      "marketCap": 345439364475.35614,
+      "marketCap": 350160731953.6891,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/UNH.png",
       "ipo": "1984-10-17",
-      "upcomingEarnings": [],
+      "strongBuy": 8,
+      "buy": 19,
+      "hold": 7,
+      "sell": 0,
+      "strongSell": 0,
+      "consensus": "Strong Buy",
+      "recTrend": [
+        {
+          "period": "2026-08-01",
+          "sb": 8,
+          "b": 19,
+          "h": 7,
+          "s": 0,
+          "ss": 0
+        },
+        {
+          "period": "2026-07-01",
+          "sb": 8,
+          "b": 19,
+          "h": 6,
+          "s": 0,
+          "ss": 1
+        },
+        {
+          "period": "2026-06-01",
+          "sb": 7,
+          "b": 19,
+          "h": 7,
+          "s": 0,
+          "ss": 1
+        },
+        {
+          "period": "2026-05-01",
+          "sb": 7,
+          "b": 19,
+          "h": 7,
+          "s": 0,
+          "ss": 1
+        }
+      ],
+      "earnings": [
+        {
+          "period": "2026-06-30",
+          "quarter": 2,
+          "estimate": 4.9533,
+          "actual": 6.38,
+          "surprise": 1.4267,
+          "surprisePct": 28.803
+        },
+        {
+          "period": "2026-03-31",
+          "quarter": 1,
+          "estimate": 6.6406,
+          "actual": 7.23,
+          "surprise": 0.5894,
+          "surprisePct": 8.8757
+        },
+        {
+          "period": "2025-12-31",
+          "quarter": 4,
+          "estimate": 2.1222,
+          "actual": 2.11,
+          "surprise": -0.0122,
+          "surprisePct": -0.5749
+        },
+        {
+          "period": "2025-09-30",
+          "quarter": 3,
+          "estimate": 2.8218,
+          "actual": 2.92,
+          "surprise": 0.0982,
+          "surprisePct": 3.48
+        }
+      ],
+      "upcomingEarnings": [
+        {
+          "date": "2027-04-19",
+          "quarter": 1,
+          "epsEstimate": 8.2493,
+          "revenueEstimate": 113520179250,
+          "hour": ""
+        },
+        {
+          "date": "2027-01-25",
+          "quarter": 4,
+          "epsEstimate": 2.1396,
+          "revenueEstimate": 112286858070,
+          "hour": "amc"
+        },
+        {
+          "date": "2026-10-26",
+          "quarter": 3,
+          "epsEstimate": 4.1695,
+          "revenueEstimate": 112517372895,
+          "hour": "bmo"
+        }
+      ],
       "pe": 0,
       "eps": 13.2338,
       "revenuePerShare": 496.8311,
@@ -15613,11 +15791,107 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Pharmaceuticals",
       "industry": "Pharmaceuticals",
-      "marketCap": 644334553864.541,
+      "marketCap": 651250941856.3116,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/JNJ.png",
       "ipo": "1944-09-25",
-      "upcomingEarnings": [],
+      "strongBuy": 7,
+      "buy": 15,
+      "hold": 9,
+      "sell": 0,
+      "strongSell": 0,
+      "consensus": "Strong Buy",
+      "recTrend": [
+        {
+          "period": "2026-08-01",
+          "sb": 7,
+          "b": 15,
+          "h": 9,
+          "s": 0,
+          "ss": 0
+        },
+        {
+          "period": "2026-07-01",
+          "sb": 7,
+          "b": 14,
+          "h": 10,
+          "s": 0,
+          "ss": 0
+        },
+        {
+          "period": "2026-06-01",
+          "sb": 7,
+          "b": 14,
+          "h": 10,
+          "s": 0,
+          "ss": 0
+        },
+        {
+          "period": "2026-05-01",
+          "sb": 6,
+          "b": 14,
+          "h": 12,
+          "s": 0,
+          "ss": 0
+        }
+      ],
+      "earnings": [
+        {
+          "period": "2026-06-30",
+          "quarter": 2,
+          "estimate": 2.8745,
+          "actual": 2.9,
+          "surprise": 0.0255,
+          "surprisePct": 0.8871
+        },
+        {
+          "period": "2026-03-31",
+          "quarter": 1,
+          "estimate": 2.6914,
+          "actual": 2.7,
+          "surprise": 0.0086,
+          "surprisePct": 0.3195
+        },
+        {
+          "period": "2025-12-31",
+          "quarter": 4,
+          "estimate": 2.4633,
+          "actual": 2.46,
+          "surprise": -0.0033,
+          "surprisePct": -0.134
+        },
+        {
+          "period": "2025-09-30",
+          "quarter": 3,
+          "estimate": 2.7848,
+          "actual": 2.8,
+          "surprise": 0.0152,
+          "surprisePct": 0.5458
+        }
+      ],
+      "upcomingEarnings": [
+        {
+          "date": "2027-04-12",
+          "quarter": 1,
+          "epsEstimate": 2.9227,
+          "revenueEstimate": 25837875883,
+          "hour": ""
+        },
+        {
+          "date": "2027-01-19",
+          "quarter": 4,
+          "epsEstimate": 3.0419,
+          "revenueEstimate": 26738419052,
+          "hour": "amc"
+        },
+        {
+          "date": "2026-10-13",
+          "quarter": 3,
+          "epsEstimate": 2.9499,
+          "revenueEstimate": 25572367679,
+          "hour": ""
+        }
+      ],
       "pe": 0,
       "eps": 11.0332,
       "revenuePerShare": 40.1332,
@@ -15888,7 +16162,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Hotels, Restaurants & Leisure",
       "industry": "Hotels, Restaurants & Leisure",
-      "marketCap": 110775353681.15244,
+      "marketCap": 112152561148.33084,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/ABNB.png",
       "ipo": "2020-12-10",
@@ -16259,7 +16533,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Technology",
       "industry": "Technology",
-      "marketCap": 189368268842.9498,
+      "marketCap": 192031616802.5852,
       "country": "CA",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/SHOP.png",
       "ipo": "2015-05-21",
@@ -16630,7 +16904,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Financial Services",
       "industry": "Financial Services",
-      "marketCap": 53295212603.28,
+      "marketCap": 52653616301.50963,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/PYPL.png",
       "ipo": "2015-07-06",
@@ -17001,7 +17275,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Media",
       "industry": "Media",
-      "marketCap": 23319588599.467346,
+      "marketCap": 23374502437.202713,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/ROKU.png",
       "ipo": "2017-09-28",
@@ -17743,7 +18017,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Technology",
       "industry": "Technology",
-      "marketCap": 11892030465.121237,
+      "marketCap": 11838565625.080282,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/DOCU.png",
       "ipo": "2018-04-27",
@@ -18114,7 +18388,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Media",
       "industry": "Media",
-      "marketCap": 8811140024.954197,
+      "marketCap": 8861876407.63148,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/SNAP.png",
       "ipo": "2017-03-02",
@@ -18485,7 +18759,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Media",
       "industry": "Media",
-      "marketCap": 13155451042.637451,
+      "marketCap": 13251724338.002583,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/PINS.png",
       "ipo": "2019-04-18",
@@ -18856,7 +19130,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Road & Rail",
       "industry": "Road & Rail",
-      "marketCap": 160443104073.35916,
+      "marketCap": 160953748490.00638,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/UBER.png",
       "ipo": "2019-05-10",
@@ -19227,7 +19501,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Road & Rail",
       "industry": "Road & Rail",
-      "marketCap": 6586600512.220309,
+      "marketCap": 6613098069.105746,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/LYFT.png",
       "ipo": "2019-03-29",
@@ -19598,7 +19872,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Automobiles",
       "industry": "Automobiles",
-      "marketCap": 10313524575.314999,
+      "marketCap": 10772740526.826918,
       "country": "CN",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/NIO.png",
       "ipo": "2018-09-12",
@@ -19969,7 +20243,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Electrical Equipment",
       "industry": "Electrical Equipment",
-      "marketCap": 3073829418.4888887,
+      "marketCap": 3171633151.4636364,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/PLUG.png",
       "ipo": "1999-10-28",
@@ -20340,7 +20614,7 @@
       "exchange": "NASDAQ NMS - GLOBAL MARKET",
       "sector": "Electrical Equipment",
       "industry": "Electrical Equipment",
-      "marketCap": 1467958930.2088668,
+      "marketCap": 1562304984.986928,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/FCEL.png",
       "ipo": "1992-06-25",
@@ -20711,7 +20985,7 @@
       "exchange": "NEW YORK STOCK EXCHANGE, INC.",
       "sector": "Aerospace & Defense",
       "industry": "Aerospace & Defense",
-      "marketCap": 466915382.55451727,
+      "marketCap": 466915365.0,
       "country": "US",
       "logo": "https://static2.finnhub.io/file/publicdatany/finnhubimage/stock_logo/SPCE.png",
       "ipo": "2017-09-18",
@@ -21082,7 +21356,7 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.5177107,
+      "beta": 0.5167825,
       "yearHigh": 92.185,
       "yearLow": 81.17,
       "priceAvg50": 0,
@@ -21090,7 +21364,7 @@
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 37135380,
+      "volume": 38335720,
       "history": [
         {
           "date": "2026-07-13",
@@ -21348,15 +21622,15 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.1751257,
+      "beta": 0.16881588,
       "yearHigh": 509.7,
-      "yearLow": 305.19,
+      "yearLow": 306.43,
       "priceAvg50": 0,
       "priceAvg200": 0,
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 10634880,
+      "volume": 10929540,
       "history": [
         {
           "date": "2026-07-13",
@@ -21614,15 +21888,15 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.5079086,
+      "beta": 0.5026559,
       "yearHigh": 109.83,
-      "yearLow": 33.85,
+      "yearLow": 34.195,
       "priceAvg50": 0,
       "priceAvg200": 0,
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 15647060,
+      "volume": 16722950,
       "history": [
         {
           "date": "2026-07-13",
@@ -21880,7 +22154,7 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.022048127,
+      "beta": 0.024971215,
       "yearHigh": 154.08,
       "yearLow": 65.985,
       "priceAvg50": 0,
@@ -21888,7 +22162,7 @@
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 4999000,
+      "volume": 4908280,
       "history": [
         {
           "date": "2026-07-13",
@@ -22146,15 +22420,15 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.5150957,
-      "yearHigh": 64.25,
-      "yearLow": 42.3,
+      "beta": 0.5127972,
+      "yearHigh": 64.7,
+      "yearLow": 42.35,
       "priceAvg50": 0,
       "priceAvg200": 0,
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 24468980,
+      "volume": 24390960,
       "history": [
         {
           "date": "2026-07-13",
@@ -22412,7 +22686,7 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 1.3542042,
+      "beta": 1.3545533,
       "yearHigh": 198.73,
       "yearLow": 126.68,
       "priceAvg50": 0,
@@ -22420,7 +22694,7 @@
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 6155480,
+      "volume": 5986090,
       "history": [
         {
           "date": "2026-07-13",
@@ -22678,7 +22952,7 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.88186955,
+      "beta": 0.88281095,
       "yearHigh": 58.405,
       "yearLow": 47.67,
       "priceAvg50": 0,
@@ -22686,7 +22960,7 @@
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 27065360,
+      "volume": 27391840,
       "history": [
         {
           "date": "2026-07-13",
@@ -22944,7 +23218,7 @@
       "eps": 0,
       "revenuePerShare": 0,
       "roe": 0,
-      "beta": 0.56155854,
+      "beta": 0.5556441,
       "yearHigh": 176.595,
       "yearLow": 133.725,
       "priceAvg50": 0,
@@ -22952,7 +23226,7 @@
       "grossMargin": 0,
       "netMargin": 0,
       "dividendYield": 0,
-      "volume": 8126980,
+      "volume": 8150819,
       "history": [
         {
           "date": "2026-07-13",
