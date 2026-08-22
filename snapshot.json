@@ -1,5 +1,5 @@
 {
-  "date": "August 21, 2026 23:55 UTC",
+  "date": "August 22, 2026 00:00 UTC",
   "assets": {
     "S&P 500": {
       "price": 7674.37,
@@ -95,20 +95,20 @@
       ]
     },
     "BTC": {
-      "price": 78270.3,
-      "change_pct": 7.11,
+      "price": 78302.4,
+      "change_pct": 7.26,
       "support": 62228.8,
       "resistance": 79555.5
     },
     "ETH": {
-      "price": 2513.72,
-      "change_pct": 8.0,
+      "price": 2515.79,
+      "change_pct": 8.15,
       "support": 1820.61,
       "resistance": 2549.4
     },
     "SOL": {
-      "price": 93.6,
-      "change_pct": 6.71,
+      "price": 93.63,
+      "change_pct": 6.83,
       "support": 70.51,
       "resistance": 95.04
     }
@@ -116,9 +116,13 @@
   "risk_score": 53,
   "risk_bias": "NEUTRAL",
   "fear_greed": {
-    "value": 72,
+    "value": 71,
     "classification": "Greed",
     "history": [
+      {
+        "value": 71,
+        "label": "Greed"
+      },
       {
         "value": 72,
         "label": "Greed"
@@ -137,10 +141,6 @@
       },
       {
         "value": 31,
-        "label": "Fear"
-      },
-      {
-        "value": 34,
         "label": "Fear"
       },
       {
@@ -189,7 +189,7 @@
   "signals": [
     {
       "label": "CAUTION",
-      "text": "Greed elevated (72)",
+      "text": "Greed elevated (71)",
       "type": "caution"
     },
     {
@@ -199,7 +199,7 @@
     },
     {
       "label": "BULLISH",
-      "text": "BTC up 7.1% \u2014 momentum",
+      "text": "BTC up 7.3% \u2014 momentum",
       "type": "bullish"
     },
     {
@@ -217,14 +217,14 @@
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 71.45,
+    "daily_inflow": 71.49,
     "daily_avg": 32.86,
-    "daily_pct": 117.4,
-    "weekly_inflow": 230.01,
-    "weekly_avg": 166.81,
+    "daily_pct": 117.5,
+    "weekly_inflow": 230.05,
+    "weekly_avg": 166.82,
     "weekly_pct": 37.9,
-    "monthly_inflow": 714.92,
-    "monthly_avg": 830.76,
+    "monthly_inflow": 714.96,
+    "monthly_avg": 830.78,
     "monthly_pct": -13.9,
     "large_tx_count": 538999
   },
