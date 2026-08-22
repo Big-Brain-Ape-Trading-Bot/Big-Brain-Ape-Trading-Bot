@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787416837,
-  "generatedAt": "2026-08-22 16:40 UTC",
-  "accountValue": 1745.29,
-  "withdrawable": 325.74,
-  "portfolioValue": 1745.29,
-  "totalUnrealizedPnl": 186.87,
-  "totalMarginUsed": 1232.68,
-  "availableCash": 325.74,
+  "timestamp": 1787417136,
+  "generatedAt": "2026-08-22 16:45 UTC",
+  "accountValue": 1746.74,
+  "withdrawable": 326.22,
+  "portfolioValue": 1746.74,
+  "totalUnrealizedPnl": 187.6,
+  "totalMarginUsed": 1232.92,
+  "availableCash": 326.22,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.3,
-      "unrealizedPnl": 22.91,
-      "pnlPercent": 3.7,
-      "marginUsed": 624.37,
+      "currentPrice": 215.37,
+      "unrealizedPnl": 23.51,
+      "pnlPercent": 3.8,
+      "marginUsed": 624.57,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1873.11,
+      "positionValue": 1873.72,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.4,
-      "unrealizedPnl": 163.97,
+      "currentPrice": 4608.7,
+      "unrealizedPnl": 164.08,
       "pnlPercent": 29.6,
-      "marginUsed": 608.31,
+      "marginUsed": 608.35,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.92,
+      "positionValue": 1825.04,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1873.11
+      "value": 1873.72
     },
     {
       "label": "GOLD",
-      "value": 1824.92
+      "value": 1825.04
     },
     {
       "label": "Cash",
-      "value": 325.74
+      "value": 326.22
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.37
+      "value": 624.57
     },
     {
       "label": "GOLD",
-      "value": 608.31
+      "value": 608.35
     },
     {
       "label": "Available",
-      "value": 325.74
+      "value": 326.22
     }
   ]
 }
