@@ -1,5 +1,5 @@
 {
-  "date": "August 22, 2026 22:05 UTC",
+  "date": "August 22, 2026 22:10 UTC",
   "assets": {
     "S&P 500": {
       "price": 7674.37,
@@ -95,26 +95,26 @@
       ]
     },
     "BTC": {
-      "price": 77049.0,
-      "change_pct": -1.69,
+      "price": 77111.8,
+      "change_pct": -2.03,
       "support": 62228.8,
       "resistance": 79555.5
     },
     "ETH": {
-      "price": 2412.72,
-      "change_pct": -4.58,
+      "price": 2417.78,
+      "change_pct": -4.92,
       "support": 1820.61,
       "resistance": 2549.4
     },
     "SOL": {
-      "price": 93.12,
-      "change_pct": -0.92,
+      "price": 93.55,
+      "change_pct": -0.81,
       "support": 70.51,
       "resistance": 102.84
     }
   },
-  "risk_score": 48,
-  "risk_bias": "NEUTRAL",
+  "risk_score": 43,
+  "risk_bias": "RISK-OFF",
   "fear_greed": {
     "value": 71,
     "classification": "Greed",
@@ -199,6 +199,11 @@
     },
     {
       "label": "CAUTION",
+      "text": "BTC down -2.0% \u2014 watch support",
+      "type": "caution"
+    },
+    {
+      "label": "CAUTION",
       "text": "Yields rising \u2014 risk off",
       "type": "caution"
     },
@@ -212,16 +217,16 @@
   "btc_oi": 0,
   "btc_long_short": 0,
   "whale_data": {
-    "daily_inflow": 38.29,
-    "daily_avg": 36.83,
-    "daily_pct": 4.0,
-    "weekly_inflow": 257.81,
-    "weekly_avg": 169.78,
-    "weekly_pct": 51.8,
-    "monthly_inflow": 727.63,
-    "monthly_avg": 833.15,
+    "daily_inflow": 38.36,
+    "daily_avg": 36.84,
+    "daily_pct": 4.1,
+    "weekly_inflow": 257.88,
+    "weekly_avg": 169.8,
+    "weekly_pct": 51.9,
+    "monthly_inflow": 727.7,
+    "monthly_avg": 833.18,
     "monthly_pct": -12.7,
-    "large_tx_count": 694441
+    "large_tx_count": 690367
   },
   "history": {
     "vix": [
