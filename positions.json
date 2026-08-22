@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787387731,
-  "generatedAt": "2026-08-22 08:35 UTC",
-  "accountValue": 1742.73,
-  "withdrawable": 325.02,
-  "portfolioValue": 1742.73,
-  "totalUnrealizedPnl": 185.49,
-  "totalMarginUsed": 1232.22,
-  "availableCash": 325.02,
+  "timestamp": 1787388029,
+  "generatedAt": "2026-08-22 08:40 UTC",
+  "accountValue": 1743.27,
+  "withdrawable": 325.2,
+  "portfolioValue": 1743.27,
+  "totalUnrealizedPnl": 185.76,
+  "totalMarginUsed": 1232.31,
+  "availableCash": 325.2,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.16,
-      "unrealizedPnl": 21.69,
-      "pnlPercent": 3.5,
-      "marginUsed": 623.96,
+      "currentPrice": 215.2,
+      "unrealizedPnl": 22.04,
+      "pnlPercent": 3.6,
+      "marginUsed": 624.08,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1871.89,
+      "positionValue": 1872.24,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.0,
-      "unrealizedPnl": 163.81,
+      "currentPrice": 4607.8,
+      "unrealizedPnl": 163.73,
       "pnlPercent": 29.6,
-      "marginUsed": 608.26,
+      "marginUsed": 608.23,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.77,
+      "positionValue": 1824.69,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1871.89
+      "value": 1872.24
     },
     {
       "label": "GOLD",
-      "value": 1824.77
+      "value": 1824.69
     },
     {
       "label": "Cash",
-      "value": 325.02
+      "value": 325.2
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 623.96
+      "value": 624.08
     },
     {
       "label": "GOLD",
-      "value": 608.26
+      "value": 608.23
     },
     {
       "label": "Available",
-      "value": 325.02
+      "value": 325.2
     }
   ]
 }
