@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787414737,
-  "generatedAt": "2026-08-22 16:05 UTC",
-  "accountValue": 1743.54,
-  "withdrawable": 325.16,
-  "portfolioValue": 1743.54,
-  "totalUnrealizedPnl": 186.0,
-  "totalMarginUsed": 1232.39,
-  "availableCash": 325.16,
+  "timestamp": 1787415036,
+  "generatedAt": "2026-08-22 16:10 UTC",
+  "accountValue": 1743.45,
+  "withdrawable": 325.12,
+  "portfolioValue": 1743.45,
+  "totalUnrealizedPnl": 185.95,
+  "totalMarginUsed": 1232.37,
+  "availableCash": 325.12,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.3,
-      "unrealizedPnl": 22.91,
+      "currentPrice": 215.29,
+      "unrealizedPnl": 22.82,
       "pnlPercent": 3.7,
-      "marginUsed": 624.37,
+      "marginUsed": 624.34,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1873.11,
+      "positionValue": 1873.02,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4606.2,
-      "unrealizedPnl": 163.09,
+      "currentPrice": 4606.3,
+      "unrealizedPnl": 163.13,
       "pnlPercent": 29.5,
-      "marginUsed": 608.02,
+      "marginUsed": 608.03,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.05,
+      "positionValue": 1824.09,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1873.11
+      "value": 1873.02
     },
     {
       "label": "GOLD",
-      "value": 1824.05
+      "value": 1824.09
     },
     {
       "label": "Cash",
-      "value": 325.16
+      "value": 325.12
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.37
+      "value": 624.34
     },
     {
       "label": "GOLD",
-      "value": 608.02
+      "value": 608.03
     },
     {
       "label": "Available",
-      "value": 325.16
+      "value": 325.12
     }
   ]
 }
