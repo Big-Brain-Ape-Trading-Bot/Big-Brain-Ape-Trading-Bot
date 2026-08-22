@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787438142,
-  "generatedAt": "2026-08-22 22:35 UTC",
-  "accountValue": 1756.19,
-  "withdrawable": 329.23,
-  "portfolioValue": 1756.19,
-  "totalUnrealizedPnl": 192.42,
-  "totalMarginUsed": 1234.53,
-  "availableCash": 329.23,
+  "timestamp": 1787438441,
+  "generatedAt": "2026-08-22 22:40 UTC",
+  "accountValue": 1756.09,
+  "withdrawable": 329.2,
+  "portfolioValue": 1756.09,
+  "totalUnrealizedPnl": 192.37,
+  "totalMarginUsed": 1234.51,
+  "availableCash": 329.2,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 216.07,
-      "unrealizedPnl": 29.6,
+      "currentPrice": 216.06,
+      "unrealizedPnl": 29.52,
       "pnlPercent": 4.8,
-      "marginUsed": 626.6,
+      "marginUsed": 626.57,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1879.81,
+      "positionValue": 1879.72,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4605.5,
-      "unrealizedPnl": 162.82,
+      "currentPrice": 4605.6,
+      "unrealizedPnl": 162.86,
       "pnlPercent": 29.4,
-      "marginUsed": 607.93,
+      "marginUsed": 607.94,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1823.78,
+      "positionValue": 1823.82,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1879.81
+      "value": 1879.72
     },
     {
       "label": "GOLD",
-      "value": 1823.78
+      "value": 1823.82
     },
     {
       "label": "Cash",
-      "value": 329.23
+      "value": 329.2
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 626.6
+      "value": 626.57
     },
     {
       "label": "GOLD",
-      "value": 607.93
+      "value": 607.94
     },
     {
       "label": "Available",
-      "value": 329.23
+      "value": 329.2
     }
   ]
 }
