@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787358623,
-  "generatedAt": "2026-08-22 00:30 UTC",
-  "accountValue": 1746.38,
-  "withdrawable": 326.26,
-  "portfolioValue": 1746.38,
-  "totalUnrealizedPnl": 187.3,
-  "totalMarginUsed": 1232.82,
-  "availableCash": 326.26,
+  "timestamp": 1787358923,
+  "generatedAt": "2026-08-22 00:35 UTC",
+  "accountValue": 1746.49,
+  "withdrawable": 326.3,
+  "portfolioValue": 1746.49,
+  "totalUnrealizedPnl": 187.36,
+  "totalMarginUsed": 1232.84,
+  "availableCash": 326.3,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.19,
-      "unrealizedPnl": 21.95,
+      "currentPrice": 215.21,
+      "unrealizedPnl": 22.12,
       "pnlPercent": 3.6,
-      "marginUsed": 624.05,
+      "marginUsed": 624.11,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1872.15,
+      "positionValue": 1872.32,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4611.9,
-      "unrealizedPnl": 165.35,
-      "pnlPercent": 29.9,
-      "marginUsed": 608.77,
+      "currentPrice": 4611.6,
+      "unrealizedPnl": 165.23,
+      "pnlPercent": 29.8,
+      "marginUsed": 608.73,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1826.31,
+      "positionValue": 1826.19,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1872.15
+      "value": 1872.32
     },
     {
       "label": "GOLD",
-      "value": 1826.31
+      "value": 1826.19
     },
     {
       "label": "Cash",
-      "value": 326.26
+      "value": 326.3
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.05
+      "value": 624.11
     },
     {
       "label": "GOLD",
-      "value": 608.77
+      "value": 608.73
     },
     {
       "label": "Available",
-      "value": 326.26
+      "value": 326.3
     }
   ]
 }
