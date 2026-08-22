@@ -1,12 +1,12 @@
 {
-  "timestamp": 1787390131,
-  "generatedAt": "2026-08-22 09:15 UTC",
-  "accountValue": 1744.24,
-  "withdrawable": 325.51,
-  "portfolioValue": 1744.24,
-  "totalUnrealizedPnl": 186.26,
-  "totalMarginUsed": 1232.48,
-  "availableCash": 325.51,
+  "timestamp": 1787390432,
+  "generatedAt": "2026-08-22 09:20 UTC",
+  "accountValue": 1743.23,
+  "withdrawable": 325.17,
+  "portfolioValue": 1743.23,
+  "totalUnrealizedPnl": 185.76,
+  "totalMarginUsed": 1232.31,
+  "availableCash": 325.17,
   "positions": [
     {
       "symbol": "NVDA",
@@ -14,13 +14,13 @@
       "side": "LONG",
       "size": 8.7,
       "entryPrice": 212.67,
-      "currentPrice": 215.23,
-      "unrealizedPnl": 22.3,
+      "currentPrice": 215.19,
+      "unrealizedPnl": 21.95,
       "pnlPercent": 3.6,
-      "marginUsed": 624.17,
+      "marginUsed": 624.05,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1872.5,
+      "positionValue": 1872.15,
       "tvSymbol": "NASDAQ:NVDA"
     },
     {
@@ -29,42 +29,42 @@
       "side": "LONG",
       "size": 0.396,
       "entryPrice": 4194.34,
-      "currentPrice": 4608.4,
-      "unrealizedPnl": 163.97,
+      "currentPrice": 4608.0,
+      "unrealizedPnl": 163.81,
       "pnlPercent": 29.6,
-      "marginUsed": 608.31,
+      "marginUsed": 608.26,
       "leverage": 3,
       "marginType": "cross",
-      "positionValue": 1824.92,
+      "positionValue": 1824.77,
       "tvSymbol": "TVC:GOLD"
     }
   ],
   "pieValueSlices": [
     {
       "label": "NVDA",
-      "value": 1872.5
+      "value": 1872.15
     },
     {
       "label": "GOLD",
-      "value": 1824.92
+      "value": 1824.77
     },
     {
       "label": "Cash",
-      "value": 325.51
+      "value": 325.17
     }
   ],
   "pieMarginSlices": [
     {
       "label": "NVDA",
-      "value": 624.17
+      "value": 624.05
     },
     {
       "label": "GOLD",
-      "value": 608.31
+      "value": 608.26
     },
     {
       "label": "Available",
-      "value": 325.51
+      "value": 325.17
     }
   ]
 }
